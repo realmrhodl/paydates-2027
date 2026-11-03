@@ -75,7 +75,7 @@ function seed(){
         {k:'bitcoin',t:'Bitcoin',on:true,min:25,max:5000,via:'eigen wallet (concept)'}
       ],
       packs:[50,100,150,200,250,300,350,400,450,500].map(e=>({eur:e,credits:e*10,bonus:0})),
-      rates:{credPerEur:10,bump:20,topDay:50,vip7:300,chatpass24:50,smsCallEur:2,smsCallCredits:20,btcMinEur:25,sponsorWeek:10000},
+      rates:{credPerEur:10,adPrice:0,bump:8,topDay:50,vip7:300,chatpass24:50,smsCallEur:2,smsCallCredits:20,btcMinEur:25,sponsorWeek:10000},
       banners:[{t:'Banner rail (200px)',eur:49,per:'maand'},{t:'Banner in-feed',eur:99,per:'maand'},{t:'Banner homepage-band',eur:149,per:'maand'}],
       clubPlans:[
         {k:'basic',t:'Basic',eur:0,features:['Bedrijfsprofiel','Adres & openingstijden','Link naar website']},
@@ -114,9 +114,30 @@ function seed(){
   };
 }
 
+
+/* migratie: velden die de live Paydates-admin/-account ook heeft (zonder reset van bestaande demo-data) */
+function migrate(d){
+  if(d.m>=5)return false;
+  const r=d.pay.rates; if(r.bump===20)r.bump=8; if(r.adPrice==null)r.adPrice=0;
+  d.cats=d.cats||[['Vrouw','Vrouwen','vrouwen'],['Man','Mannen','mannen'],['Shemale','Shemales','shemales'],['Stel','Stellen','stellen'],['Trans','Trans','trans']].map((c,i)=>({id:'cat_'+c[2],k:c[0],t:c[1],slug:c[2],active:true,order:i+1}));
+  d.adTypes=d.adTypes||['Escort','Privé ontvangst','Online','BDSM','Erotische massage','Sugardating'].map((t,i)=>({id:'typ_'+i,t,active:true,order:i+1}));
+  d.users.forEach(u=>{if(u.level==null)u.level=u.role==='admin'?5:u.role==='moderator'?4:u.role==='bedrijf'?2:1;if(u.bonus==null)u.bonus=0;});
+  const live=d.ads.filter(a=>a.listingId).slice(0,6);
+  d.reports=d.reports||[
+    {id:'r_1',type:'advertentie',adId:live[0]&&live[0].id,reason:'nep',text:'Foto’s lijken van internet te komen (demo-melding).',email:'melder1@demo.paydates.test',at:daysAgo(1),status:'nieuw'},
+    {id:'r_2',type:'advertentie',adId:live[1]&&live[1].id,reason:'onjuist',text:'Telefoonnummer werkt niet (demo-melding).',email:'',at:daysAgo(3),status:'nieuw'},
+    {id:'r_3',type:'gebruiker',adId:live[2]&&live[2].id,reason:'anders',text:'Ongepaste berichten in de chat (demo-melding).',email:'melder3@demo.paydates.test',at:daysAgo(6),status:'afgehandeld',note:'Gebruiker gewaarschuwd'}];
+  d.support=d.support||[
+    {id:'t_1',user:'u_demo',email:'adverteerder@demo.paydates.test',type:'credits',subject:'Credits niet bijgeschreven',text:'Ik heb betaald maar zie mijn credits niet (demo-ticket).',at:daysAgo(0),status:'open',replies:[]},
+    {id:'t_2',user:'',email:'bezoeker@demo.paydates.test',type:'account-verwijderen',subject:'Account verwijderen',text:'Graag mijn account verwijderen (demo-ticket).',at:daysAgo(4),status:'gesloten',replies:[{at:daysAgo(3),by:'moderator',t:'Je account is verwijderd.'}]}];
+  d.reviews=d.reviews||live.slice(0,5).map((a,i)=>({id:'rv_'+i,adId:a.id,by:['jeroen','mark84','sven_utr','dennis','tom.nl'][i],stars:[5,4,5,2,4][i],text:['Heel vriendelijk en precies zoals op de foto’s.','Fijne afspraak, goede communicatie.','Top, kom zeker terug.','Was 30 minuten te laat.','Discreet en netjes.'][i]+' (demo)',at:daysAgo(2+i*3),status:i===3?'wacht':i===4?'wacht':'goedgekeurd'}));
+  d.deleted=d.deleted||{reports:[],payments:[]};
+  d.m=5; return true;
+}
 function db(){
   let d=null; try{d=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
-  if(!d||d.v!==VERSION){d=seed();mergePolls(d);try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+  if(!d||d.v!==VERSION){d=seed();mergePolls(d);migrate(d);try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+  else if(migrate(d)){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
   else if(window.PD_POLLS&&!db._merged){db._merged=true;if(mergePolls(d)){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}}
   return d;
 }

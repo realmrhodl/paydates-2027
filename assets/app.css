@@ -272,7 +272,7 @@ html.pd18ok #agegate{display:none!important}
 .pd-pt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
 @media(max-width:767px){.pd-pt-grid>.pd-pt-cta{grid-column:1/-1}}
 @media(min-width:768px){.pd-pt-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media(min-width:1280px){.pd-pt-grid{grid-template-columns:repeat(7,minmax(0,1fr))}}
+@media(min-width:1280px){.pd-pt-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
 .pd-pt{display:flex;align-items:center;gap:.6rem;background:#fff;border:1px solid #dfe4f1;border-radius:.75rem;padding:.6rem .7rem;color:#343a40;transition:border-color .15s,box-shadow .15s}
 .pd-pt:hover{border-color:#7351c0;box-shadow:0 6px 18px rgba(115,81,192,.14)}
 .pd-pt-ic{width:34px;height:34px;flex:none;border-radius:999px;background:#7351c017;color:#7351c0;display:flex;align-items:center;justify-content:center;font-size:14px}

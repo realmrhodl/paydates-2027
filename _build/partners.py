@@ -5,7 +5,6 @@ E=html.escape
 PARTNERS=[('EasyToys.nl','Toys &amp; lingerie','https://www.easytoys.nl/','fa-wand-magic-sparkles'),
  ('Erovibes.nl','Lingerie &amp; toys','https://www.erovibes.nl/','fa-heart'),
  ('Christine le Duc','Erotiekwinkel','https://www.christineleduc.nl/','fa-store'),
- ('Mister B','Fetish &amp; gay','https://www.misterb.com/','fa-link'),
  ('Condooms.nl','Willie · condooms','https://www.condooms.nl/','fa-shield-heart')]
 APPLY='contact.html?onderwerp=banners&amp;ref=webshop'
 def card(n,d,u,ic):
@@ -44,7 +43,7 @@ def build_page():
   foot=re.sub(r'<script>document\.getElementById\("fq"\).*?</script>\n?','',foot,flags=re.S)
   head=re.sub(r'<script type="application/ld\+json">.*?</script>\n?','',head,flags=re.S)
   head=re.sub(r'<title>.*?</title>','<title>Erotische webshops – discreet verpakt bezorgd | Paydates.nl</title>',head,flags=re.S)
-  d='Partnerlinks van Paydates.nl: erotische webshops voor toys, lingerie en condooms, discreet verpakt bezorgd. EasyToys, Erovibes, Christine le Duc, Mister B en Condooms.nl.'
+  d='Partnerlinks van Paydates.nl: erotische webshops voor toys, lingerie en condooms, discreet verpakt bezorgd. EasyToys, Erovibes, Christine le Duc en Condooms.nl.'
   head=re.sub(r'(<meta name="description" content=")[^"]*',r'\g<1>'+d,head)
   head=re.sub(r'(<meta property="og:title" content=")[^"]*',r'\g<1>Erotische webshops | Paydates.nl',head)
   head=re.sub(r'(<meta property="og:description" content=")[^"]*',r'\g<1>'+d,head)

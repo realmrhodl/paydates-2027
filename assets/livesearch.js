@@ -35,7 +35,7 @@ const CAT=[ // label, href, icon, extra zoekwoorden, teller
  ['Nieuws & blogs','nieuws.html','fa-newspaper','nieuws blog blogs artikelen interviews',(D.B||[]).length+' artikelen'],
  ['Woordenboek','woordenboek.html','fa-book','woordenboek betekenis afkortingen termen',''],
  ['Alle steden','locaties.html','fa-map-location-dot','locaties steden provincies plaatsen kaart',(D.CITIES||[]).length+' steden'],
- ['Erotische webshops','partners.html','fa-bag-shopping','webshop webshops toys lingerie condooms seksspeeltjes easytoys pabo christine le duc orion mister b partners','Partnerlinks'],
+ ['Erotische webshops','partners.html','fa-bag-shopping','webshop webshops toys lingerie condooms seksspeeltjes easytoys pabo christine le duc partners','Partnerlinks'],
  ['Adverteren & tarieven','adverteren.html','fa-rectangle-ad','adverteren advertentie plaatsen vip top tarieven prijzen',''],
  ['Credits kopen','credits.html','fa-coins','credits kopen opwaarderen betalen bunq ideal',''],
  ['Gebruikers online','online.html','fa-users','online gebruikers leden',''],
