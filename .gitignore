@@ -1,0 +1,5 @@
+img/remote/*
+!img/remote/README.txt
+.DS_Store
+_build/backup*
+*.tgz

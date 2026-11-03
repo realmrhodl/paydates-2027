@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<!--
+  Paydates.nl V2 — homepage
+  Huisstijl uit realmrhodl/paydates.nl_2024 (assets/css/themes/xsmooth.css, layouts/default.tpl):
+  #7351c0 primary, #6849ad header, #5b3ba3 dark, #462d7e darker, #edf0f7 body, Poppins.
+  Advertentiefoto's: https://paydates.nl/images/<ts>_<rand>.<ext> (zelfde bron als live).
+-->
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paydates.nl - Grootste Paydate Platform van Nederland, Gratis Aanmelden</title>
+<meta name="theme-color" content="#6849ad">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  body{font-size:13px;font-weight:500;background:#edf0f7;color:#343a40}
+  .block{background:#fff;border-radius:.5rem;box-shadow:0 1px 3px rgba(214,221,237,.5),0 1px 2px rgba(214,221,237,.5)}
+  .adc{position:relative;overflow:hidden;border-radius:.6rem;color:#fff;display:flex;isolation:isolate;box-shadow:0 6px 18px -8px rgba(70,45,126,.55);transition:transform .2s,box-shadow .2s}
+  .adc:hover{transform:translateY(-2px);box-shadow:0 12px 26px -10px rgba(70,45,126,.65)}
+  .adc::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(120% 80% at 100% 0,rgba(255,255,255,.18),transparent 55%),radial-gradient(90% 70% at 0 100%,rgba(0,0,0,.22),transparent 60%)}
+  .adc::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.12;background-image:radial-gradient(#fff 1px,transparent 1px);background-size:14px 14px}
+  .adc-purple{background:linear-gradient(135deg,#7351c0 0%,#5b3ba3 55%,#462d7e 100%)}
+  .adc-gold{background:linear-gradient(160deg,#2a1d4d 0%,#462d7e 60%,#5b3ba3 100%)}
+  .adc-light{background:linear-gradient(135deg,#ffffff 0%,#f3effb 100%);color:#343a40;border:1px solid #e4dcf3}
+  .adlabel{position:absolute;top:6px;right:8px;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;opacity:.65}
+  .adbtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:1.125rem;font-weight:700;white-space:nowrap}
+  .shine{background:linear-gradient(90deg,#EEBD22,#ffe27a,#EEBD22);color:#212529}
+  .ad-slot{background:repeating-linear-gradient(45deg,#f8f9fc,#f8f9fc 10px,#f0f2f8 10px,#f0f2f8 20px);border:1px dashed #cdc1e9;color:#5d738d}
+  .pill{background:#fff;color:#5d738d;font-weight:600;border-radius:1.125rem;border:2px solid transparent;box-shadow:0 0 .875rem 0 #e3e4e5;transition:.15s}
+  .pill:hover{background:#7351c017;color:#7351c0}
+  .pill.on{border-color:#7351c0;color:#7351c0}
+  .mini{display:inline-flex;align-items:center;gap:3px;background:#343a40;color:#fff;font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px}
+  .card .ph{transition:transform .4s}.card:hover .ph{transform:scale(1.04)}
+  .scrollbar-none::-webkit-scrollbar{display:none}
+  .hero-bg{background:radial-gradient(1200px 400px at 15% 30%,#9b7fd6 0,transparent 60%),radial-gradient(900px 400px at 85% 60%,#5b3ba3 0,transparent 60%),linear-gradient(120deg,#8a6fc4,#4a3570 55%,#6b4e9e)}
+  .story{width:64px;height:64px;border-radius:9999px;border:2px solid #7351c0;padding:2px;flex-shrink:0}
+  @media(min-width:1024px){.navlink{padding:.9rem .75rem}}
+  html,body{overflow-x:hidden}
+  input[type=range]{accent-color:#7351c0}
+  input[type=checkbox]{accent-color:#7351c0}
+  .navlink{padding:.8rem .6rem;color:#343a40;font-weight:500;border-bottom:2px solid transparent}
+  .navlink:hover,.navlink.active{color:#7351c0;border-bottom-color:#7351c0}
+</style>
+<link rel="stylesheet" href="assets/tailwind.css">
+</head>
+<body class="font-sans antialiased">
+
+<!-- AGE GATE (zelfde opbouw als live: block-header bg-primary-dark + 3 switches) -->
+<div id="agegate" class="fixed inset-0 z-[100] bg-black/60 flex items-center justify-center p-4">
+  <div class="max-w-md w-full bg-white rounded-lg overflow-hidden shadow-2xl">
+    <div class="bg-pd-dark px-5 py-3.5 flex items-center gap-2 text-white">
+      <img src="img/header-logo.png" alt="" class="h-6 w-auto">
+      <h3 class="font-semibold text-[15px]">Je moet 18 jaar of ouder zijn</h3>
+    </div>
+    <div class="px-5 py-4 text-[13px] text-ink">
+      <p class="text-ink-muted">Paydates.nl bevat erotische advertenties van volwassen sekswerkers. Bevestig hieronder om verder te gaan.</p>
+      <div class="mt-4 space-y-2.5">
+        <label class="flex items-center gap-2"><input type="checkbox" class="agechk w-4 h-4"> Ik ben 18 jaar of ouder</label>
+        <label class="flex items-center gap-2"><input type="checkbox" class="agechk w-4 h-4"> Ik ga akkoord met de <a href="#" class="text-pd">voorwaarden</a> en <a href="#" class="text-pd">privacy</a></label>
+        <label class="flex items-center gap-2"><input type="checkbox" class="agechk w-4 h-4"> Ik accepteer <a href="#" class="text-pd">cookies</a></label>
+      </div>
+    </div>
+    <div class="bg-body px-5 py-3 flex justify-end gap-2">
+      <a href="https://www.google.nl" class="px-3 py-1.5 rounded text-ink-muted hover:text-ink">Verlaten</a>
+      <button id="ageBtn" disabled class="px-4 py-1.5 rounded bg-pd hover:bg-[#5c419a] text-white font-semibold disabled:opacity-50">Doorgaan</button>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER (zoals live: paarse balk #6849ad, logo + zoekveld, iconen met label) -->
+<header class="sticky top-0 z-40 bg-pd-header text-white">
+  <div class="max-w-[1920px] mx-auto px-3 lg:px-6 h-14 flex items-center gap-3 lg:gap-5">
+    <button id="menuBtn" class="lg:hidden text-lg px-1" aria-label="Menu"><i class="fa fa-bars"></i></button>
+    <a href="#" class="flex items-center gap-1.5 sm:gap-2 shrink-0 min-w-0">
+      <img src="img/header-logo.png" alt="" class="h-7 sm:h-8 w-auto">
+      <span class="text-[17px] sm:text-[19px] font-bold tracking-tight">Paydates</span>
+    </a>
+    <div class="hidden md:block flex-1 max-w-[520px] relative">
+      <i class="fa fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-pd-dark/70 text-xs"></i>
+      <input id="q" placeholder="Zoeken op naam, stad of service…" class="w-full rounded bg-white/75 focus:bg-white text-ink placeholder-pd-dark/60 pl-8 pr-3 py-1.5 text-[13px] outline-none">
+    </div>
+    <nav class="ml-auto flex items-center gap-0.5 sm:gap-1 lg:gap-3 text-[10px] sm:text-[11px] font-semibold">
+      <a href="#" class="hidden sm:flex flex-col items-center px-2 py-1 rounded hover:bg-white/10"><i class="fa fa-video text-[14px] mb-0.5"></i>Video's</a>
+      <a href="#" class="hidden sm:flex flex-col items-center px-2 py-1 rounded hover:bg-white/10"><i class="fa fa-coins text-[14px] mb-0.5 text-gold"></i>Credits</a>
+      <a href="#chatten" class="hidden sm:flex flex-col items-center px-2 py-1 rounded hover:bg-white/10 relative"><i class="fa fa-comments text-[14px] mb-0.5"></i>Chatten<span class="absolute top-0.5 right-1 w-2 h-2 rounded-full bg-gold"></span></a>
+      <button id="mSearchBtn" class="md:hidden flex flex-col items-center px-1.5 py-1 rounded hover:bg-white/10" aria-label="Zoeken"><i class="fa fa-magnifying-glass text-[14px] mb-0.5"></i>Zoeken</button>
+      <a href="#" class="flex flex-col items-center px-1.5 sm:px-2 py-1 rounded hover:bg-white/10"><i class="fa fa-right-to-bracket text-[14px] mb-0.5"></i>Inloggen</a>
+      <a href="#" class="flex flex-col items-center px-1.5 sm:px-2 py-1 rounded hover:bg-white/10"><i class="fa fa-user-plus text-[14px] mb-0.5"></i><span class="hidden min-[400px]:inline">Registreren</span><span class="min-[400px]:hidden">Aanmelden</span></a>
+      <a href="#" class="hidden lg:inline-flex items-center gap-1.5 ml-2 bg-white text-pd font-bold text-[13px] px-4 py-2 rounded-pill hover:bg-pd-lighter"><i class="fa fa-plus"></i> Adverteren</a>
+    </nav>
+  </div>
+  <div id="mSearch" class="md:hidden hidden px-3 pb-2.5">
+    <div class="relative"><i class="fa fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-pd-dark/70 text-xs"></i>
+    <input id="q2" type="search" placeholder="Zoeken op naam, stad of service…" class="w-full rounded bg-white text-ink placeholder-pd-dark/60 pl-8 pr-3 py-2 text-[14px] outline-none"></div>
+  </div>
+</header>
+
+<!-- WITTE NAVBALK (zelfde menu als live) -->
+<div class="bg-white border-b border-line relative after:content-[''] after:absolute after:right-0 after:top-0 after:h-full after:w-8 after:bg-gradient-to-l after:from-white after:pointer-events-none lg:after:hidden">
+  <div class="max-w-[1920px] mx-auto px-3 lg:px-6 flex items-center text-[13px] overflow-x-auto scrollbar-none whitespace-nowrap">
+    <a href="#" class="navlink active"><i class="fa fa-house mr-1.5 text-pd"></i>Home</a>
+    <a href="#" class="navlink">Vrouwen</a><a href="#" class="navlink">Mannen</a><a href="#" class="navlink">Shemales</a>
+    <a href="#" class="navlink">Stellen</a><a href="#" class="navlink">Agency</a><a href="#" class="navlink">Videos</a><a href="#chatten" class="navlink"><i class="fa fa-comments mr-1 text-pd"></i>Chatten</a>
+    <div class="ml-auto hidden xl:flex items-center gap-4 text-[12px] text-ink-muted pl-4">
+      <span><i class="fa fa-circle-check text-pd mr-1"></i>Alle adverteerders 21+</span>
+    </div>
+  </div>
+</div>
+
+<!-- HERO (zoals live: beeld + paarse overlay, stories + witte zoekbalk) -->
+<section class="hero-bg">
+  <div class="bg-pd-op/0">
+    <div class="max-w-[1100px] mx-auto px-3 lg:px-6 py-4 sm:py-6">
+      <div id="stories" class="flex gap-3 overflow-x-auto scrollbar-none pb-3"></div>
+      <div class="h-[3px] bg-white/30 rounded mb-4"><div class="h-full w-1/2 bg-white rounded"></div></div>
+      <div class="bg-white rounded-[24px] p-3 md:p-4 flex flex-wrap gap-2 items-center shadow-lg">
+        <div class="w-full md:w-auto md:flex-1 md:min-w-[230px] flex items-center border-2 border-ink-soft rounded-pill overflow-hidden h-11">
+          <i class="fa fa-location-dot text-ink-muted text-lg pl-3 sm:pl-4 pr-2"></i>
+          <select id="citySel" class="flex-1 min-w-0 h-full bg-transparent text-[14px] text-ink outline-none"><option value="">Heel Nederland</option></select>
+          <select id="typeSel" class="h-full max-w-[120px] border-l border-ink-muted/40 px-2 sm:px-3 bg-transparent text-[13px] outline-none"><option value="">Alles</option><option>Escort</option><option>Privé ontvangst</option><option>Massage</option><option>Online</option><option>BDSM</option></select>
+        </div>
+        <div class="grid grid-cols-4 md:flex gap-1.5 sm:gap-2 w-full md:w-auto">
+        <button data-g="Vrouw" class="gpill pill h-10 md:h-11 px-1 md:px-4 text-[12px] sm:text-[13px]">Vrouw</button>
+        <button data-g="Man" class="gpill pill h-10 md:h-11 px-1 md:px-4 text-[12px] sm:text-[13px]">Man</button>
+        <button data-g="Stel" class="gpill pill h-10 md:h-11 px-1 md:px-4 text-[12px] sm:text-[13px]">Stel</button>
+        <button data-g="Shemale" class="gpill pill h-10 md:h-11 px-1 md:px-4 text-[12px] sm:text-[13px]">Shemale</button>
+        </div>
+        <button id="searchBtn" class="w-full md:w-auto justify-center h-11 px-8 rounded-pill bg-pd hover:bg-[#5c419a] text-white font-bold text-[15px] flex items-center gap-2"><i class="fa fa-magnifying-glass"></i>Zoeken</button>
+      </div>
+      <div class="text-center mt-3"><button id="filterBtn" class="text-white font-semibold text-[13px]"><i class="fa fa-sliders mr-1"></i>Uitgebreid zoeken</button></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 3 KOLOMMEN -->
+<div class="max-w-[1920px] mx-auto px-3 lg:px-6 py-4 flex gap-4">
+
+  <!-- LINKS 240px -->
+  <aside id="sidebar" class="hidden lg:block w-full lg:w-[240px] shrink-0 space-y-3 fixed lg:static inset-0 z-50 lg:z-auto bg-body lg:bg-transparent p-4 pb-24 lg:p-0 overflow-y-auto overscroll-contain">
+    <div class="lg:hidden flex justify-between items-center -mx-4 -mt-4 mb-3 px-4 h-14 bg-pd-header text-white sticky -top-4 z-10"><b class="text-[15px]">Menu &amp; filters</b><button id="closeSidebar" class="w-9 h-9 text-2xl leading-none" aria-label="Sluiten">×</button></div>
+    <nav class="lg:hidden block p-2 grid grid-cols-2 gap-1 text-[14px]">
+      <a href="#" class="px-3 py-2 rounded hover:bg-[#7351c017]">Vrouwen</a><a href="#" class="px-3 py-2 rounded hover:bg-[#7351c017]">Mannen</a>
+      <a href="#" class="px-3 py-2 rounded hover:bg-[#7351c017]">Shemales</a><a href="#" class="px-3 py-2 rounded hover:bg-[#7351c017]">Stellen</a>
+      <a href="#" class="px-3 py-2 rounded hover:bg-[#7351c017]">Agency</a><a href="#" class="px-3 py-2 rounded hover:bg-[#7351c017]">Videos</a>
+      <a href="#" class="px-3 py-2 rounded hover:bg-[#7351c017]"><i class="fa fa-coins text-gold mr-1"></i>Credits</a><a href="#chatten" class="chatLink px-3 py-2 rounded hover:bg-[#7351c017]"><i class="fa fa-comments text-pd mr-1"></i>Chatten</a><a href="#" class="px-3 py-2 rounded hover:bg-[#7351c017]"><i class="fa fa-plus text-pd mr-1"></i>Adverteren</a>
+    </nav>
+
+    <div class="rounded-lg bg-pd text-white p-4">
+      <div class="font-bold text-[14px]"><i class="fa fa-rectangle-ad mr-1"></i> Zelf adverteren?</div>
+      <p class="text-[12px] text-white/85 mt-1">Bereik dagelijks duizenden klanten. Plaats je advertentie in 2 minuten.</p>
+      <a href="#" class="mt-3 block text-center rounded-pill bg-white text-pd font-bold py-2 hover:bg-pd-lighter">Plaats advertentie</a>
+    </div>
+
+    <div class="block">
+      <div class="px-4 py-2.5 bg-body-light border-b border-line rounded-t-lg font-semibold text-[13px]">Paydates per stad</div>
+      <ul id="cityList" class="p-2 text-[13px]"></ul>
+      <a href="#" class="block px-4 pb-3 text-[12px] text-pd hover:text-pd-darker">Alle steden <i class="fa fa-angle-right"></i></a>
+    </div>
+
+    <div class="block">
+      <div class="px-4 py-2.5 bg-body-light border-b border-line rounded-t-lg font-semibold text-[13px]">Filters</div>
+      <div class="p-4 space-y-4">
+        <div>
+          <div class="text-[12px] text-ink-muted mb-2">Type</div>
+          <div class="grid grid-cols-2 gap-2 text-[12px]">
+            <button data-type="Escort" class="tchip pill py-1.5">Escort</button>
+            <button data-type="Privé ontvangst" class="tchip pill py-1.5">Privé</button>
+            <button data-type="Massage" class="tchip pill py-1.5">Massage</button>
+            <button data-type="Online" class="tchip pill py-1.5">Online</button>
+            <button data-type="BDSM" class="tchip pill py-1.5">BDSM</button>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between text-[12px] text-ink-muted mb-1"><span>Leeftijd</span><span id="ageLbl" class="text-ink font-semibold">18 – 60+</span></div>
+          <input id="ageMax" type="range" min="21" max="60" value="60" class="w-full">
+        </div>
+        <div class="space-y-2 text-[13px]">
+          <label class="flex items-center gap-2"><input type="checkbox" data-flag="verified"> Geverifieerd</label>
+          <label class="flex items-center gap-2"><input type="checkbox" data-flag="video"> Met video</label>
+          <label class="flex items-center gap-2"><input type="checkbox" data-flag="price"> Met tarief</label>
+        </div>
+        <button id="resetBtn" class="w-full rounded border border-line py-2 text-[12px] text-ink-muted hover:bg-body-light">Filters wissen</button>
+      </div>
+    </div>
+
+    <button id="applyFilters" class="lg:hidden fixed bottom-0 inset-x-0 z-20 m-3 h-12 rounded-pill bg-pd text-white font-bold text-[15px] shadow-lg">Toon resultaten</button>
+    <a href="#" class="adc adc-light h-[250px] flex-col justify-between p-4">
+      <div><div class="w-10 h-10 rounded-full bg-[#7351c017] text-pd flex items-center justify-center"><i class="fa fa-building"></i></div>
+      <div class="text-[16px] font-bold text-[#212529] mt-3 leading-tight">Agency of club?</div>
+      <p class="text-[12px] text-ink-muted mt-1 leading-snug">Beheer al je profielen vanuit één bedrijfsaccount, met een eigen agency-pagina.</p></div>
+      <span class="adbtn bg-pd text-white py-2 text-[12px]">Bedrijfsaccount aanmaken</span>
+    </a>
+  </aside>
+
+  <!-- MIDDEN -->
+  <main class="flex-1 min-w-0">
+    <!-- TOP rij -->
+    <section class="block p-3 sm:p-4 mb-4">
+      <div class="flex items-end justify-between mb-3 border-b border-line pb-2">
+        <h2 class="text-[15px] font-semibold text-[#212529] flex items-center gap-2 whitespace-nowrap"><span class="text-[10px] font-bold bg-gold text-[#212529] px-2 py-0.5 rounded">TOP</span>Uitgelicht</h2>
+        <a href="#" class="text-[12px] text-pd hover:text-pd-darker whitespace-nowrap">Ook in TOP? <i class="fa fa-angle-right"></i></a>
+      </div>
+      <div id="topRow" class="flex gap-3 overflow-x-auto scrollbar-none pb-1"></div>
+    </section>
+
+    <div class="flex items-center justify-between gap-2 mb-3">
+      <h1 class="text-[15px] font-semibold text-[#212529]">Paydates in Nederland <span id="count" class="text-[12px] font-normal text-ink-muted"></span></h1>
+      <select class="rounded border border-line bg-white px-2 py-1.5 text-[12px]"><option>Sorteer: Aanbevolen</option><option>Nieuwste</option><option>Prijs laag–hoog</option><option>Prijs hoog–laag</option></select>
+    </div>
+
+    <div id="grid" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-3"></div>
+
+    <div class="mt-6 flex flex-wrap justify-center gap-1 text-[13px]">
+      <a class="px-3 py-1.5 rounded bg-pd text-white">1</a><a href="#" class="px-3 py-1.5 rounded bg-white shadow-block hover:text-pd">2</a><a href="#" class="px-3 py-1.5 rounded bg-white shadow-block hover:text-pd">3</a><a href="#" class="px-3 py-1.5 rounded bg-white shadow-block hover:text-pd">Volgende <i class="fa fa-angle-right"></i></a>
+    </div>
+
+    <!-- CHATTEN: Paydates Chat (chatrooms per regio) -->
+    <section id="chatten" class="mt-8 scroll-mt-20 rounded-lg overflow-hidden shadow-block bg-white">
+      <div class="grid md:grid-cols-5">
+        <div class="md:col-span-2 bg-pd-header text-white p-5 sm:p-6 flex flex-col">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-pd-lighter"><i class="fa fa-comments mr-1"></i>Nieuw · Paydates Chat</div>
+          <h2 class="text-[20px] font-bold mt-1 leading-snug">Chat live met andere leden</h2>
+          <p class="text-white/85 mt-2 text-[13px] leading-relaxed">Stap in een chatroom, maak kennis en spreek af. Kies een regio om mensen bij jou in de buurt te ontmoeten, of chat mee in de landelijke room.</p>
+          <ul class="mt-4 space-y-1.5 text-[12px] text-white/90">
+            <li><i class="fa fa-check text-gold w-4"></i> Chatrooms per provincie en grote stad</li>
+            <li><i class="fa fa-check text-gold w-4"></i> Privéberichten met leden en adverteerders</li>
+            <li><i class="fa fa-check text-gold w-4"></i> Moderatie en meldknop in elke room</li>
+          </ul>
+          <a href="#" class="mt-5 md:mt-auto inline-flex justify-center items-center gap-2 rounded-pill bg-white text-pd font-bold px-5 py-2.5 hover:bg-pd-lighter self-start"><i class="fa fa-right-to-bracket"></i> Inloggen en chatten</a>
+        </div>
+        <div class="md:col-span-3 p-4 sm:p-5">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="font-semibold text-[14px] text-[#212529]">Chatrooms</div>
+            <select id="chatRegion" class="rounded border border-line bg-white px-2 py-1.5 text-[12px]"><option value="">Alle regio’s</option><option>Noord-Holland</option><option>Zuid-Holland</option><option>Utrecht</option><option>Noord-Brabant</option><option>Gelderland</option><option>Overijssel</option><option>Limburg</option><option>Groningen</option><option>Friesland</option><option>Drenthe</option><option>Flevoland</option><option>Zeeland</option><option>België</option></select>
+          </div>
+          <div id="chatRooms" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+          <p class="text-[11px] text-ink-muted mt-3"><i class="fa fa-shield-halved mr-1 text-pd"></i>Alleen voor geverifieerde leden van 18+. Respectvol chatten; ongepast gedrag kun je direct melden.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- upsell -->
+    <section class="mt-8 grid md:grid-cols-3 gap-3">
+      <div class="block p-5 border-t-4 border-gold">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-[#b58a00]">VIP</div>
+        <div class="text-[16px] font-semibold text-[#212529] mt-1">Word VIP-adverteerder</div>
+        <p class="text-ink-muted mt-1">Gouden kader en een plek bovenaan in jouw stad. Meer zichtbaarheid, meer contact.</p>
+        <a href="#" class="inline-block mt-3 rounded-pill bg-gold text-[#212529] font-bold px-4 py-2">Bekijk VIP</a>
+      </div>
+      <div class="block p-5 border-t-4 border-pd">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-pd">Credits</div>
+        <div class="text-[16px] font-semibold text-[#212529] mt-1">Credits kopen</div>
+        <p class="text-ink-muted mt-1">Voor boosts, TOP-plaatsing en berichten. Veilig en discreet afrekenen.</p>
+        <a href="#" class="inline-block mt-3 rounded-pill bg-pd text-white font-bold px-4 py-2">Bekijk bundels</a>
+      </div>
+      <div class="block p-5 border-t-4 border-pd-darker">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-pd-darker">Agency</div>
+        <div class="text-[16px] font-semibold text-[#212529] mt-1">Bedrijfsaccount</div>
+        <p class="text-ink-muted mt-1">Beheer meerdere profielen, eigen agency-pagina en volumekorting op credits.</p>
+        <a href="#" class="inline-block mt-3 rounded-pill bg-pd-darker text-white font-bold px-4 py-2">Meld je bedrijf aan</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- RECHTS 200px sticky ad-rail -->
+  <aside class="hidden xl:block w-[200px] shrink-0">
+    <div class="mb-3"><a href="https://boef.nl/?ad=paydates.nl" target="_blank" rel="noopener sponsored" class="pd-sponsor" style="width:200px" data-ad="boef" aria-label="BOEF.nl – online misdaadspel (advertentie)">
+        <img src="img/ads/boef_banner.gif" alt="BOEF.nl – online misdaadspel" width="500" height="146" loading="lazy" class="pd-sponsor-img">
+        <div class="pd-sponsor-b"><div class="pd-sponsor-t">Word de grootste boef van Nederland</div>
+        <p class="pd-sponsor-p">Bouw je criminele imperium en klim op tot de top van de onderwereld. Gratis online misdaadspel.</p>
+        <span class="pd-sponsor-btn"><i class="fa fa-play"></i> Speel gratis</span></div></a></div>
+    <div class="mb-3"><a href="banners.html" class="pd-sponsor" style="width:200px" data-ad="partner-fill" aria-label="Adverteren op Paydates.nl – jouw merk hier">
+        <img src="img/ads/jouw_merk_banner.svg" alt="Jouw merk hier – advertentieruimte" width="500" height="146" loading="lazy" class="pd-sponsor-img">
+        <div class="pd-sponsor-b"><div class="pd-sponsor-t">Jouw merk hier?</div>
+        <p class="pd-sponsor-p">Bereik dagelijks duizenden bezoekers op Paydates.nl met jouw banner.</p>
+        <span class="pd-sponsor-btn"><i class="fa fa-bullhorn"></i> Adverteren</span></div></a></div>
+    <div class="sticky top-[70px] space-y-3">
+      <a href="#" class="adc adc-gold w-[200px] h-[520px] mx-auto flex-col items-center text-center px-4 pt-8 pb-5">
+        <div class="w-14 h-14 rounded-full shine flex items-center justify-center text-[22px] shadow-lg"><i class="fa fa-crown"></i></div>
+        <div class="text-[11px] font-bold tracking-[.2em] text-gold mt-4">VIP BOOST</div>
+        <div class="text-[22px] font-bold leading-tight mt-1">Bovenaan in jouw stad</div>
+        <ul class="text-[12px] text-white/85 mt-4 space-y-2 text-left w-full">
+          <li class="flex gap-2"><i class="fa fa-check text-gold mt-0.5"></i>Gouden VIP-kader</li>
+          <li class="flex gap-2"><i class="fa fa-check text-gold mt-0.5"></i>Plek in de TOP-rij</li>
+          <li class="flex gap-2"><i class="fa fa-check text-gold mt-0.5"></i>Zichtbaar in de stories</li>
+          <li class="flex gap-2"><i class="fa fa-check text-gold mt-0.5"></i>Meer profielweergaven</li>
+        </ul>
+        <div class="mt-auto w-full">
+          <div class="rounded-lg border border-gold/60 bg-white/5 p-2 mb-3 text-left flex items-center gap-2"><span class="mini !bg-gold !text-[#212529]">VIP</span><span class="text-[11px] text-white/80">Zo valt jouw advertentie op</span></div>
+          <span class="adbtn shine w-full py-2.5 text-[13px]">Boost mijn advertentie</span>
+        </div>
+      </a>
+      <a href="#chatten" class="adc adc-purple w-[200px] h-[200px] mx-auto flex-col justify-between p-4">
+        <div><i class="fa fa-comments text-[26px] text-pd-lighter"></i>
+        <div class="text-[17px] font-bold leading-tight mt-2">Paydates Chat</div>
+        <p class="text-[12px] text-white/80 mt-1 leading-snug">Chat live met leden in jouw regio.</p></div>
+        <span class="adbtn bg-white text-pd py-2 text-[12px]">Naar de chatrooms</span>
+      </a>
+      <a href="#" class="block text-center text-[11px] text-ink-muted hover:text-pd">Adverteren in deze ruimte? <i class="fa fa-angle-right"></i></a>
+    </div>
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-white border-t border-line mt-6 text-[13px]">
+  <!-- SEO: escort per stad -->
+  <section class="border-b border-line bg-body-light">
+    <div class="max-w-[1920px] mx-auto px-3 lg:px-6 py-8">
+      <div class="flex items-end justify-between gap-3 mb-4">
+        <h2 class="text-[15px] font-semibold text-[#212529]">Escorts &amp; paydates per stad</h2>
+        <a href="/locaties" class="text-[12px] text-pd hover:text-pd-darker font-semibold whitespace-nowrap">Alle locaties <i class="fa fa-angle-right"></i></a>
+      </div>
+      <ul class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-8 gap-x-4 gap-y-1.5 text-[12px] text-ink-muted"><li><a href="/escort/amsterdam" class="hover:text-pd">Escort Amsterdam</a></li><li><a href="/escort/rotterdam" class="hover:text-pd">Escorts Rotterdam</a></li><li><a href="/escort/den-haag" class="hover:text-pd">Escort Den Haag</a></li><li><a href="/escort/utrecht" class="hover:text-pd">Escorts Utrecht</a></li><li><a href="/escort/eindhoven" class="hover:text-pd">Escort Eindhoven</a></li><li><a href="/escort/groningen" class="hover:text-pd">Escorts Groningen</a></li><li><a href="/escort/tilburg" class="hover:text-pd">Escort Tilburg</a></li><li><a href="/escort/almere" class="hover:text-pd">Escorts Almere</a></li><li><a href="/escort/breda" class="hover:text-pd">Escort Breda</a></li><li><a href="/escort/nijmegen" class="hover:text-pd">Escorts Nijmegen</a></li><li><a href="/escort/apeldoorn" class="hover:text-pd">Escort Apeldoorn</a></li><li><a href="/escort/haarlem" class="hover:text-pd">Escorts Haarlem</a></li><li><a href="/escort/arnhem" class="hover:text-pd">Escort Arnhem</a></li><li><a href="/escort/enschede" class="hover:text-pd">Escorts Enschede</a></li><li><a href="/escort/amersfoort" class="hover:text-pd">Escort Amersfoort</a></li><li><a href="/escort/zaanstad" class="hover:text-pd">Escorts Zaanstad</a></li><li><a href="/escort/den-bosch" class="hover:text-pd">Escort Den Bosch</a></li><li><a href="/escort/haarlemmermeer" class="hover:text-pd">Escorts Haarlemmermeer</a></li><li><a href="/escort/zwolle" class="hover:text-pd">Escort Zwolle</a></li><li><a href="/escort/zoetermeer" class="hover:text-pd">Escorts Zoetermeer</a></li><li><a href="/escort/leiden" class="hover:text-pd">Escort Leiden</a></li><li><a href="/escort/maastricht" class="hover:text-pd">Escorts Maastricht</a></li><li><a href="/escort/dordrecht" class="hover:text-pd">Escort Dordrecht</a></li><li><a href="/escort/ede" class="hover:text-pd">Escorts Ede</a></li><li><a href="/escort/alphen-aan-den-rijn" class="hover:text-pd">Escort Alphen aan den Rijn</a></li><li><a href="/escort/alkmaar" class="hover:text-pd">Escorts Alkmaar</a></li><li><a href="/escort/emmen" class="hover:text-pd">Escort Emmen</a></li><li><a href="/escort/westland" class="hover:text-pd">Escorts Westland</a></li><li><a href="/escort/delft" class="hover:text-pd">Escort Delft</a></li><li><a href="/escort/venlo" class="hover:text-pd">Escorts Venlo</a></li><li><a href="/escort/deventer" class="hover:text-pd">Escort Deventer</a></li><li><a href="/escort/leeuwarden" class="hover:text-pd">Escorts Leeuwarden</a></li><li><a href="/escort/sittard-geleen" class="hover:text-pd">Escort Sittard-Geleen</a></li><li><a href="/escort/helmond" class="hover:text-pd">Escorts Helmond</a></li><li><a href="/escort/hilversum" class="hover:text-pd">Escort Hilversum</a></li><li><a href="/escort/heerlen" class="hover:text-pd">Escorts Heerlen</a></li><li><a href="/escort/oss" class="hover:text-pd">Escort Oss</a></li><li><a href="/escort/amstelveen" class="hover:text-pd">Escorts Amstelveen</a></li><li><a href="/escort/roosendaal" class="hover:text-pd">Escort Roosendaal</a></li><li><a href="/escort/purmerend" class="hover:text-pd">Escorts Purmerend</a></li><li><a href="/escort/schiedam" class="hover:text-pd">Escort Schiedam</a></li><li><a href="/escort/spijkenisse" class="hover:text-pd">Escorts Spijkenisse</a></li><li><a href="/escort/lelystad" class="hover:text-pd">Escort Lelystad</a></li><li><a href="/escort/gouda" class="hover:text-pd">Escorts Gouda</a></li><li><a href="/escort/hoorn" class="hover:text-pd">Escort Hoorn</a></li><li><a href="/escort/vlaardingen" class="hover:text-pd">Escorts Vlaardingen</a></li><li><a href="/escort/assen" class="hover:text-pd">Escort Assen</a></li><li><a href="/escort/bergen-op-zoom" class="hover:text-pd">Escorts Bergen op Zoom</a></li><li><a href="/escort/capelle-aan-den-ijssel" class="hover:text-pd">Escort Capelle aan den IJssel</a></li><li><a href="/escort/veenendaal" class="hover:text-pd">Escorts Veenendaal</a></li>
+        <li><a href="/locaties" class="text-pd font-semibold hover:text-pd-darker">Alle locaties <i class="fa fa-angle-right"></i></a></li></ul>
+    </div>
+  </section>
+  <div class="max-w-[1920px] mx-auto px-3 lg:px-6 py-10 grid grid-cols-2 md:grid-cols-6 gap-x-6 gap-y-8">
+    <div class="col-span-2">
+      <div class="flex items-center gap-2"><span class="bg-pd-header rounded p-1"><img src="img/header-logo.png" alt="" class="h-6"></span><span class="text-[18px] font-bold text-pd-header">Paydates</span></div>
+      <p class="text-ink-muted text-[12px] mt-3 max-w-sm leading-relaxed">Paydates.nl is hét platform voor erotische advertenties in Nederland. Alle adverteerders zijn 21 jaar of ouder en verklaren zelfstandig en vrijwillig te werken.</p>
+      <p class="text-ink-muted text-[12px] mt-2">Exploitant: <span class="text-ink font-semibold">Forest Road B.V.</span></p>
+      <a href="#" class="inline-flex items-center gap-1.5 mt-4 rounded-pill bg-pd text-white font-bold text-[12px] px-4 py-2 hover:bg-[#5c419a]"><i class="fa fa-plus"></i> Plaats een advertentie</a>
+    </div>
+    <div><div class="font-semibold mb-3 text-[#212529]">Ontdekken</div><ul class="space-y-1.5 text-ink-muted"><li><a href="#" class="hover:text-pd">Vrouwen</a></li><li><a href="#" class="hover:text-pd">Mannen</a></li><li><a href="#" class="hover:text-pd">Shemales</a></li><li><a href="#" class="hover:text-pd">Stellen</a></li><li><a href="#" class="hover:text-pd">Agency</a></li><li><a href="#" class="hover:text-pd">Videos</a></li></ul></div>
+    <div><div class="font-semibold mb-3 text-[#212529]">Adverteerders</div><ul class="space-y-1.5 text-ink-muted"><li><a href="#" class="hover:text-pd">Adverteren</a></li><li><a href="#" class="hover:text-pd">Credits</a></li><li><a href="#" class="hover:text-pd">VIP &amp; TOP</a></li><li><a href="#" class="hover:text-pd">Bedrijfsaccount</a></li><li><a href="#" class="hover:text-pd">Accountverificatie</a></li></ul></div>
+    <div><div class="font-semibold mb-3 text-[#212529]">Hulp &amp; info</div><ul class="space-y-1.5 text-ink-muted"><li><a href="/faq" class="hover:text-pd">Veelgestelde vragen</a></li><li><a href="#" class="hover:text-pd">Veilig daten</a></li><li><a href="#" class="hover:text-pd">Advertentie melden</a></li><li><a href="#" class="hover:text-pd">Contact</a></li></ul></div>
+    <div><div class="font-semibold mb-3 text-[#212529]">Juridisch</div><ul class="space-y-1.5 text-ink-muted"><li><a href="/terms-of-service" class="hover:text-pd">Algemene voorwaarden</a></li><li><a href="/privacy-policy" class="hover:text-pd">Privacybeleid</a></li><li><a href="#" class="hover:text-pd">Cookiebeleid</a></li><li><a href="#" class="hover:text-pd">Notice &amp; takedown</a></li></ul></div>
+  </div>
+  <div class="border-t border-line">
+    <div class="max-w-[1920px] mx-auto px-3 lg:px-6 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-[11px] text-ink-muted">
+      <div class="leading-relaxed">© 2026 Paydates.nl · Alle rechten voorbehouden. Paydates.nl wordt geëxploiteerd door <span class="text-ink font-semibold">Forest Road B.V.</span><br>Paydates<sup>®</sup> is een geregistreerd handelsmerk van Forest Road Capital B.V.</div>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1"><span class="inline-flex items-center gap-1 font-bold text-ink"><span class="bg-ink text-white rounded px-1.5 py-0.5 text-[10px]">18+</span> Alleen voor volwassenen · adverteerders 21+</span><a href="/terms-of-service" class="hover:text-pd">Voorwaarden</a><a href="/privacy-policy" class="hover:text-pd">Privacy</a><a href="#" class="hover:text-pd">Cookies</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const CITIES=['Amsterdam','Rotterdam','Den Haag','Utrecht','Eindhoven','Groningen','Tilburg','Almere','Breda','Nijmegen','Arnhem','Haarlem','Amersfoort'];
+// advertenties met foto's van paydates.nl (/images/)
+const L=[{"n":"Claire","s":"Hollandse Claire","a":31,"c":"Tilburg","t":"Escort","g":"Vrouw","p":300,"img":"https://paydates.nl/images/1740099013_8345.png","href":"https://paydates.nl/vrouwen/escort/tilburg/353-hollandse-claire","f":5,"v":0,"ago":"2 weken geleden","vip":1,"top":1,"vid":0},
+ {"n":"Bella","s":"Geile date","a":30,"c":"Eindhoven","t":"Privé ontvangst","g":"Vrouw","p":0,"img":"https://paydates.nl/images/1783262548_1264.jpg","href":"https://paydates.nl/vrouwen/prive-ontvangst/eindhoven/661-geile-date","f":3,"v":0,"ago":"2 weken geleden","vip":1,"top":1,"vid":0},
+ {"n":"Jennifer","s":"Geile escort date met mij","a":26,"c":"Amsterdam","t":"Escort","g":"Vrouw","p":250,"img":"https://paydates.nl/images/1752625652_7438.jpeg","href":"https://paydates.nl/vrouwen/escort/amsterdam/476-geile-escort-date-met-mij","f":4,"v":0,"ago":"2 weken geleden","vip":1,"top":1,"vid":0},
+ {"n":"Mercedes","s":"Stoute half Marokkaanse geweldige rondingen","a":30,"c":"Amsterdam","t":"Privé ontvangst","g":"Vrouw","p":250,"img":"https://paydates.nl/images/1743333601_9888.png","href":"https://paydates.nl/vrouwen/prive-ontvangst/amsterdam/408-stoute-half-marokkaanse-geweldige-rondingen","f":6,"v":0,"ago":"2 weken geleden","vip":1,"top":1,"vid":0},
+ {"n":"Tessa","s":"Een date wat je nooit meer vergeet","a":25,"c":"Haarlem","t":"Escort","g":"Vrouw","p":0,"img":"https://paydates.nl/images/1740497904_6806.jpeg","href":"https://paydates.nl/vrouwen/escort/haarlem/370-een-date-wat-je-nooit-meer-vergeet","f":10,"v":0,"ago":"2 weken geleden","vip":1,"top":1,"vid":0},
+ {"n":"Ariana","s":"Nymph","a":33,"c":"Leidschendam-Voorburg","t":"Privé ontvangst","g":"Vrouw","p":200,"img":"https://paydates.nl/images/1722456212_4308.png","href":"https://paydates.nl/vrouwen/prive-ontvangst/leidschendam-voorburg/221-nymph","f":4,"v":1,"ago":"2 weken geleden","vip":1,"top":1,"vid":0},
+ {"n":"GeilePoenie036","s":"Ik zoek geile paydates in Almere","a":25,"c":"Almere","t":"Privé ontvangst","g":"Vrouw","p":140,"img":"https://paydates.nl/images/1784061372_1671.jpeg","href":"https://paydates.nl/vrouwen/prive-ontvangst/almere/672-ik-zoek-geile-paydates-in-almere","f":2,"v":0,"ago":"2 weken geleden","vip":1,"top":1,"vid":0},
+ {"n":"Hottie michelle","s":"Kom jij ontdekken","a":40,"c":"Amersfoort","t":"Online","g":"Vrouw","p":50,"img":"https://paydates.nl/images/1788274397_9763.jpg","href":"https://paydates.nl/vrouwen/virtueel/amersfoort/719-kom-jij-ontdekken","f":2,"v":0,"ago":"2 weken geleden","vip":1,"top":1,"vid":0},
+ {"n":"Jolyne","s":"CD Jolyne voor jou","a":28,"c":"Best","t":"Escort","g":"Shemale","p":100,"img":"https://paydates.nl/images/1783685228_8176.jpg","href":"https://paydates.nl/shemales/escort/best/667-cd-jolyne-voor-jou","f":3,"v":0,"ago":"2 weken geleden","vip":1,"top":1,"vid":1},
+ {"n":"Erotische massage","s":"Erotische Massage","a":42,"c":"Leiden","t":"Massage","g":"Vrouw","p":0,"img":"https://paydates.nl/images/1740485276_5168.png","href":"https://paydates.nl/vrouwen/erotische-massage/leiden/366-erotische-massage","f":4,"v":0,"ago":"2 weken geleden","vip":0,"top":0,"vid":0},
+ {"n":"High Class Masseuse","s":"High Class Masseuse ontvangt","a":32,"c":"Amersfoort","t":"Massage","g":"Vrouw","p":0,"img":"https://paydates.nl/images/1722590083_4018.png","href":"https://paydates.nl/vrouwen/erotische-massage/amersfoort/227-high-class-masseuse-ontvangt","f":4,"v":0,"ago":"2 weken geleden","vip":0,"top":0,"vid":0},
+ {"n":"Icy","s":"Elegant en charmant!","a":25,"c":"Amsterdam","t":"Privé ontvangst","g":"Shemale","p":200,"img":"https://paydates.nl/images/1741622391_4193.png","href":"https://paydates.nl/shemales/prive-ontvangst/amsterdam/168-elegant-en-charmant","f":8,"v":1,"ago":"1 jaar geleden","vip":0,"top":0,"vid":5},
+ {"n":"Djulio & Vera","s":"GEILE TRIO","a":27,"c":"Amsterdam","t":"Privé ontvangst","g":"Stel","p":0,"img":"https://paydates.nl/images/1789976320_8671.jpeg","href":"https://paydates.nl/stellen/prive-ontvangst/amsterdam/736-geile-trio","f":3,"v":0,"ago":"1 maand geleden","vip":0,"top":0,"vid":1},
+ {"n":"Kevin & Mirelly","s":"Kevin & Mirelly","a":31,"c":"Rotterdam","t":"Escort","g":"Stel","p":600,"img":"https://paydates.nl/images/1783458504_5903.jpg","href":"https://paydates.nl/stellen/escort/rotterdam/664-kevin-amp-amp-amp-mirelly","f":12,"v":0,"ago":"4 maanden geleden","vip":0,"top":0,"vid":2},
+ {"n":"Abyss","s":"BDSM doll","a":21,"c":"Aa en Hunze","t":"Escort","g":"Man","p":250,"img":"https://paydates.nl/images/1786443921_7585.jpg","href":"https://paydates.nl/mannen/escort/aa-en-hunze/694-bdsm-doll","f":8,"v":0,"ago":"2 weken geleden","vip":0,"top":0,"vid":0},
+ {"n":"Calvin Klaus","s":"Boyfriend Experience","a":29,"c":"Amsterdam","t":"Escort","g":"Man","p":100,"img":"https://paydates.nl/images/1740426571_3322.png","href":"https://paydates.nl/mannen/escort/amsterdam/364-boyfriend-experience","f":10,"v":0,"ago":"1 jaar geleden","vip":0,"top":0,"vid":0},
+ {"n":"Honey","s":"Geile NEDERLANDS sprekende Shemale","a":27,"c":"Rotterdam","t":"Privé ontvangst","g":"Shemale","p":350,"img":"https://paydates.nl/images/1726560297_3977.png","href":"https://paydates.nl/shemales/prive-ontvangst/rotterdam/297-geile-nederlands-sprekende-shemale","f":9,"v":0,"ago":"1 jaar geleden","vip":0,"top":0,"vid":0},
+ {"n":"Sexy MMF M en E","s":"MMF","a":33,"c":"Amersfoort","t":"Escort","g":"Stel","p":350,"img":"https://paydates.nl/images/1745934416_2595.jpeg","href":"https://paydates.nl/stellen/escort/amersfoort/429-mmf","f":5,"v":0,"ago":"1 jaar geleden","vip":0,"top":0,"vid":1},
+ {"n":"Shirley","s":"Jonge, spontane en verzorgde dame","a":22,"c":"Amersfoort","t":"Privé ontvangst","g":"Vrouw","p":0,"img":"https://paydates.nl/images/1787956648_8735.jpg","href":"https://paydates.nl/vrouwen/prive-ontvangst/amersfoort/715-shirley-amp-amp-ndash-jonge-spontane-en-verzorgde-dame-amp-amp-10084-amp-amp-65039","f":4,"v":0,"ago":"2 weken geleden","vip":0,"top":0,"vid":0},
+ {"n":"Curvy Hollandse meid","s":"Een curvy Hollandse meid","a":30,"c":"Hoorn","t":"Escort","g":"Vrouw","p":0,"img":"https://paydates.nl/images/1787599971_8809.jpeg","href":"https://paydates.nl/vrouwen/escort/hoorn/710-een-curvy-hollandse-meid","f":4,"v":0,"ago":"2 weken geleden","vip":0,"top":0,"vid":0},
+ {"n":"Hollandse MILF","s":"Geile Hollandse MILF","a":30,"c":"Amsterdam","t":"Privé ontvangst","g":"Vrouw","p":0,"img":"https://paydates.nl/images/1757861005_8756.jpeg","href":"https://paydates.nl/vrouwen/prive-ontvangst/amsterdam/414-geile-hollandse-milf","f":4,"v":0,"ago":"2 weken geleden","vip":0,"top":0,"vid":0}];
+const st={q:'',city:'',type:'',gender:'',ageMax:60,flags:new Set()};
+const $=s=>document.querySelector(s);
+
+// stories (zoals live)
+$('#stories').innerHTML=L.slice(0,14).map(x=>`<a href="${x.href}" target="_blank" rel="noopener" class="text-center shrink-0"><div class="story bg-white/30"><img src="${x.img}" alt="${x.n}" loading="lazy" class="w-full h-full rounded-full object-cover"></div><div class="text-[11px] text-white mt-1 font-semibold w-16 truncate">${x.n.split(' ')[0]}</div></a>`).join('');
+$('#cityList').innerHTML=CITIES.map(c=>`<li><a href="#" data-city="${c}" class="cityLink flex justify-between rounded px-2 py-1.5 hover:bg-[#7351c017] hover:text-pd"><span><i class="fa fa-location-dot text-ink-soft mr-2 text-[11px]"></i>${c}</span><i class="fa fa-angle-right text-[10px] text-ink-soft self-center"></i></a></li>`).join('');
+$('#citySel').innerHTML+=CITIES.map(c=>`<option>${c}</option>`).join('');
+
+// listingkaart in Paydates-stijl: witte block, donkere mini-badges, icoonregels, "x geleden"
+function card(x,w=''){
+  return `<a href="${x.href}" target="_blank" rel="noopener" class="card group block bg-white rounded-lg overflow-hidden shadow-block hover:shadow-pill transition ${x.vip?'ring-2 ring-gold':''} ${w}">
+   <div class="relative aspect-[3/4] overflow-hidden">
+     <img src="${x.img}" alt="${x.n} – ${x.s}" loading="lazy" decoding="async" class="ph absolute inset-0 w-full h-full object-cover bg-pd-lighter">
+     <div class="absolute top-1.5 left-1.5 flex gap-1">${x.vip?'<span class="mini !bg-gold !text-[#212529]">VIP</span>':''}${x.vid?'<span class="mini"><i class="fa fa-play"></i> video</span>':''}</div>
+     <span class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-white/90 flex items-center justify-center text-pd text-[11px]"><i class="fa-regular fa-heart"></i></span>
+     
+   </div>
+   <div class="p-2 sm:p-2.5">
+     <div class="flex flex-wrap gap-1 mb-1.5"><span class="mini"><i class="fa fa-image"></i>${x.f}</span><span class="mini"><i class="fa fa-film"></i>${x.vid}</span>${x.p?`<span class="mini">€ ${x.p}</span>`:''}</div>
+     <div class="font-semibold text-[13px] sm:text-[14px] text-[#212529] leading-tight flex items-center gap-1 min-w-0"><span class="truncate">${x.n}</span>${x.v?'<i class="fa fa-circle-check text-pd text-[12px]" title="Geverifieerd"></i>':''}</div>
+     <div class="text-[12px] text-ink-muted truncate">${x.s}</div>
+     <div class="mt-1.5 space-y-0.5 text-[11px] text-ink">
+       <div class="truncate"><i class="fa fa-location-dot w-3.5 text-ink-muted"></i> ${x.c}</div>
+       <div><i class="fa fa-venus-mars w-3.5 text-ink-muted"></i> ${x.g}, ${x.a} Jaar</div>
+       <div><i class="fa fa-check w-3.5 text-ink-muted"></i> ${x.t}</div>
+     </div>
+     <div class="mt-1.5 text-[10px] text-ink-muted"><i class="fa fa-circle-arrow-up mr-1"></i>${x.ago}</div>
+   </div></a>`;
+}
+const nativeAd=`<a href="#" class="adc adc-purple flex-col rounded-lg min-h-[260px] p-4 text-left">
+  <div class="w-11 h-11 rounded-full bg-white/15 flex items-center justify-center text-[18px]"><i class="fa fa-arrow-trend-up"></i></div>
+  <div class="text-[11px] font-bold tracking-[.18em] text-pd-lighter mt-4">TOP-PLAATSING</div>
+  <div class="text-[18px] font-bold leading-tight mt-1">Hier had jouw advertentie kunnen staan</div>
+  <p class="text-[12px] text-white/80 mt-2 leading-snug">Sta tussen de best bekeken profielen van Nederland.</p>
+  <span class="adbtn shine mt-auto py-2 text-[12px]">Plaats advertentie</span></a>`;
+const mobileAd=`<a href="#" class="xl:hidden col-span-full adc adc-purple h-[100px] items-center gap-3 px-4">
+  <span class="w-11 h-11 shrink-0 rounded-full shine flex items-center justify-center text-[18px]"><i class="fa fa-crown"></i></span>
+  <span class="min-w-0 flex-1"><span class="block text-[15px] font-bold leading-tight">VIP Boost</span><span class="block text-[11px] text-white/80 leading-snug">Bovenaan in jouw stad, met gouden kader.</span></span>
+  <span class="adbtn bg-white text-pd px-3 py-1.5 text-[12px] shrink-0">Boost</span></a>`;
+
+$('#topRow').innerHTML=L.filter(x=>x.top).map(x=>card(x,'w-[150px] sm:w-[170px] shrink-0')).join('')+
+ `<a href="#" class="w-[150px] sm:w-[170px] shrink-0 rounded-lg border-2 border-dashed border-gold flex flex-col items-center justify-center text-center p-4 hover:bg-[#EEBD2210]"><i class="fa fa-arrow-trend-up text-2xl text-gold"></i><span class="font-semibold text-[#212529] mt-2">Jouw advertentie in TOP</span><span class="text-[11px] text-ink-muted mt-1">Bovenaan, elke dag</span></a>`;
+
+function render(){
+  let r=L.filter(x=>(!st.q||(x.n+' '+x.s+' '+x.c+' '+x.t).toLowerCase().includes(st.q))&&(!st.city||x.c===st.city)&&(!st.type||x.t===st.type)&&(!st.gender||x.g===st.gender)&&(st.ageMax>=60||x.a<=st.ageMax)
+    &&(!st.flags.has('verified')||x.v)&&(!st.flags.has('video')||x.vid)&&(!st.flags.has('price')||x.p));
+  r.sort((a,b)=>b.vip-a.vip);
+  let h='';r.forEach((x,i)=>{h+=card(x);if(i===6)h+=nativeAd;if(i===9)h+=mobileAd;});
+  $('#grid').innerHTML=h||'<div class="col-span-full block text-center text-ink-muted py-16">Geen advertenties gevonden met deze filters.</div>';
+  $('#count').textContent=`(${r.length} advertenties)`;
+  document.querySelectorAll('.cityLink').forEach(a=>{const on=a.dataset.city===st.city;a.classList.toggle('bg-[#7351c017]',on);a.classList.toggle('text-pd',on)});
+  document.querySelectorAll('.tchip').forEach(b=>b.classList.toggle('on',b.dataset.type===st.type));
+  document.querySelectorAll('.gpill').forEach(b=>b.classList.toggle('on',b.dataset.g===st.gender));
+  document.querySelectorAll('[data-flag]').forEach(c=>c.checked=st.flags.has(c.dataset.flag));
+  $('#citySel').value=st.city;$('#typeSel').value=st.type;
+}
+['#q','#q2'].forEach(id=>$(id).oninput=e=>{st.q=e.target.value.toLowerCase();render()});
+$('#mSearchBtn').onclick=()=>{$('#mSearch').classList.toggle('hidden');$('#q2').focus()};
+$('#citySel').onchange=e=>{st.city=e.target.value;render()};
+$('#typeSel').onchange=e=>{st.type=e.target.value;render()};
+$('#searchBtn').onclick=()=>{render();$('#grid').scrollIntoView({behavior:'smooth',block:'start'})};
+document.addEventListener('click',e=>{
+  const c=e.target.closest('.cityLink');if(c){e.preventDefault();st.city=st.city===c.dataset.city?'':c.dataset.city;render()}
+  const t=e.target.closest('.tchip');if(t){st.type=st.type===t.dataset.type?'':t.dataset.type;render()}
+  const g=e.target.closest('.gpill');if(g){st.gender=st.gender===g.dataset.g?'':g.dataset.g;render()}
+});
+document.querySelectorAll('[data-flag]').forEach(cb=>cb.onchange=()=>{cb.checked?st.flags.add(cb.dataset.flag):st.flags.delete(cb.dataset.flag);render()});
+$('#ageMax').oninput=e=>{st.ageMax=+e.target.value;$('#ageLbl').textContent='18 – '+e.target.value+(e.target.value=='60'?'+':'');render()};
+$('#resetBtn').onclick=()=>{Object.assign(st,{q:'',city:'',type:'',gender:'',ageMax:60});st.flags.clear();$('#q').value='';$('#ageMax').value=60;$('#ageLbl').textContent='18 – 60+';render()};
+const sb=$('#sidebar');
+const openSb=()=>{sb.classList.remove('hidden');document.body.style.overflow='hidden'};
+const closeSb=()=>{sb.classList.add('hidden');document.body.style.overflow=''};
+$('#filterBtn').onclick=()=>{if(innerWidth<1024)openSb();else sb.scrollIntoView({behavior:'smooth'})};
+$('#menuBtn').onclick=openSb;
+$('#closeSidebar').onclick=closeSb;
+$('#applyFilters').onclick=()=>{closeSb();$('#grid').scrollIntoView({block:'start'})};
+addEventListener('resize',()=>{if(innerWidth>=1024)document.body.style.overflow=''});
+// age gate: knop pas actief als alle 3 aangevinkt (zoals live)
+const chks=[...document.querySelectorAll('.agechk')];
+chks.forEach(c=>c.onchange=()=>$('#ageBtn').disabled=!chks.every(x=>x.checked));
+$('#ageBtn').onclick=()=>$('#agegate').remove();
+if(location.hash==='#noage')$('#agegate').remove();
+// Paydates Chat: rooms per regio
+const ROOMS=[['Landelijk','','Iedereen in Nederland en België'],['Amsterdam','Noord-Holland','Amsterdam en omgeving'],['Noord-Holland','Noord-Holland','Haarlem, Alkmaar, Hilversum'],['Rotterdam','Zuid-Holland','Rotterdam en Rijnmond'],['Den Haag','Zuid-Holland','Den Haag, Leiden, Delft'],['Utrecht','Utrecht','Utrecht en Amersfoort'],['Brabant','Noord-Brabant','Eindhoven, Tilburg, Breda, Den Bosch'],['Gelderland','Gelderland','Arnhem, Nijmegen, Apeldoorn'],['Overijssel','Overijssel','Zwolle, Enschede, Deventer'],['Limburg','Limburg','Maastricht, Venlo, Heerlen'],['Noorden','Groningen','Groningen, Friesland, Drenthe'],['Flevoland','Flevoland','Almere en Lelystad'],['Zeeland','Zeeland','Middelburg en Vlissingen'],['België','België','Antwerpen, Gent, Brussel']];
+function rooms(){const r=$('#chatRegion').value;
+  $('#chatRooms').innerHTML=ROOMS.filter(x=>!r||!x[1]||x[1]===r||(r==='Friesland'||r==='Drenthe')&&x[0]==='Noorden').slice(0,r?6:8).map(([n,,d])=>`<a href="#" class="flex items-center gap-3 rounded-lg border border-line px-3 py-2.5 hover:border-pd hover:bg-[#7351c008]"><span class="w-9 h-9 shrink-0 rounded-full bg-[#7351c017] text-pd flex items-center justify-center font-bold">#</span><span class="min-w-0"><span class="block font-semibold text-[13px] text-[#212529] truncate">${n}</span><span class="block text-[11px] text-ink-muted truncate">${d}</span></span><i class="fa fa-angle-right ml-auto text-ink-soft"></i></a>`).join('');}
+$('#chatRegion').onchange=rooms;rooms();
+document.querySelectorAll('.chatLink').forEach(a=>a.addEventListener('click',()=>closeSb()));
+render();
+</script>
+</body>
+</html>

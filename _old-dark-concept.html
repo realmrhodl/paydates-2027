@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<!--
+  PAYDATES.NL V2 — CONCEPT HOMEPAGE (static demo, Forest Road B.V.)
+  Layout (desktop >=1280px, full width, max 1920px):
+    [ utility bar: credits / login / register / Adverteren ]
+    [ header: logo + category nav + CTA's ]  [ search/filter bar ]
+    [ top leaderboard 970x90 / 728x90 ad slot ]
+    | LEFT 240px: zoeken, steden+counts, filters | CENTER fluid: TOP/VIP row + listing grid 4–5 cols | RIGHT 210px sticky ad rail: 160x600, 200x200, 160x600 |
+  Monetization surfaces:
+    1. Right-rail display ads (sticky)  2. Top leaderboard  3. In-grid native ad slot (300x250)
+    4. TOP-rij (betaalde boost, bovenaan)  5. VIP badges + highlighted cards  6. Credits kopen / Adverteren / Agency CTA's
+  Mobile: sidebars collapse (filter drawer), ad rail becomes inline banners between rows.
+  All images are neutral gradient placeholders (no real/NSFW imagery).
+-->
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paydates.nl — Escorts & sekswerkers in Nederland | V2 concept</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{colors:{brand:{50:'#f6f0ff',100:'#ecdfff',300:'#c4a1ff',400:'#a875ff',500:'#8b4dff',600:'#7428f5',700:'#5f1ad1',800:'#4a15a3',900:'#2c0b63',950:'#1a0640'}},fontFamily:{sans:['Inter','system-ui','sans-serif']}}}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{background:#0f0a1c}
+  .ad-slot{background:repeating-linear-gradient(45deg,#1e1533,#1e1533 10px,#231a3b 10px,#231a3b 20px);border:1px dashed #5b4a86}
+  .card:hover .ph{transform:scale(1.04)}
+  .ph{transition:transform .4s}
+  .scrollbar-none::-webkit-scrollbar{display:none}
+</style>
+<script id="pd18-head">(function(){var ok=0;try{var v=localStorage.getItem('pd18');if(v==='1'||(v&&Date.now()-(+v)<7776e6))ok=1}catch(e){}if(ok||/(?:^|;\s*)pd18=1/.test(document.cookie)||/(^|;)pd18(;|$)/.test(window.name)||/[?&]pd18=1(&|$)/.test(location.search)||location.hash==='#noage')document.documentElement.classList.add('pd18ok')})();</script>
+</head>
+<body class="font-sans text-zinc-200 antialiased">
+
+<!-- AGE GATE -->
+<div id="agegate" class="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+  <div class="max-w-md w-full rounded-2xl bg-gradient-to-b from-brand-900 to-[#140c26] border border-brand-700/50 p-8 text-center shadow-2xl">
+    <div class="text-3xl font-extrabold tracking-tight"><span class="text-white">pay</span><span class="text-brand-400">dates</span><span class="text-zinc-400 text-lg">.nl</span></div>
+    <div class="mx-auto mt-6 w-16 h-16 rounded-full border-2 border-brand-400 flex items-center justify-center text-xl font-bold text-brand-300">18+</div>
+    <h2 class="mt-5 text-xl font-bold text-white">Alleen voor volwassenen</h2>
+    <p class="mt-2 text-sm text-zinc-400">Deze website bevat erotische advertenties. Door verder te gaan bevestig je dat je 18 jaar of ouder bent en akkoord gaat met onze voorwaarden.</p>
+    <div class="mt-6 grid grid-cols-2 gap-3">
+      <a href="https://www.google.nl" class="rounded-xl border border-zinc-600 py-3 text-sm font-semibold hover:bg-white/5">Verlaten</a>
+      <button onclick="document.getElementById('agegate').remove()" class="rounded-xl bg-brand-600 hover:bg-brand-500 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-600/30">Ik ben 18+ — Doorgaan</button>
+    </div>
+  </div>
+</div>
+
+<!-- UTILITY BAR -->
+<div class="bg-[#0a0614] border-b border-white/5 text-xs">
+  <div class="max-w-[1920px] mx-auto px-4 lg:px-6 h-9 flex items-center justify-between">
+    <div class="hidden md:flex items-center gap-4 text-zinc-400">
+      <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span><b class="text-zinc-200">2.341</b> online</span>
+      <span><b class="text-zinc-200">1.287</b> advertenties</span>
+      <span class="text-zinc-500">✓ Geverifieerde profielen</span>
+    </div>
+    <div class="flex items-center gap-3 ml-auto">
+      <a href="#" class="hidden sm:inline text-brand-300 hover:text-white font-semibold">+ Gratis adverteren</a>
+      <a href="#" class="flex items-center gap-1 rounded-full bg-amber-400/10 text-amber-300 px-3 py-1 font-semibold hover:bg-amber-400/20">◆ Credits kopen</a>
+      <a href="#" class="text-zinc-300 hover:text-white">Inloggen</a>
+      <a href="#" class="rounded-full bg-brand-600 hover:bg-brand-500 px-3 py-1 text-white font-semibold">Registreren</a>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="sticky top-0 z-40 bg-[#120b22]/95 backdrop-blur border-b border-brand-900">
+  <div class="max-w-[1920px] mx-auto px-4 lg:px-6 h-16 flex items-center gap-6">
+    <button id="menuBtn" class="lg:hidden p-2 -ml-2 rounded-lg hover:bg-white/5" aria-label="Menu">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <a href="#" class="text-2xl font-extrabold tracking-tight shrink-0"><span class="text-white">pay</span><span class="text-brand-400">dates</span><span class="text-zinc-500 text-base">.nl</span></a>
+    <nav class="hidden lg:flex items-center gap-1 text-sm font-semibold">
+      <a href="#" class="px-3 py-2 rounded-lg bg-brand-600/20 text-white">Vrouwen</a>
+      <a href="#" class="px-3 py-2 rounded-lg hover:bg-white/5 text-zinc-300">Mannen</a>
+      <a href="#" class="px-3 py-2 rounded-lg hover:bg-white/5 text-zinc-300">Shemales</a>
+      <a href="#" class="px-3 py-2 rounded-lg hover:bg-white/5 text-zinc-300">Stellen</a>
+      <a href="#" class="px-3 py-2 rounded-lg hover:bg-white/5 text-zinc-300">Agency</a>
+      <a href="#" class="px-3 py-2 rounded-lg hover:bg-white/5 text-zinc-300">Videos <span class="ml-1 text-[10px] bg-rose-500 text-white px-1.5 py-0.5 rounded">NEW</span></a>
+      <a href="#" class="px-3 py-2 rounded-lg hover:bg-white/5 text-zinc-300">Reviews</a>
+    </nav>
+    <div class="ml-auto flex items-center gap-2">
+      <a href="#" class="hidden xl:inline-flex items-center rounded-lg border border-brand-500/50 px-4 py-2 text-sm font-semibold text-brand-200 hover:bg-brand-500/10">Agency worden</a>
+      <a href="#" class="inline-flex items-center rounded-lg bg-gradient-to-r from-brand-600 to-fuchsia-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-fuchsia-700/20 hover:brightness-110">Adverteren</a>
+    </div>
+  </div>
+  <!-- search bar -->
+  <div class="border-t border-white/5 bg-[#0f0a1c]">
+    <div class="max-w-[1920px] mx-auto px-4 lg:px-6 py-3 flex flex-wrap gap-2 items-center">
+      <div class="flex-1 min-w-[220px] relative">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" placeholder="Zoek op naam, stad of service…" class="w-full rounded-lg bg-white/5 border border-white/10 pl-9 pr-3 py-2.5 text-sm placeholder-zinc-500 focus:outline-none focus:border-brand-500">
+      </div>
+      <select id="citySel" class="rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm"><option value="">Alle steden</option></select>
+      <select id="typeSel" class="rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm"><option value="">Alle types</option><option>Escort</option><option>Privé</option><option>Virtueel</option><option>Massage</option></select>
+      <button id="filterBtn" class="lg:hidden rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm">Filters</button>
+      <div class="hidden md:flex gap-1.5 text-xs">
+        <button data-quick="verified" class="quick rounded-full border border-white/10 px-3 py-1.5 hover:border-brand-400">✓ Geverifieerd</button>
+        <button data-quick="online" class="quick rounded-full border border-white/10 px-3 py-1.5 hover:border-brand-400">● Nu online</button>
+        <button data-quick="video" class="quick rounded-full border border-white/10 px-3 py-1.5 hover:border-brand-400">▶ Met video</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div id="mobileNav" class="hidden lg:hidden bg-[#120b22] border-b border-brand-900 px-4 py-3 grid grid-cols-3 gap-2 text-sm font-semibold">
+  <a href="#" class="rounded-lg bg-white/5 px-3 py-2 text-center">Vrouwen</a><a href="#" class="rounded-lg bg-white/5 px-3 py-2 text-center">Mannen</a><a href="#" class="rounded-lg bg-white/5 px-3 py-2 text-center">Shemales</a>
+  <a href="#" class="rounded-lg bg-white/5 px-3 py-2 text-center">Stellen</a><a href="#" class="rounded-lg bg-white/5 px-3 py-2 text-center">Agency</a><a href="#" class="rounded-lg bg-white/5 px-3 py-2 text-center">Videos</a>
+  <a href="#" class="rounded-lg bg-white/5 px-3 py-2 text-center col-span-3">Reviews</a>
+</div>
+
+<!-- LEADERBOARD -->
+<div class="max-w-[1920px] mx-auto px-4 lg:px-6 pt-4">
+  <div class="ad-slot rounded-xl h-[90px] max-w-[970px] mx-auto flex items-center justify-center text-xs text-zinc-400">
+    <div class="text-center"><div class="uppercase tracking-widest text-[10px] text-zinc-500">Advertentie</div><div class="font-semibold text-zinc-300">Leaderboard 970×90 / 728×90</div></div>
+  </div>
+</div>
+
+<!-- MAIN 3-COL -->
+<div class="max-w-[1920px] mx-auto px-4 lg:px-6 py-5 flex gap-5">
+
+  <!-- LEFT SIDEBAR -->
+  <aside id="sidebar" class="hidden lg:block w-[240px] shrink-0 space-y-4 fixed lg:static inset-0 z-50 lg:z-auto bg-[#0f0a1c] lg:bg-transparent p-4 lg:p-0 overflow-y-auto">
+    <div class="lg:hidden flex justify-between items-center mb-2"><b>Filters</b><button id="closeSidebar" class="text-2xl leading-none">×</button></div>
+
+    <div class="rounded-xl bg-gradient-to-br from-brand-700 to-fuchsia-700 p-4">
+      <div class="text-sm font-bold text-white">Zelf adverteren?</div>
+      <p class="text-xs text-white/80 mt-1">Bereik 100.000+ bezoekers per dag. Plaats je advertentie in 2 minuten.</p>
+      <a href="#" class="mt-3 block text-center rounded-lg bg-white text-brand-800 text-sm font-bold py-2 hover:bg-brand-50">Plaats advertentie</a>
+    </div>
+
+    <div class="rounded-xl bg-white/[.03] border border-white/5 p-4">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3">Steden</h3>
+      <ul id="cityList" class="space-y-0.5 text-sm"></ul>
+      <a href="#" class="block mt-2 text-xs text-brand-300 hover:text-white">Alle 48 steden →</a>
+    </div>
+
+    <div class="rounded-xl bg-white/[.03] border border-white/5 p-4 space-y-4">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Filters</h3>
+      <div>
+        <div class="text-xs text-zinc-400 mb-2">Type</div>
+        <div class="grid grid-cols-2 gap-1.5 text-xs" id="typeChips">
+          <button data-type="Escort" class="tchip rounded-lg border border-white/10 py-1.5 hover:border-brand-400">Escort</button>
+          <button data-type="Privé" class="tchip rounded-lg border border-white/10 py-1.5 hover:border-brand-400">Privé</button>
+          <button data-type="Virtueel" class="tchip rounded-lg border border-white/10 py-1.5 hover:border-brand-400">Virtueel</button>
+          <button data-type="Massage" class="tchip rounded-lg border border-white/10 py-1.5 hover:border-brand-400">Massage</button>
+        </div>
+      </div>
+      <div>
+        <div class="flex justify-between text-xs text-zinc-400 mb-2"><span>Leeftijd</span><span id="ageLbl" class="text-zinc-200">18 – 50</span></div>
+        <input id="ageMax" type="range" min="21" max="50" value="50" class="w-full accent-brand-500">
+      </div>
+      <div class="space-y-2 text-sm">
+        <label class="flex items-center gap-2"><input type="checkbox" class="accent-brand-500" data-flag="verified"> Geverifieerd</label>
+        <label class="flex items-center gap-2"><input type="checkbox" class="accent-brand-500" data-flag="online"> Nu online</label>
+        <label class="flex items-center gap-2"><input type="checkbox" class="accent-brand-500" data-flag="video"> Met video</label>
+        <label class="flex items-center gap-2"><input type="checkbox" class="accent-brand-500" data-flag="reviews"> Met reviews</label>
+      </div>
+      <button id="resetBtn" class="w-full rounded-lg border border-white/10 py-2 text-xs hover:bg-white/5">Filters wissen</button>
+    </div>
+
+    <div class="ad-slot rounded-xl h-[250px] flex items-center justify-center text-center text-xs text-zinc-400"><div><div class="uppercase tracking-widest text-[10px] text-zinc-500">Advertentie</div><div class="font-semibold text-zinc-300">Sidebar 240×250</div></div></div>
+  </aside>
+
+  <!-- CENTER -->
+  <main class="flex-1 min-w-0">
+    <!-- TOP row (paid boost) -->
+    <section class="mb-6">
+      <div class="flex items-end justify-between mb-3">
+        <div>
+          <h2 class="text-lg font-bold text-white flex items-center gap-2"><span class="text-[10px] font-extrabold bg-amber-400 text-black px-2 py-0.5 rounded">TOP</span> Uitgelicht vandaag</h2>
+          <p class="text-xs text-zinc-500">Gesponsorde plaatsingen · <a href="#" class="text-brand-300 hover:text-white">Jij hier? Boost vanaf 25 credits</a></p>
+        </div>
+      </div>
+      <div id="topRow" class="flex gap-3 overflow-x-auto scrollbar-none pb-1"></div>
+    </section>
+
+    <div class="flex items-center justify-between mb-3">
+      <h1 class="text-lg font-bold text-white">Escorts & sekswerkers in Nederland <span id="count" class="text-sm font-normal text-zinc-500"></span></h1>
+      <select class="rounded-lg bg-white/5 border border-white/10 px-3 py-1.5 text-xs"><option>Sorteer: Aanbevolen</option><option>Nieuwste</option><option>Prijs laag–hoog</option><option>Meeste reviews</option></select>
+    </div>
+
+    <div id="grid" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3"></div>
+
+    <div class="mt-8 flex justify-center gap-1 text-sm">
+      <a class="px-3 py-1.5 rounded-lg bg-brand-600 text-white">1</a><a href="#" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10">2</a><a href="#" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10">3</a><span class="px-2 py-1.5 text-zinc-500">…</span><a href="#" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10">108</a><a href="#" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10">Volgende →</a>
+    </div>
+
+    <!-- upsell band -->
+    <section class="mt-10 grid md:grid-cols-3 gap-4">
+      <div class="rounded-2xl p-5 bg-gradient-to-br from-amber-500/20 to-amber-700/5 border border-amber-400/20">
+        <div class="text-amber-300 text-xs font-bold uppercase tracking-wider">VIP</div>
+        <div class="text-white font-bold text-lg mt-1">Word VIP-adverteerder</div>
+        <p class="text-sm text-zinc-400 mt-1">Gouden kader, bovenaan in je stad en 5× meer profielweergaven.</p>
+        <a href="#" class="inline-block mt-3 rounded-lg bg-amber-400 text-black text-sm font-bold px-4 py-2">Vanaf €29 / week</a>
+      </div>
+      <div class="rounded-2xl p-5 bg-gradient-to-br from-brand-600/30 to-brand-900/10 border border-brand-500/20">
+        <div class="text-brand-300 text-xs font-bold uppercase tracking-wider">Credits</div>
+        <div class="text-white font-bold text-lg mt-1">Credits kopen</div>
+        <p class="text-sm text-zinc-400 mt-1">Boosts, TOP-plaatsing en privéberichten. Betaal met iDEAL, Bancontact of crypto.</p>
+        <a href="#" class="inline-block mt-3 rounded-lg bg-brand-600 text-white text-sm font-bold px-4 py-2">Bekijk bundels</a>
+      </div>
+      <div class="rounded-2xl p-5 bg-gradient-to-br from-fuchsia-600/25 to-fuchsia-900/5 border border-fuchsia-500/20">
+        <div class="text-fuchsia-300 text-xs font-bold uppercase tracking-wider">Agency</div>
+        <div class="text-white font-bold text-lg mt-1">Agency-account</div>
+        <p class="text-sm text-zinc-400 mt-1">Beheer meerdere profielen, eigen agency-pagina en volumekorting op credits.</p>
+        <a href="#" class="inline-block mt-3 rounded-lg bg-fuchsia-600 text-white text-sm font-bold px-4 py-2">Agency starten</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- RIGHT AD RAIL -->
+  <aside class="hidden xl:block w-[210px] shrink-0">
+    <div class="sticky top-[132px] space-y-3">
+      <div class="text-[10px] uppercase tracking-widest text-zinc-500 text-center">Advertenties</div>
+      <a href="#" class="ad-slot rounded-xl w-[160px] h-[600px] mx-auto flex items-center justify-center text-center text-xs text-zinc-400 hover:border-brand-400"><div><div class="font-semibold text-zinc-300">Skyscraper</div>160×600<div class="mt-2 text-[10px] text-zinc-500">Slot R1</div></div></a>
+      <a href="#" class="ad-slot rounded-xl w-[200px] h-[200px] mx-auto flex items-center justify-center text-center text-xs text-zinc-400 hover:border-brand-400"><div><div class="font-semibold text-zinc-300">Square</div>200×200<div class="mt-2 text-[10px] text-zinc-500">Slot R2</div></div></a>
+      <a href="#" class="ad-slot rounded-xl w-[160px] h-[300px] mx-auto flex items-center justify-center text-center text-xs text-zinc-400 hover:border-brand-400"><div><div class="font-semibold text-zinc-300">Half skyscraper</div>160×300<div class="mt-2 text-[10px] text-zinc-500">Slot R3</div></div></a>
+      <a href="#" class="block text-center text-[11px] text-brand-300 hover:text-white">Hier adverteren? →</a>
+    </div>
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer class="border-t border-white/5 bg-[#0a0614] mt-6">
+  <div class="max-w-[1920px] mx-auto px-4 lg:px-6 py-10 grid grid-cols-2 md:grid-cols-5 gap-6 text-sm">
+    <div class="col-span-2">
+      <div class="text-xl font-extrabold"><span class="text-white">pay</span><span class="text-brand-400">dates</span><span class="text-zinc-500 text-sm">.nl</span></div>
+      <p class="text-zinc-500 text-xs mt-2 max-w-sm">Het grootste platform voor geverifieerde escorts en sekswerkers in Nederland. Alle adverteerders zijn 18+ en verklaren zelfstandig en vrijwillig te werken.</p>
+    </div>
+    <div><div class="font-semibold text-zinc-300 mb-2">Ontdekken</div><ul class="space-y-1 text-zinc-500"><li>Vrouwen</li><li>Mannen</li><li>Shemales</li><li>Stellen</li><li>Videos</li></ul></div>
+    <div><div class="font-semibold text-zinc-300 mb-2">Adverteerders</div><ul class="space-y-1 text-zinc-500"><li>Adverteren</li><li>Credits & prijzen</li><li>VIP / TOP boost</li><li>Agency</li><li>Verificatie</li></ul></div>
+    <div><div class="font-semibold text-zinc-300 mb-2">Info</div><ul class="space-y-1 text-zinc-500"><li>FAQ</li><li>Voorwaarden</li><li>Privacy</li><li>Misbruik melden</li><li>Contact</li></ul></div>
+  </div>
+  <div class="text-center text-[11px] text-zinc-600 pb-6">© 2026 Paydates.nl · Forest Road B.V. · Concept V2 — demo-data</div>
+</footer>
+
+<script>
+const CITIES=[['Amsterdam',412],['Rotterdam',236],['Den Haag',198],['Utrecht',154],['Eindhoven',97],['Groningen',71],['Tilburg',58],['Breda',52],['Arnhem',44],['Nijmegen',41],['Haarlem',38],['Almere',33]];
+const G=['from-fuchsia-500 to-brand-700','from-rose-400 to-purple-700','from-violet-400 to-indigo-700','from-pink-400 to-fuchsia-800','from-purple-400 to-brand-900','from-indigo-400 to-violet-800','from-amber-300 to-rose-600','from-sky-400 to-brand-700'];
+const L=[
+ {n:'Sophie',a:24,c:'Amsterdam',t:'Escort',p:150,vip:1,top:1,v:1,on:1,vid:1,r:38},
+ {n:'Lotte',a:27,c:'Rotterdam',t:'Privé',p:120,vip:1,top:1,v:1,on:0,vid:0,r:21},
+ {n:'Emma',a:22,c:'Utrecht',t:'Escort',p:180,vip:1,top:1,v:1,on:1,vid:1,r:54},
+ {n:'Mila',a:29,c:'Den Haag',t:'Massage',p:90,vip:0,top:1,v:1,on:1,vid:0,r:12},
+ {n:'Julia',a:31,c:'Eindhoven',t:'Privé',p:110,vip:1,top:1,v:1,on:0,vid:1,r:17},
+ {n:'Noa',a:25,c:'Amsterdam',t:'Virtueel',p:40,vip:0,top:0,v:1,on:1,vid:1,r:9},
+ {n:'Fleur',a:34,c:'Groningen',t:'Escort',p:160,vip:1,top:0,v:1,on:0,vid:0,r:26},
+ {n:'Sanne',a:23,c:'Rotterdam',t:'Escort',p:140,vip:0,top:0,v:0,on:1,vid:0,r:3},
+ {n:'Tess',a:28,c:'Utrecht',t:'Massage',p:85,vip:0,top:0,v:1,on:0,vid:0,r:14},
+ {n:'Isa',a:26,c:'Den Haag',t:'Privé',p:100,vip:0,top:0,v:1,on:1,vid:1,r:8},
+ {n:'Lieke',a:38,c:'Breda',t:'Escort',p:170,vip:1,top:0,v:1,on:0,vid:0,r:31},
+ {n:'Roos',a:21,c:'Tilburg',t:'Virtueel',p:35,vip:0,top:0,v:0,on:1,vid:1,r:0},
+ {n:'Anouk',a:30,c:'Arnhem',t:'Privé',p:115,vip:0,top:0,v:1,on:0,vid:0,r:11},
+ {n:'Femke',a:33,c:'Haarlem',t:'Massage',p:95,vip:0,top:0,v:1,on:1,vid:0,r:19},
+ {n:'Yara',a:24,c:'Amsterdam',t:'Escort',p:200,vip:1,top:0,v:1,on:1,vid:1,r:42},
+ {n:'Eva',a:27,c:'Nijmegen',t:'Privé',p:105,vip:0,top:0,v:0,on:0,vid:0,r:2},
+ {n:'Nina',a:29,c:'Almere',t:'Escort',p:130,vip:0,top:0,v:1,on:1,vid:0,r:7},
+ {n:'Zoë',a:25,c:'Eindhoven',t:'Virtueel',p:45,vip:0,top:0,v:1,on:1,vid:1,r:5},
+];
+L.forEach((x,i)=>x.g=G[i%G.length]);
+const st={q:'',city:'',type:'',ageMax:50,flags:new Set()};
+const $=s=>document.querySelector(s);
+
+// sidebar cities + select
+$('#cityList').innerHTML=CITIES.map(([c,n])=>`<li><a href="#" data-city="${c}" class="cityLink flex justify-between rounded-md px-2 py-1.5 hover:bg-white/5"><span>${c}</span><span class="text-xs text-zinc-500">${n}</span></a></li>`).join('');
+$('#citySel').innerHTML+=CITIES.map(([c])=>`<option>${c}</option>`).join('');
+
+const badge=(cls,txt)=>`<span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${cls}">${txt}</span>`;
+function card(x){
+  return `<a href="#" class="card group block rounded-xl overflow-hidden bg-[#171028] border ${x.vip?'border-amber-400/60 shadow-lg shadow-amber-500/10':'border-white/5'} hover:border-brand-400 transition">
+   <div class="relative aspect-[3/4] overflow-hidden">
+     <div class="ph absolute inset-0 bg-gradient-to-br ${x.g} flex items-center justify-center"><span class="text-6xl font-extrabold text-white/25">${x.n[0]}</span></div>
+     <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/80 to-transparent"></div>
+     <div class="absolute top-2 left-2 flex gap-1">${x.vip?badge('bg-amber-400 text-black','VIP'):''}${x.vid?badge('bg-black/60 text-white','▶ VIDEO'):''}</div>
+     ${x.on?'<span class="absolute top-2 right-2 flex items-center gap-1 text-[10px] bg-black/60 px-1.5 py-0.5 rounded text-emerald-300"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>online</span>':''}
+     <div class="absolute bottom-2 left-2 right-2">
+       <div class="flex items-center gap-1 text-white font-bold">${x.n}, ${x.a} ${x.v?'<svg class="w-4 h-4 text-sky-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 2.1 3.2-.3.9 3.1 2.8 1.6-1 3 1 3-2.8 1.6-.9 3.1-3.2-.3L12 22l-2.4-2.1-3.2.3-.9-3.1L2.7 15.5l1-3-1-3 2.8-1.6.9-3.1 3.2.3z"/><path d="m8.5 12 2.5 2.5 4.5-5" stroke="#fff" stroke-width="2" fill="none"/></svg>':''}</div>
+       <div class="text-xs text-zinc-300">📍 ${x.c}</div>
+     </div>
+   </div>
+   <div class="px-2.5 py-2 flex items-center justify-between text-xs">
+     <span class="rounded bg-brand-600/20 text-brand-200 px-1.5 py-0.5">${x.t}</span>
+     <span class="text-zinc-400">${x.r?'★ '+x.r:''}</span>
+     <span class="font-bold text-white">€${x.p}<span class="text-zinc-500 font-normal">/u</span></span>
+   </div></a>`;
+}
+const nativeAd=`<div class="ad-slot rounded-xl flex items-center justify-center text-center text-xs text-zinc-400 aspect-[3/4] sm:aspect-auto col-span-2 sm:col-span-1"><div><div class="uppercase tracking-widest text-[10px] text-zinc-500">Advertentie</div><div class="font-semibold text-zinc-300">Native 300×250</div><div class="text-[10px] mt-1 text-zinc-500">In-grid slot</div></div></div>`;
+const mobileAd=`<div class="xl:hidden col-span-full ad-slot rounded-xl h-[100px] flex items-center justify-center text-xs text-zinc-400"><div class="text-center"><div class="uppercase tracking-widest text-[10px] text-zinc-500">Advertentie</div><div class="font-semibold text-zinc-300">Mobiel 320×100</div></div></div>`;
+
+$('#topRow').innerHTML=L.filter(x=>x.top).map(x=>`<div class="w-[180px] shrink-0 relative">${card(x)}<span class="absolute -top-0 right-0 m-0"></span></div>`).join('')+
+ `<a href="#" class="w-[180px] shrink-0 rounded-xl border-2 border-dashed border-amber-400/40 flex flex-col items-center justify-center text-center p-4 hover:bg-amber-400/5"><span class="text-3xl text-amber-300">+</span><span class="text-sm font-bold text-amber-200 mt-1">Jouw profiel in TOP</span><span class="text-xs text-zinc-500 mt-1">Vanaf 25 credits / dag</span></a>`;
+
+function render(){
+  let r=L.filter(x=>(!st.q||(x.n+' '+x.c+' '+x.t).toLowerCase().includes(st.q))&&(!st.city||x.c===st.city)&&(!st.type||x.t===st.type)&&x.a<=st.ageMax
+    &&(!st.flags.has('verified')||x.v)&&(!st.flags.has('online')||x.on)&&(!st.flags.has('video')||x.vid)&&(!st.flags.has('reviews')||x.r));
+  r.sort((a,b)=>b.vip-a.vip);
+  let h='';r.forEach((x,i)=>{h+=card(x);if(i===6)h+=nativeAd;if(i===9)h+=mobileAd;});
+  $('#grid').innerHTML=h||'<p class="col-span-full text-center text-zinc-500 py-16">Geen advertenties gevonden met deze filters.</p>';
+  $('#count').textContent=`(${r.length} resultaten)`;
+  document.querySelectorAll('.cityLink').forEach(a=>a.classList.toggle('bg-brand-600/20',a.dataset.city===st.city));
+  document.querySelectorAll('.tchip').forEach(b=>b.classList.toggle('!border-brand-400',b.dataset.type===st.type));
+  document.querySelectorAll('.tchip').forEach(b=>b.classList.toggle('bg-brand-600/20',b.dataset.type===st.type));
+  document.querySelectorAll('.quick').forEach(b=>b.classList.toggle('bg-brand-600/30',st.flags.has(b.dataset.quick)));
+  document.querySelectorAll('[data-flag]').forEach(c=>c.checked=st.flags.has(c.dataset.flag));
+  $('#citySel').value=st.city;$('#typeSel').value=st.type;
+}
+$('#q').oninput=e=>{st.q=e.target.value.toLowerCase();render()};
+$('#citySel').onchange=e=>{st.city=e.target.value;render()};
+$('#typeSel').onchange=e=>{st.type=e.target.value;render()};
+document.addEventListener('click',e=>{
+  const c=e.target.closest('.cityLink');if(c){e.preventDefault();st.city=st.city===c.dataset.city?'':c.dataset.city;render()}
+  const t=e.target.closest('.tchip');if(t){st.type=st.type===t.dataset.type?'':t.dataset.type;render()}
+  const q=e.target.closest('.quick');if(q){const f=q.dataset.quick;st.flags.has(f)?st.flags.delete(f):st.flags.add(f);render()}
+});
+document.querySelectorAll('[data-flag]').forEach(cb=>cb.onchange=()=>{cb.checked?st.flags.add(cb.dataset.flag):st.flags.delete(cb.dataset.flag);render()});
+$('#ageMax').oninput=e=>{st.ageMax=+e.target.value;$('#ageLbl').textContent='18 – '+e.target.value;render()};
+$('#resetBtn').onclick=()=>{Object.assign(st,{q:'',city:'',type:'',ageMax:50});st.flags.clear();$('#q').value='';$('#ageMax').value=50;$('#ageLbl').textContent='18 – 50';render()};
+$('#menuBtn').onclick=()=>$('#mobileNav').classList.toggle('hidden');
+const sb=$('#sidebar');
+$('#filterBtn').onclick=()=>sb.classList.remove('hidden');
+$('#closeSidebar').onclick=()=>sb.classList.add('hidden');
+render();
+</script>
+</body>
+</html>

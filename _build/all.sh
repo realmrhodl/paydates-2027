@@ -1,0 +1,1 @@
+cd "$(dirname "$0")" && python3 legal.py >/dev/null && python3 build.py && python3 cities_all.py && python3 pages2.py >/dev/null && python3 pages3.py >/dev/null && python3 pages4.py >/dev/null && python3 seo_meta.py && python3 linkcheck.py

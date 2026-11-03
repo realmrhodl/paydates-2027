@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Factuur | Paydates.nl</title>
+<meta property="og:title" content="Factuur | Paydates.nl"><meta property="og:description" content="">
+<!-- pd-seo -->
+<meta property="og:type" content="website"><meta property="og:locale" content="nl_NL">
+<meta property="og:image" content="https://paydates.nl/img/og/paydates-default.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Factuur | Paydates.nl">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Factuur | Paydates.nl"><meta name="twitter:description" content=""><meta name="twitter:image" content="https://paydates.nl/img/og/paydates-default.jpg">
+<!-- /pd-seo -->
+<link rel="icon" href="img/header-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/tailwind.css">
+<style>
+@page{size:A4;margin:14mm}
+@media print{.no-print{display:none!important}body{background:#fff!important}.sheet{box-shadow:none!important;margin:0!important;max-width:none!important;border-radius:0!important}}
+</style>
+</head>
+<body class="font-sans antialiased bg-body" data-page="factuur">
+<!-- Factuur-template. Backend vult via data (zie PD_INVOICE hieronder) of URL-parameters:
+     ?nr=PD-2026-000123&datum=2026-11-01&bundel=500&bedrag=50&methode=btc|bank|ideal|card&naam=&adres=&postcode=&plaats=&kvk=&btw=&txid=
+     Alleen voor Bitcoin, bankoverschrijving en andere directe betalingen. Bellen (0906) en sms lopen via de telefoonrekening: geen Paydates-factuur. -->
+<div class="no-print max-w-[820px] mx-auto px-4 pt-5 flex flex-wrap items-center justify-between gap-2">
+ <a href="credits.html#facturen" class="text-[13px] text-pd font-semibold"><i class="fa fa-angle-left mr-1"></i>Terug naar facturen</a>
+ <div class="flex gap-2"><button onclick="window.print()" class="btn btn-pd !py-2 !text-[13px]"><i class="fa fa-download"></i> Download pdf</button><button onclick="window.print()" class="btn btn-ghost !py-2 !text-[13px]"><i class="fa fa-print"></i> Afdrukken</button></div>
+</div>
+<main class="sheet max-w-[820px] mx-auto my-5 bg-white rounded-lg shadow-block p-8 sm:p-12 text-[13px] text-ink">
+ <header class="flex flex-wrap items-start justify-between gap-6">
+  <div>
+   <div class="flex items-center gap-2"><span class="bg-pd-header rounded p-1.5"><img src="img/header-logo.png" alt="" class="h-7"></span><span class="text-[22px] font-bold text-pd-header">Paydates</span></div>
+   <div class="mt-3 leading-relaxed text-ink-muted"><b class="text-[#212529]">Forest Road B.V.</b><br>Herengracht 449A<br>1017 BR Amsterdam<br>Nederland<br>KvK: 97957232 · Btw-nr.: NL868303550B01</div>
+  </div>
+  <div class="text-right">
+   <h1 class="text-[28px] font-extrabold text-[#212529] tracking-tight">FACTUUR</h1>
+   <table class="mt-2 ml-auto text-[12px]"><tbody>
+    <tr><td class="text-ink-muted pr-4 py-0.5">Factuurnummer</td><td class="font-semibold text-[#212529]" data-f="nr"></td></tr>
+    <tr><td class="text-ink-muted pr-4 py-0.5">Factuurdatum</td><td class="font-semibold text-[#212529]" data-f="datumNL"></td></tr>
+    <tr><td class="text-ink-muted pr-4 py-0.5">Klantnummer</td><td class="font-semibold text-[#212529]" data-f="klant"></td></tr>
+    <tr><td class="text-ink-muted pr-4 py-0.5">Status</td><td><span class="inline-block rounded-pill bg-[#2f9e4420] text-[#2b8a3e] font-bold text-[11px] px-2 py-0.5">Betaald</span></td></tr>
+   </tbody></table>
+  </div>
+ </header>
+
+ <section class="grid sm:grid-cols-2 gap-6 mt-10">
+  <div><div class="text-[11px] font-bold uppercase tracking-wider text-pd mb-1.5">Factuur aan</div>
+   <div class="leading-relaxed"><b class="text-[#212529]" data-f="naam"></b><br><span data-f="adres"></span><br><span data-f="postcode"></span> <span data-f="plaats"></span><span data-show="kvk"><br>KvK: <span data-f="kvk"></span></span><span data-show="btw"><br>Btw-nr.: <span data-f="btw"></span></span></div></div>
+  <div><div class="text-[11px] font-bold uppercase tracking-wider text-pd mb-1.5">Betaling</div>
+   <div class="leading-relaxed">Betaald met <b class="text-[#212529]" data-f="methodeNL"></b> op <span data-f="datumNL"></span><span data-show="txid"><br><span class="text-ink-muted">Transactie:</span> <span class="font-mono text-[11px] break-all" data-f="txid"></span></span></div></div>
+ </section>
+
+ <table class="w-full mt-8 text-[13px]">
+  <thead><tr class="border-b-2 border-[#212529] text-left text-[11px] uppercase tracking-wider"><th class="py-2 font-semibold">Omschrijving</th><th class="py-2 font-semibold text-right w-16">Aantal</th><th class="py-2 font-semibold text-right w-28">Prijs excl.</th><th class="py-2 font-semibold text-right w-28">Totaal excl.</th></tr></thead>
+  <tbody><tr class="border-b border-line"><td class="py-3"><b class="text-[#212529]">Paydates credits – bundel <span data-f="bundel"></span> credits</b><div class="text-[11px] text-ink-muted mt-0.5">Digitaal tegoed voor advertentiediensten op Paydates.nl (VIP, TOP-plaatsing, omhoog plaatsen, chatpas)</div></td><td class="py-3 text-right">1</td><td class="py-3 text-right" data-f="excl"></td><td class="py-3 text-right" data-f="excl"></td></tr></tbody>
+ </table>
+ <div class="flex justify-end mt-4"><table class="text-[13px] w-full max-w-[300px]"><tbody>
+  <tr><td class="py-1 text-ink-muted">Subtotaal excl. btw</td><td class="py-1 text-right" data-f="excl"></td></tr>
+  <tr><td class="py-1 text-ink-muted">Btw 21%</td><td class="py-1 text-right" data-f="btwBedrag"></td></tr>
+  <tr class="border-t-2 border-[#212529]"><td class="pt-2 font-bold text-[#212529] text-[15px]">Totaal</td><td class="pt-2 text-right font-bold text-[#212529] text-[15px]" data-f="totaal"></td></tr>
+  <tr><td colspan="2" class="pt-1 text-right text-[11px] text-[#2b8a3e] font-semibold"><i class="fa fa-circle-check mr-1"></i>Voldaan – niets meer te betalen</td></tr>
+ </tbody></table></div>
+
+ <footer class="mt-12 pt-5 border-t border-line text-[11px] text-ink-muted leading-relaxed grid sm:grid-cols-3 gap-4">
+  <div><b class="text-[#212529]">Forest Road B.V.</b><br>Herengracht 449A, 1017 BR Amsterdam</div>
+  <div>KvK: 97957232<br>Btw-nr.: NL868303550B01</div>
+  <div>support@paydates.nl<br>paydates.nl</div>
+  <p class="sm:col-span-3">Credits blijven geldig zolang je account actief is. Ongebruikte credits kun je binnen 14 dagen na aankoop laten terugboeken via support. Op de omschrijving op je bank- of walletoverzicht staat “Forest Road B.V.”.</p>
+ </footer>
+</main>
+<p class="no-print text-center text-[11px] text-ink-muted pb-8"><i class="fa fa-circle-info mr-1"></i>Betaald met bellen (0906) of sms? Die kosten staan op je telefoonrekening; daarvoor maakt Paydates geen factuur.</p>
+<script>
+(function(){
+const u=new URLSearchParams(location.search);
+const D=Object.assign({nr:'PD-2026-000123',datum:'2026-11-01',klant:'K-48213',bundel:'500',bedrag:'50',methode:'btc',naam:'Voorbeeld Klant',adres:'Voorbeeldstraat 1',postcode:'1000 AA',plaats:'Amsterdam',kvk:'',btw:'',txid:'bc1q…voorbeeld…7f3a'},window.PD_INVOICE||{});
+u.forEach((v,k)=>D[k]=v);
+const M={btc:'Bitcoin',bank:'Bankoverschrijving',ideal:'iDEAL',card:'Creditcard',bancontact:'Bancontact'};
+const eur=n=>'€ '+n.toLocaleString('nl-NL',{minimumFractionDigits:2,maximumFractionDigits:2});
+const tot=parseFloat(String(D.bedrag).replace(',','.'))||0, ex=Math.round(tot/1.21*100)/100;
+D.totaal=eur(tot);D.excl=eur(ex);D.btwBedrag=eur(Math.round((tot-ex)*100)/100);
+D.methodeNL=M[D.methode]||D.methode;
+const d=new Date(D.datum+'T12:00:00');D.datumNL=isNaN(d)?D.datum:d.toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'});
+document.querySelectorAll('[data-f]').forEach(e=>e.textContent=D[e.dataset.f]??'');
+document.querySelectorAll('[data-show]').forEach(e=>{if(!D[e.dataset.show])e.remove()});
+document.title='Factuur '+D.nr+' | Paydates.nl';
+})();
+</script>
+</body>
+</html>

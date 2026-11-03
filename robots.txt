@@ -1,0 +1,16 @@
+User-agent: *
+Disallow: /account.html
+Disallow: /login.html
+Disallow: /register.html
+Disallow: /wachtwoord-vergeten.html
+Disallow: /factuur.html
+Disallow: /profiel.html
+
+Disallow: /admin/
+Disallow: /dashboard.html
+Disallow: /mijn-advertenties.html
+Disallow: /advertentie-plaatsen.html
+Disallow: /kyc.html
+Disallow: /bedrijf-claimen.html
+
+Sitemap: https://paydates.nl/sitemap.xml

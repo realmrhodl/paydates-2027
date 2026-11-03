@@ -1,0 +1,32 @@
+/* Kaart van Nederland (nederland.html) */
+.nl-wrap{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:1024px){.nl-wrap{grid-template-columns:minmax(0,1fr) 380px;align-items:start}.nl-panel{position:sticky;top:70px;max-height:calc(100vh - 90px);overflow:auto}}
+.nl-mapbox{position:relative;padding:12px 10px 6px}
+.nl-maphint{position:absolute;left:12px;top:10px}
+.nl-svg{display:block;width:100%;height:auto;max-height:78vh;margin:0 auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.nl-prov{fill:#ece7f6;stroke:#fff;stroke-width:1.3;stroke-linejoin:round;cursor:pointer;transition:fill .15s}
+.nl-prov:hover,.nl-prov:focus-visible{fill:#c9b8ea;outline:none}
+.nl-prov.is-active{fill:#7351c0}
+.nl-has-active .nl-prov:not(.is-active){fill:#f2eef9}
+.nl-has-active .nl-prov:not(.is-active):hover{fill:#d8cbf0}
+.nl-lbl{font:600 10.5px Poppins,sans-serif;fill:#3d2a6b;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+.nl-lbl.is-active{fill:#fff;stroke:#7351c0}
+.nl-has-active .nl-lbl:not(.is-active){opacity:.55}
+.nl-dot{fill:#fff;stroke:#3d2a6b;stroke-width:.9;cursor:pointer;transition:r .12s}
+.nl-dot.has-ads{fill:#f5b301}
+.nl-dot:hover,.nl-dot.is-hot{stroke:#000;stroke-width:1.4}
+.nl-dot.is-hot{fill:#f5b301}
+.nl-tip{position:absolute;pointer-events:none;background:#212529;color:#fff;font-size:12px;line-height:1.3;padding:5px 8px;border-radius:6px;white-space:nowrap;transform:translate(-50%,-120%);z-index:5}
+.nl-pill.is-active{background:#7351c0;border-color:#7351c0;color:#fff}
+.nl-panel{padding:0}
+.nl-ph{padding:14px 16px;border-bottom:1px solid #e9ecef}
+.nl-list{list-style:none;margin:0;padding:8px;display:grid;grid-template-columns:1fr 1fr;gap:0 8px;font-size:13px}
+.nl-list a{display:flex;justify-content:space-between;gap:4px;border-radius:4px;padding:6px 8px;color:inherit;text-decoration:none}
+.nl-list a:hover,.nl-list a.is-hot{background:#7351c017;color:#7351c0}
+.nl-list a span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nl-list small{font-size:11px;color:#9aa0a6}
+.nl-pgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px}
+.nl-pbtn{display:flex;flex-direction:column;align-items:flex-start;text-align:left;border:1px solid #e9ecef;border-radius:8px;padding:8px 10px;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:#212529}
+.nl-pbtn:hover{border-color:#7351c0;color:#7351c0}
+.nl-pbtn small{font-weight:400;color:#6c757d;font-size:11px}
+@media(max-width:640px){.nl-mapbox{padding:30px 4px 4px}.nl-lbl{font-size:13px}.nl-svg{max-height:62vh}}
