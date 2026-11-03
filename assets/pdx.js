@@ -75,7 +75,7 @@ function seed(){
         {k:'bitcoin',t:'Bitcoin',on:true,min:25,max:5000,via:'eigen wallet (concept)'}
       ],
       packs:[50,100,150,200,250,300,350,400,450,500].map(e=>({eur:e,credits:e*10,bonus:0})),
-      rates:{credPerEur:10,adPrice:0,bump:8,topDay:50,vip7:300,chatpass24:50,smsCallEur:2,smsCallCredits:20,btcMinEur:25,sponsorWeek:10000},
+      rates:{credPerEur:10,adPrice:0,bump:20,topDay:50,vip7:300,chatpass24:50,smsCallEur:2,smsCallCredits:20,btcMinEur:25,sponsorWeek:10000},
       banners:[{t:'Banner rail (200px)',eur:49,per:'maand'},{t:'Banner in-feed',eur:99,per:'maand'},{t:'Banner homepage-band',eur:149,per:'maand'}],
       clubPlans:[
         {k:'basic',t:'Basic',eur:0,features:['Bedrijfsprofiel','Adres & openingstijden','Link naar website']},
@@ -117,8 +117,18 @@ function seed(){
 
 /* migratie: velden die de live Paydates-admin/-account ook heeft (zonder reset van bestaande demo-data) */
 function migrate(d){
-  if(d.m>=5)return false;
-  const r=d.pay.rates; if(r.bump===20)r.bump=8; if(r.adPrice==null)r.adPrice=0;
+  if(d.m>=6)return false;
+  if(!(d.m>=5)){
+  const r=d.pay.rates; if(r.bump===8)r.bump=20; if(r.adPrice==null)r.adPrice=0; if(r.bump10==null)r.bump10=150; if(r.autoBumpDay==null)r.autoBumpDay=15;
+  /* V2-verdienmodel (concept): laagdrempelig instappen via 1× bellen/SMS, schalen via bundels, groot geld bij bedrijven */
+  d.pay.agencyPlans=d.pay.agencyPlans||[
+    {k:'agency_s',t:'Agency S',eur:99,profiles:10,features:['Tot 10 profielen onder 1 account','Bedrijfslabel + logo','1 factuur per maand']},
+    {k:'agency_m',t:'Agency M',eur:249,profiles:30,features:['Tot 30 profielen','Inclusief 30 omhoog-acties per maand','Statistieken per profiel']},
+    {k:'agency_l',t:'Agency L',eur:499,profiles:999,features:['Onbeperkt profielen','Inclusief 1 TOP-plek per dag','Vaste accountmanager']}];
+  d.pay.model=d.pay.model||{target:50000,rows:[
+    ['sms','Omhoog via bellen/SMS (1×, €2)',3000,2],['bump10','Bundel 10× omhoog (150 cr = €15)',200,15],['top','TOP-plaatsing per dag (€5)',400,5],['vip','VIP 7 dagen (€30)',150,30],
+    ['credits','Overige creditbundels (gem. €50)',100,50],['agency_s','Agency S (€99/mnd)',40,99],['agency_m','Agency M (€249/mnd)',25,249],['agency_l','Agency L (€499/mnd)',12,499],
+    ['club_p','Club Premium (€49/mnd)',80,49],['club_s','Club Spotlight (€99/mnd)',25,99],['banner','Banners (gem. €99/mnd)',40,99],['sponsor','Homepage-sponsorweek (€1.000)',4,1000]]};
   d.cats=d.cats||[['Vrouw','Vrouwen','vrouwen'],['Man','Mannen','mannen'],['Shemale','Shemales','shemales'],['Stel','Stellen','stellen'],['Trans','Trans','trans']].map((c,i)=>({id:'cat_'+c[2],k:c[0],t:c[1],slug:c[2],active:true,order:i+1}));
   d.adTypes=d.adTypes||['Escort','Privé ontvangst','Online','BDSM','Erotische massage','Sugardating'].map((t,i)=>({id:'typ_'+i,t,active:true,order:i+1}));
   d.users.forEach(u=>{if(u.level==null)u.level=u.role==='admin'?5:u.role==='moderator'?4:u.role==='bedrijf'?2:1;if(u.bonus==null)u.bonus=0;});
@@ -132,13 +142,24 @@ function migrate(d){
     {id:'t_2',user:'',email:'bezoeker@demo.paydates.test',type:'account-verwijderen',subject:'Account verwijderen',text:'Graag mijn account verwijderen (demo-ticket).',at:daysAgo(4),status:'gesloten',replies:[{at:daysAgo(3),by:'moderator',t:'Je account is verwijderd.'}]}];
   d.reviews=d.reviews||live.slice(0,5).map((a,i)=>({id:'rv_'+i,adId:a.id,by:['jeroen','mark84','sven_utr','dennis','tom.nl'][i],stars:[5,4,5,2,4][i],text:['Heel vriendelijk en precies zoals op de foto’s.','Fijne afspraak, goede communicatie.','Top, kom zeker terug.','Was 30 minuten te laat.','Discreet en netjes.'][i]+' (demo)',at:daysAgo(2+i*3),status:i===3?'wacht':i===4?'wacht':'goedgekeurd'}));
   d.deleted=d.deleted||{reports:[],payments:[]};
-  d.m=5; return true;
+  d.m=5;}
+  /* m6: banners per week (zoals adverteren.html), bonus op grotere creditbundels, auto-promotie per advertentie */
+  d.pay.banners=[{t:'Leaderboard (alle pagina’s)',eur:149,per:'week'},{t:'Sidebar sticky',eur:99,per:'week'},{t:'Native in de grid',eur:79,per:'week'},{t:'Stadspagina (exclusief)',eur:49,per:'week'}];
+  const bon={50:0,100:50,150:100,200:200,250:300,300:400,350:500,400:600,450:700,500:1000};
+  if(d.pay.packs.every(p=>!p.bonus))d.pay.packs.forEach(p=>{p.bonus=bon[p.eur]||0;});
+  d.pay.model.rows.forEach(r=>{if(r[0]==='banner'){r[1]='Bannerweken (gem. €99/week)';}});
+  d.ads.forEach(a=>{if(a.auto==null)a.auto=false;});
+  d.m=6; return true;
 }
 function db(){
   let d=null; try{d=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
   if(!d||d.v!==VERSION){d=seed();mergePolls(d);migrate(d);try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
   else if(migrate(d)){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
   else if(window.PD_POLLS&&!db._merged){db._merged=true;if(mergePolls(d)){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}}
+  try{const ib=JSON.parse(localStorage.getItem('pdx_inbox')||'[]');if(ib.length){ib.forEach(x=>{const f=x.f||{};
+    if(x.kind==='melding')d.reports.unshift({id:uid('r'),type:'advertentie',adRef:f.ad||'',reason:[].concat(f.reden||[]).join(', '),text:f.tekst||'',email:f.email||'',at:x.at,status:'nieuw',src:x.page});
+    else d.support.unshift({id:uid('t'),user:'',email:f.email||'',type:f.onderwerp||'anders',subject:f.onderwerp||'Contactformulier',text:f.bericht||f.tekst||Object.values(f).join(' · '),at:x.at,status:'open',replies:[],src:x.page});});
+    localStorage.removeItem('pdx_inbox');localStorage.setItem(KEY,JSON.stringify(d));}}catch(e){}
   return d;
 }
 function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){alert('Opslaan mislukt (localStorage vol?)')}try{window.dispatchEvent(new Event('pdx:save'))}catch(e){}}

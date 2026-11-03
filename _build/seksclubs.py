@@ -147,7 +147,7 @@ def hub():
         <div class="bx-band-ov"></div>
         <div class="bx-band-inner px-4 sm:px-6">
           <div class="bx-band-left">
-            <div class="bx-tags bx-tags-static"><span class="bx-badge"><i class="fa fa-crown"></i> Club Spotlight</span><span class="bx-badge bx-badge-pd">Hoofdsponsor van Paydates</span></div>
+            <div class="bx-tags bx-tags-static"><span class="bx-badge"><i class="fa fa-crown"></i> Club Spotlight</span></div>
             <img src="{b["logo"]}" alt="{E(b["name"])}" class="bx-logo">
             <p class="bx-kicker">Gentlemen's club · Laren (NH)</p>
             <h2 id="scSpotT" class="bx-h">De villa van Boccaccio</h2>
@@ -158,7 +158,7 @@ def hub():
         </div>
       </a>
     </section>
-    <div class="flex justify-end mb-4"><a href="adverteren.html#banners" class="text-[12px] text-ink-muted hover:text-pd"><i class="fa fa-crown text-gold mr-1"></i>Jouw club als Spotlight? <b class="text-pd">Sponsorship</b> <i class="fa fa-angle-right text-[10px]"></i></a></div>
+    <div class="flex justify-end mb-4"><a href="adverteren.html#bedrijf" class="text-[12px] text-ink-muted hover:text-pd"><i class="fa fa-crown text-gold mr-1"></i>Jouw club bovenaan? <b class="text-pd">Bekijk het Spotlight-pakket</b> <i class="fa fa-angle-right text-[10px]"></i></a></div>
 
     <!-- FILTERS -->
     <div class="block p-3 mb-3 flex flex-col sm:flex-row sm:items-center gap-2.5">
@@ -184,11 +184,11 @@ def hub():
         <p class="text-ink-muted text-[13px] mt-1">Maak een bedrijfsaccount aan en zet je locatie op Paydates met foto's, faciliteiten, openingstijden en contactgegevens. We controleren elk bedrijfsaccount op KvK-inschrijving en (gemeentelijke) vergunning.</p>
         <div class="flex flex-wrap gap-2 mt-3"><a href="register.html?type=bedrijf" class="btn btn-pd !py-2 !text-[13px]"><i class="fa fa-plus"></i> Club aanmelden</a><a href="adverteren.html#bedrijf" class="btn btn-ghost !py-2 !text-[13px]">Tarieven voor bedrijven</a></div></div>
       </div>
-      <a href="adverteren.html#banners" class="adc adc-gold p-5 flex-col justify-between">
+      <a href="adverteren.html#bedrijf" class="adc adc-gold p-5 flex-col justify-between">
         <div><div class="text-[11px] font-bold tracking-[.18em] text-gold"><i class="fa fa-crown mr-1"></i>CLUB SPOTLIGHT</div>
-        <div class="text-[17px] font-bold leading-tight mt-2">Bovenaan deze pagina en op de homepage</div>
+        <div class="text-[17px] font-bold leading-tight mt-2">Bovenaan deze pagina en in je provincie</div>
         <p class="text-[12px] text-white/80 mt-1.5 leading-snug">Eén club tegelijk, met eigen beeld en directe link naar je profiel.</p></div>
-        <span class="adbtn shine py-2 mt-4 text-[12px]">Bekijk sponsorship</span>
+        <span class="adbtn shine py-2 mt-4 text-[12px]">Bekijk Spotlight-pakket</span>
       </a>
     </section>
     <p class="text-[11px] text-ink-soft mt-4">Profielen met het label <i>Voorbeeldprofiel</i> laten zien hoe een clubpagina eruitziet en zijn geen bestaande locaties.</p>
@@ -246,9 +246,9 @@ def detail(c):
   demo_note='<div class="block p-3 mb-3 flex items-start gap-2.5 text-[12.5px] text-ink-muted"><i class="fa fa-circle-info text-pd mt-0.5"></i><span><b class="text-[#212529]">Voorbeeldprofiel.</b> Zo ziet een club- of privéhuisprofiel op Paydates eruit. <a href="register.html?type=bedrijf" class="text-pd font-semibold">Meld je eigen locatie aan</a>.</span></div>' if c['demo'] else ''
   logo=f'<img src="{c["logo"]}" alt="{E(c["name"])}" class="sc-logo">' if c.get('logo') else ''
   extra_p=f'<p class="mt-2"><i class="fa fa-car-side text-pd mr-1.5"></i>{E(c["extra"])}</p>' if c.get('extra') else ''
-  upsell='' if c['spot'] else f'''<a href="adverteren.html#banners" class="adc adc-gold p-5 flex-col sm:flex-row sm:items-center gap-4 mt-4">
+  upsell='' if c['spot'] else f'''<a href="adverteren.html#bedrijf" class="adc adc-gold p-5 flex-col sm:flex-row sm:items-center gap-4 mt-4">
       <div class="flex-1"><div class="text-[11px] font-bold tracking-[.18em] text-gold"><i class="fa fa-crown mr-1"></i>CLUB SPOTLIGHT</div><div class="text-[16px] font-bold leading-tight mt-1">Wil je {E(c["name"])} bovenaan de seksclubs-pagina?</div><p class="text-[12px] text-white/80 mt-1">Eén club tegelijk in de Spotlight, met eigen beeld en een directe link naar dit profiel.</p></div>
-      <span class="adbtn shine py-2 px-4 text-[12px] shrink-0">Bekijk sponsorship</span></a>'''
+      <span class="adbtn shine py-2 px-4 text-[12px] shrink-0">Bekijk Spotlight-pakket</span></a>'''
   s+=f'''<div class="max-w-[1920px] mx-auto px-3 lg:px-6 py-4">
   <nav class="crumbs flex flex-wrap items-center gap-1.5"><a href="index.html"><i class="fa fa-house"></i></a><i class="fa fa-angle-right text-[9px] text-ink-soft"></i><a href="seksclubs.html">Seksclubs &amp; Privéhuizen</a><i class="fa fa-angle-right text-[9px] text-ink-soft"></i><span class="text-ink">{E(c["name"])}</span></nav>
   <!-- COVER -->
@@ -280,7 +280,7 @@ def detail(c):
     </section>
     <a href="jobs.html" class="block p-5 mt-4 flex items-center gap-4 hover:shadow-md transition">
       <div class="w-11 h-11 shrink-0 rounded-full bg-[#7351c017] text-pd flex items-center justify-center"><i class="fa fa-briefcase"></i></div>
-      <div class="flex-1"><div class="text-[14px] font-bold text-[#212529]">Werken bij {E(c["short"])}?</div><p class="text-[12px] text-ink-muted">Bekijk vacatures bij clubs en privéhuizen op Paydates Jobs.</p></div>
+      <div class="flex-1"><div class="text-[14px] font-bold text-[#212529]">Werken bij {E(c["short"])}?</div><p class="text-[12px] text-ink-muted">Bekijk vacatures bij clubs en privéhuizen via Werken bij een seksbedrijf.</p></div>
       <i class="fa fa-angle-right text-pd"></i></a>
     {upsell}
    </main>
@@ -302,4 +302,7 @@ out=[]
 open(os.path.join(R,'seksclubs.html'),'w',encoding='utf-8').write(hub());out.append('seksclubs.html')
 for c in C:
   open(os.path.join(R,c['slug']+'.html'),'w',encoding='utf-8').write(detail(c));out.append(c['slug']+'.html')
+import importlib.util as _iu
+_sp=_iu.spec_from_file_location('chp',os.path.join(os.path.dirname(os.path.abspath(__file__)),'clubs_hub_patch.py'));_m=_iu.module_from_spec(_sp);_sp.loader.exec_module(_m);_m.patch(os.path.join(R,'seksclubs.html'))  # dynamische hub uit clubs-data.js
+import subprocess as _sp2;_sp2.run(['python3',os.path.join(os.path.dirname(os.path.abspath(__file__)),'club_page.py')],check=True)
 print('\n'.join(out))

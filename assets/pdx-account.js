@@ -26,7 +26,7 @@ function header(){
 
 /* ---- concept-balk boven accountpagina's ---- */
 function accBar(u,active){
-  const items=[['dashboard','dashboard.html','fa-gauge','Dashboard'],['ads','mijn-advertenties.html','fa-rectangle-list','Mijn advertenties'],['new','advertentie-plaatsen.html','fa-plus','Nieuwe advertentie'],['kyc','kyc.html','fa-id-card','Verificatie (KYC)'],['credits','credits.html','fa-coins','Credits kopen'],['fav','account.html#favorieten','fa-heart','Favorieten']];
+  const items=[['dashboard','dashboard.html','fa-gauge','Dashboard'],['ads','mijn-advertenties.html','fa-rectangle-list','Mijn advertenties'],['new','advertentie-plaatsen.html','fa-plus','Nieuwe advertentie'],['kyc','kyc.html','fa-id-card','Verificatie (KYC)'],['credits','credits.html','fa-coins','Credits kopen'],['fav','account.html#favorieten','fa-heart','Favorieten'],['set','account-instellingen.html','fa-gear','Instellingen']];
   if(u.role==='bedrijf')items.splice(4,0,['claim','bedrijf-claimen.html','fa-building','Bedrijf claimen']);
   if(P.isAdmin(u))items.push(['admin','admin/index.html','fa-user-shield','Adminpanel']);
   return `<nav class="pdx-card pdx-nav" aria-label="Accountmenu">${items.map(i=>`<a href="${i[1]}" class="${i[0]===active?'on':''}"><i class="fa ${i[2]}"></i>${i[3]}</a>`).join('')}<a href="#" data-logout><i class="fa fa-right-from-bracket"></i>Uitloggen</a></nav>`;
@@ -102,7 +102,7 @@ function pageDashboard(root){
    ${demoNote}
    ${u.role==='klant'?`<div class="pdx-card pdx-card-b pdx-between"><div><b>Je hebt een klantaccount.</b><p class="pdx-sub">Wil je zelf adverteren? Zet je account om naar adverteerder (21+, verificatie verplicht).</p></div><button class="pdx-btn pd" id="toAdv">Word adverteerder</button></div>`:''}
    <div class="pdx-grid pdx-g4">
-    <div class="pdx-card pdx-card-b pdx-kpi"><div class="l">Creditsaldo</div><div class="n" id="kCred">${u.credits}</div><div class="s">≈ ${eur(u.credits/d.pay.rates.credPerEur)} · <a href="#" id="demoCred" style="color:#7351c0">+100 demo-credits</a></div></div>
+    <div class="pdx-card pdx-card-b pdx-kpi"><div class="l">Creditsaldo</div><div class="n" id="kCred">${u.credits}</div><div class="s">${u.bonus?'+ '+u.bonus+' bonus · ':''}≈ ${eur(u.credits/d.pay.rates.credPerEur)} · <a href="#" id="demoCred" style="color:#7351c0">+100 demo-credits</a></div></div>
     <div class="pdx-card pdx-card-b pdx-kpi"><div class="l">Actieve advertenties</div><div class="n">${live.length}<span style="font-size:13px;color:#a1aebd"> / ${ads.length}</span></div><div class="s">${ads.filter(a=>a.status==='wacht').length} wacht op moderatie</div></div>
     <div class="pdx-card pdx-card-b pdx-kpi"><div class="l">Profielweergaven</div><div class="n">${views.toLocaleString('nl-NL')}</div><div class="s">${clicks.toLocaleString('nl-NL')} contactkliks · demo-cijfers</div></div>
     <div class="pdx-card pdx-card-b pdx-kpi"><div class="l">Verificatie</div><div style="margin:6px 0">${kycBadge(u.kyc)}</div><div class="s"><a href="kyc.html" style="color:#7351c0">${u.kyc==='goedgekeurd'?'Bekijk status':'Start / bekijk verificatie'}</a></div></div>
@@ -123,109 +123,178 @@ function pageDashboard(root){
   const ta=$('#toAdv');if(ta)ta.onclick=()=>{userMut(u=>{u.role='adverteerder';});audit('role','self','klant → adverteerder');pageDashboard(root);};
 }
 
+/* ================= OPTIES (uit de huidige Paydates-advertenties) ================= */
+const MOG={
+ 'Standaard':['Zoenen','Tongzoenen','Intiem','GFE','Aftrekken','Vingeren','Beffen','Beffen zonder beflapje','Pijpen met condoom','Pijpen zonder condoom','Pijpen deepthroat','Neuken met condoom','Neuken zonder condoom','Vluggertje','Tussen borsten (russisch)','Facesitting','Klaarkomen op gezicht','Klaarkomen in mond','Sperma slikken','Squirting','Anaal met condoom','Anaal zonder condoom','Anaal bij klant','Rimmen bij klant','Trio m/v','Trio m/m','Biseks','Gangbang','Rollenspel','Speciale kledingverzoeken','Voet liefhebbers','Travestie','Voorbinddildo sex','Worstelen','Buiten seks','Video Opname','Pornoster','Ontmaagding','Gagging / Gags','Fisting','Fisting bij klant','Plassex','Plassex door klant'],
+ 'Dates & locatie':['Hotel','Cardate','Dinner Date','High Class','Wapdate'],
+ 'Massage':['Erotische Massage','Penismassage','Body to Body','Lingam massage','Massage met hoogtepunt','Prostaat massage','Nuru massage','Tantra massage','Yoni massage','SM massage'],
+ 'Online':['Chatten','Dirty talk','Dickrating','Foto\'s op verzoek','Video\'s op verzoek','JOI - Aftrek instructies','Live geile verhalen','Telefoon sex','Video bellen','Webcam','Dildo show','Squirtshow','Face check','Facetime','Whatsapp','Snapchat','Telegram','Kik','Skype','Zoom','F2F','OnlyFans','Online femdom','Online findom'],
+ 'BDSM':['Soft SM','BDSM klant onderdanig','Bondage','Spanking','Vernedering','Spitting','Nipple torture','Candle wax play','Breath play','Electro / Violet wand','Masks','Mummificatie','Naalden','Opsluiting','Anal play','Vuistneuken']};
+const KENM=[['Haarkleur',['Zwart','Bruin','Blond','Donkerblond','Rood','Grijs','Wit','Anders']],['BH maat',['AA','A','B','C','D','E','F','G']],['Lichaamstype',['Slank','Atletisch','Normaal','Mollig','Volslank']],['Lengte in centimeters (cm)',null],['Afkomst',['Nederlands','Europees','Zuid europees','Oost-Europees','Zuid-amerikaans','Amerikaans','Arabisch','Marokkaans','Turks','Afrikaans','Aziatisch','Anders']],['Gesproken talen',null],['Seksuele voorkeur',['Hetero','Biseksueel','Gay']],['Piercings',['Geen','Weinig','Een aantal','Veel']],['Tattoos',['Geen','Weinig','Een aantal','Veel']],['Party friendly',['Ja','Nee']],['Penisgrootte',null]];
+const DAYS=['Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag','Zondag'];
+const CT=[['tel','Telefoon','06…'],['mob','Mobiel (2e nummer)','06…'],['web','Website','https://'],['x','Twitter / X','@'],['ig','Instagram','@'],['snap','Snapchat',''],['of','OnlyFans',''],['fc','Fancentro',''],['f2f','F2F',''],['lf','Loyalfans',''],['tg','Telegram','@']];
+
+/* ---- omhoog via bellen/sms (V2-instap, €2) — zelfde flow als bump.js op de advertentiepagina ---- */
+function smsBump(adId,done){const d=db();const r=d.pay.rates;const call=d.pay.methods.find(m=>m.k==='call')||{},sms=d.pay.methods.find(m=>m.k==='sms')||{};
+  const m=document.createElement('div');m.className='pdx-modal';m.innerHTML=`<div><div class="pdx-card-h" style="border-radius:.6rem .6rem 0 0"><span><i class="fa fa-phone"></i> 1× omhoog via bellen of sms · ${eur(r.smsCallEur)}</span><button class="pdx-btn sm" data-x>✕</button></div>
+   <div class="pdx-card-b pdx-small"><p>Geen credits nodig. Je betaalt eenmalig via je telefoonrekening en krijgt een code.</p>
+   <div class="pdx-grid pdx-g2" style="margin:10px 0"><div class="pdx-card pdx-card-b"><b><i class="fa fa-phone"></i> Bellen</b><div>${esc(window.PD_BUMP?PD_BUMP.NUMBER_0906:'0906-XXXXXXX')}</div><div class="pdx-xs pdx-muted">${esc(call.via||'')}</div></div><div class="pdx-card pdx-card-b"><b><i class="fa fa-comment-sms"></i> Sms</b><div>PAYDATES naar 3010</div><div class="pdx-xs pdx-muted">${esc(sms.via||'')}</div></div></div>
+   <label class="pdx-lbl">Code uit het gesprek of de sms</label><div class="pdx-row"><input class="pdx-in" id="sbCode" style="flex:1" maxlength="8" placeholder="bijv. 4K7Q2"><button class="pdx-btn pd" id="sbGo">Code controleren</button></div><p class="pdx-xs" id="sbMsg" style="margin-top:6px;color:#c92a2a"></p>
+   <p class="pdx-xs pdx-muted">Concept: elke code van 4–8 tekens werkt (0000 = al gebruikt, 1111 = verlopen). In productie controleert de Paydates-API de code bij de 0906/sms-provider. Alleen Nederlandse nummers.</p></div></div>`;
+  document.body.appendChild(m);const close=()=>m.remove();m.querySelectorAll('[data-x]').forEach(b=>b.onclick=close);m.onclick=e=>{if(e.target===m)close();};
+  m.querySelector('#sbGo').onclick=()=>{const c=m.querySelector('#sbCode').value.replace(/\s|-/g,'');const msg=m.querySelector('#sbMsg');
+    if(!/^[0-9A-Za-z]{4,8}$/.test(c))return msg.textContent='Ongeldige code.';if(c==='0000')return msg.textContent='Deze code is al gebruikt.';if(c==='1111')return msg.textContent='Deze code is verlopen.';
+    const d2=db();const a=d2.ads.find(x=>x.id===adId);a.bumps=(a.bumps||0)+1;a.bumpedAt=a.lastBump=P.now();const u=d2.users.find(x=>x.id===a.owner);
+    if(u)ledger(u,0,'1× omhoog via bellen/sms ('+eur(r.smsCallEur)+', geen credits): '+a.title);d2.audit.unshift({at:P.now(),actor:u?u.username:'?',action:'ad-bump-sms',target:a.id,detail:eur(r.smsCallEur)+' via telefoon (mock)'});save(d2);close();toast('Omhoog geplaatst');done&&done();};}
+
 /* ================= MIJN ADVERTENTIES ================= */
 function pageMyAds(root){
   const u=P.requireLogin(); if(!u)return;
-  const d=db(); const R=d.pay.rates; const ads=d.ads.filter(a=>a.owner===u.id);
+  const d=db(); const R=d.pay.rates; const ads=d.ads.filter(a=>a.owner===u.id&&a.status!=='verwijderd');
   root.innerHTML=`<div class="pdx-side">${accBar(u,'ads')}<div style="display:grid;gap:16px;min-width:0">
-   <div class="pdx-between"><div><h1 class="pdx-h1">Mijn advertenties</h1><p class="pdx-sub">Saldo: <b id="bal">${u.credits}</b> credits · <a href="credits.html" style="color:#7351c0">opwaarderen</a></p></div><a href="advertentie-plaatsen.html" class="pdx-btn pd"><i class="fa fa-plus"></i> Nieuwe advertentie</a></div>
+   <div class="pdx-between"><div><h1 class="pdx-h1">Mijn advertenties</h1><p class="pdx-sub">Wallet: <b id="bal">${u.credits}</b> credits${u.bonus?` + <b>${u.bonus}</b> bonus`:''} · <a href="credits.html" style="color:#7351c0">opwaarderen</a></p></div><a href="advertentie-plaatsen.html" class="pdx-btn pd"><i class="fa fa-plus"></i> Nieuwe advertentie</a></div>
+   <div class="pdx-card pdx-card-b pdx-small" style="background:#f6f3fc"><b><i class="fa fa-arrow-up" style="color:#7351c0"></i> Hoger in de lijst, vanaf ${eur(R.smsCallEur)}:</b> 1× bellen of sms (${eur(R.smsCallEur)}, geen credits nodig) · omhoog ${R.bump} cr · bundel 10× ${R.bump10} cr · automatisch elke dag ${R.autoBumpDay} cr · TOP ${R.topDay} cr/dag · VIP ${R.vip7} cr/7 dagen.</div>
    ${demoNote}
-   ${ads.length?ads.map(a=>`<div class="pdx-card" data-ad="${a.id}"><div class="pdx-card-h"><span>${esc(a.title)} ${a.vip?'<span class="pdx-badge gold">VIP</span>':''} ${a.top?'<span class="pdx-badge pd">TOP</span>':''}</span>${adBadge(a)}</div>
-     <div class="pdx-card-b"><div class="pdx-grid pdx-g4 pdx-small" style="margin-bottom:12px"><div><span class="pdx-muted">Categorie</span><br><b>${esc(a.cat)} · ${esc(a.type)}</b></div><div><span class="pdx-muted">Locatie</span><br><b>${esc(a.city)}</b></div><div><span class="pdx-muted">Loopt tot</span><br><b>${fmtD(a.expires)}</b></div><div><span class="pdx-muted">Weergaven / kliks</span><br><b>${(a.views||0).toLocaleString('nl-NL')} / ${(a.clicks||0).toLocaleString('nl-NL')}</b></div></div>
+   ${ads.length?ads.map(a=>`<div class="pdx-card" data-ad="${a.id}"><div class="pdx-card-h"><span>${esc(a.title)} ${a.vip?'<span class="pdx-badge gold">VIP</span>':''} ${a.top?'<span class="pdx-badge pd">TOP</span>':''} ${a.auto?'<span class="pdx-badge ok"><i class="fa fa-rotate"></i> Auto</span>':''}</span>${adBadge(a)}</div>
+     <div class="pdx-card-b"><div class="pdx-grid pdx-g4 pdx-small" style="margin-bottom:12px"><div><span class="pdx-muted">Categorie</span><br><b>${esc(a.cat)} · ${esc((a.types||[a.type]).join(', '))}</b></div><div><span class="pdx-muted">Locatie</span><br><b>${esc(a.city)}</b></div><div><span class="pdx-muted">Loopt tot</span><br><b>${fmtD(a.expires)}</b></div><div><span class="pdx-muted">Weergaven / kliks</span><br><b>${(a.views||0).toLocaleString('nl-NL')} / ${(a.clicks||0).toLocaleString('nl-NL')}</b></div></div>
      ${a.modNote?`<p class="pdx-small" style="color:#c92a2a;margin-bottom:10px"><i class="fa fa-circle-exclamation"></i> Moderatie: ${esc(a.modNote)}</p>`:''}
-     <div class="pdx-row">
+     <div class="pdx-row" style="margin-bottom:8px">
       <a class="pdx-btn sm" href="advertentie-plaatsen.html?edit=${a.id}"><i class="fa fa-pen"></i> Bewerken</a>
       ${a.status==='live'?`<button class="pdx-btn sm" data-act="pause"><i class="fa fa-pause"></i> Pauzeren</button>`:a.status==='gepauzeerd'?`<button class="pdx-btn sm" data-act="resume"><i class="fa fa-play"></i> Hervatten</button>`:''}
       <button class="pdx-btn sm" data-act="extend"><i class="fa fa-calendar-plus"></i> Verlengen +${d.settings.adDays} dagen</button>
-      <button class="pdx-btn sm" data-act="bump" ${a.status!=='live'?'disabled':''}><i class="fa fa-arrow-up"></i> Omhoog · ${R.bump} cr</button>
+      <a class="pdx-btn sm" href="advertentie.html?${a.listingId?'id='+a.listingId:'ad='+a.id}" target="_blank"><i class="fa fa-eye"></i> ${a.listingId?'Bekijk':'Voorbeeld'}</a>
+      <button class="pdx-btn sm red" data-act="del"><i class="fa fa-trash"></i> Verwijderen</button></div>
+     <div class="pdx-row" style="padding-top:8px;border-top:1px solid #eef1f7"><span class="pdx-xs pdx-muted" style="width:100%">Promoten${a.bumpStock?` · nog <b>${a.bumpStock}×</b> omhoog in je bundel`:''}${a.lastBump||a.bumpedAt?` · laatst omhoog ${fmtDT(a.lastBump||a.bumpedAt)}`:''}</span>
+      <button class="pdx-btn sm pd" data-act="sms" ${a.status!=='live'?'disabled':''}><i class="fa fa-phone"></i> Omhoog via bellen/sms · ${eur(R.smsCallEur)}</button>
+      <button class="pdx-btn sm" data-act="bump" ${a.status!=='live'?'disabled':''}><i class="fa fa-arrow-up"></i> ${a.bumpStock?'Omhoog uit bundel':'Omhoog · '+R.bump+' cr'}</button>
+      <button class="pdx-btn sm" data-act="bundle"><i class="fa fa-layer-group"></i> Bundel 10× · ${R.bump10} cr</button>
+      <label class="pdx-opt" style="padding:4px 10px"><input type="checkbox" data-auto ${a.auto?'checked':''}> Elke dag automatisch omhoog · ${R.autoBumpDay} cr/dag</label>
       <button class="pdx-btn sm" data-act="top" ${a.status!=='live'?'disabled':''}><i class="fa fa-star"></i> TOP 1 dag · ${R.topDay} cr</button>
-      <button class="pdx-btn sm" data-act="vip" ${a.status!=='live'?'disabled':''}><i class="fa fa-crown"></i> VIP 7 dagen · ${R.vip7} cr</button>
-      ${a.listingId?`<a class="pdx-btn sm" href="advertentie.html?id=${a.listingId}" target="_blank"><i class="fa fa-eye"></i> Bekijk</a>`:''}
-      <button class="pdx-btn sm red" data-act="del"><i class="fa fa-trash"></i> Verwijderen</button>
-     </div></div></div>`).join(''):'<div class="pdx-card pdx-card-b pdx-muted" style="text-align:center;padding:40px"><i class="fa fa-rectangle-list" style="font-size:30px;color:#cdc1e9"></i><p style="margin-top:8px">Je hebt nog geen advertenties.</p></div>'}
+      <button class="pdx-btn sm" data-act="vip" ${a.status!=='live'?'disabled':''}><i class="fa fa-crown"></i> VIP 7 dagen · ${R.vip7} cr</button></div></div></div>`).join(''):'<div class="pdx-card pdx-card-b pdx-muted" style="text-align:center;padding:40px"><i class="fa fa-rectangle-list" style="font-size:30px;color:#cdc1e9"></i><p style="margin-top:8px">Je hebt nog geen advertenties.</p></div>'}
   </div></div>`;
   bindLogout();
+  const again=()=>pageMyAds(root);
+  root.querySelectorAll('[data-auto]').forEach(c=>c.onchange=()=>{const id=c.closest('[data-ad]').dataset.ad;const d2=db();const a=d2.ads.find(x=>x.id===id);
+    if(c.checked&&me().credits<R.autoBumpDay){c.checked=false;return toast('Minimaal '+R.autoBumpDay+' credits nodig');}a.auto=c.checked;a.autoSince=c.checked?P.now():null;save(d2);audit('ad-auto',id,c.checked?'aan':'uit');toast(c.checked?'Automatisch omhoog staat aan (concept: dagelijkse afschrijving '+R.autoBumpDay+' cr)':'Automatisch omhoog uit');again();});
   root.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{
     const id=b.closest('[data-ad]').dataset.ad; const act=b.dataset.act;
     const mut=fn=>{const d2=db();const a=d2.ads.find(x=>x.id===id);fn(a,d2);save(d2);};
+    if(act==='sms')return smsBump(id,again);
     if(act==='pause')mut(a=>a.status='gepauzeerd');
     if(act==='resume')mut(a=>a.status='live');
     if(act==='extend')mut((a,d2)=>{const base=Math.max(Date.now(),+new Date(a.expires));a.expires=new Date(base+d2.settings.adDays*864e5).toISOString();if(a.status==='verlopen')a.status='live';});
-    if(act==='bump'&&!spend(R.bump,'Omhoog plaatsen',d2=>{const a=d2.ads.find(x=>x.id===id);a.bumps=(a.bumps||0)+1;a.bumpedAt=P.now();}))return;
+    if(act==='bump'){const a0=db().ads.find(x=>x.id===id);if(a0.bumpStock)mut(a=>{a.bumpStock--;a.bumps=(a.bumps||0)+1;a.bumpedAt=a.lastBump=P.now();});
+      else if(!spend(R.bump,'Omhoog plaatsen',d2=>{const a=d2.ads.find(x=>x.id===id);a.bumps=(a.bumps||0)+1;a.bumpedAt=a.lastBump=P.now();}))return;}
+    if(act==='bundle'&&!spend(R.bump10,'Bundel 10× omhoog',d2=>{const a=d2.ads.find(x=>x.id===id);a.bumpStock=(a.bumpStock||0)+10;}))return;
     if(act==='top'&&!spend(R.topDay,'TOP-plaatsing 1 dag',d2=>{const a=d2.ads.find(x=>x.id===id);a.top=true;a.topUntil=new Date(Date.now()+864e5).toISOString();}))return;
     if(act==='vip'&&!spend(R.vip7,'VIP 7 dagen',d2=>{const a=d2.ads.find(x=>x.id===id);a.vip=true;a.vipUntil=new Date(Date.now()+7*864e5).toISOString();}))return;
-    if(act==='del'){if(!confirm('Advertentie verwijderen? (concept)'))return;const d2=db();d2.ads=d2.ads.filter(x=>x.id!==id);save(d2);}
-    audit('ad-'+act,id,'door eigenaar');toast({pause:'Gepauzeerd',resume:'Weer online',extend:'Verlengd',bump:'Omhoog geplaatst',top:'In de TOP',vip:'VIP actief',del:'Verwijderd'}[act]);pageMyAds(root);
+    if(act==='del'){if(!confirm('Advertentie verwijderen? Hij gaat direct offline.'))return;mut(a=>{a.prevStatus=a.status;a.status='verwijderd';a.deletedAt=P.now();a.deletedBy='eigenaar';a.auto=false;});}
+    audit('ad-'+act,id,'door eigenaar');toast({pause:'Gepauzeerd',resume:'Weer online',extend:'Verlengd',bump:'Omhoog geplaatst',bundle:'10× omhoog toegevoegd',top:'In de TOP',vip:'VIP actief',del:'Verwijderd'}[act]);again();
   });
 }
 
-/* ================= WIZARD ================= */
+/* ================= WIZARD (plaatsen + bewerken) ================= */
 function pageWizard(root){
   const u=P.requireLogin(); if(!u)return;
   const d=db(); const R=d.pay.rates; const editId=qs('edit'); const ex=editId?d.ads.find(a=>a.id===editId&&a.owner===u.id):null;
   const cities=[...new Set(((window.PD_DATA&&PD_DATA.L)||[]).map(x=>x.c).filter(Boolean).concat(['Amsterdam','Rotterdam','Den Haag','Utrecht','Eindhoven','Groningen','Tilburg','Almere','Breda','Nijmegen','Arnhem','Haarlem','Zwolle','Maastricht','Leiden']))].sort();
-  const S={step:0,cat:ex?ex.cat:'Vrouw',type:ex?ex.type:'Escort',photos:ex?(ex.photos||0):0,title:ex?ex.title:'',desc:ex?(ex.desc||''):'',age:ex?(ex.age||''):'',prices:ex&&ex.prices||[['30 minuten',''],['1 uur',''],['2 uur','']],city:ex?ex.city:'',tel:ex&&ex.contact?ex.contact.tel||'':'',wa:ex&&ex.contact?!!ex.contact.wa:true,mail:ex&&ex.contact?!!ex.contact.mail:true,incall:true,outcall:false,bump:false,topDays:0,vip:false};
-  const steps=['Categorie','Foto’s','Tekst & tarieven','Contact & locatie','Zichtbaarheid','Controleren'];
+  const cats=(d.cats||[]).filter(c=>c.active).sort((a,b)=>a.order-b.order).map(c=>c.k);
+  const types=(d.adTypes||[]).filter(t=>t.active).sort((a,b)=>a.order-b.order).map(t=>t.t);
+  const E=ex||{};
+  const S={step:0,cat:E.cat||cats[0]||'Vrouw',types:E.types||(E.type?[E.type]:['Escort']),gender:E.gender||'',name:E.name||u.name||'',title:E.title||'',subtitle:E.subtitle||'',desc:E.desc||'',age:E.age||'',city:E.city||u.city||'',
+    photos:E.photos||0,videos:E.videos||0,audio:!!E.audio,kenm:Object.assign({},E.kenm||{}),mog:new Map((E.mog||[]).map(m=>[m[0],m[1]||''])),
+    hour:E.hour||'',ratesIn:E.ratesIn||(E.prices&&E.prices.length?E.prices:[['30 minuten',''],['1 uur',''],['2 uur','']]),ratesOut:E.ratesOut||[['1 uur',''],['2 uur',''],['Nacht','']],
+    avail:E.avail||DAYS.map(dg=>[dg,'']),ct:Object.assign({tel:(E.contact||{}).tel||''},E.ct||{}),wa:E.contact?!!E.contact.wa:true,dm:E.dm!==false,reviews:!E.reviewsOff,
+    vis:'none',topDays:0,vip:false,auto:!!E.auto};
+  const steps=['Categorie','Profiel','Foto’s & media','Uiterlijk','Mogelijkheden','Tarieven & tijden','Contact','Zichtbaarheid','Controleren'];
   if(u.role==='klant'){root.innerHTML=`<div class="pdx-side">${accBar(u,'new')}<div class="pdx-card pdx-card-b"><h1 class="pdx-h1">Advertentie plaatsen</h1><p class="pdx-sub" style="margin:8px 0 14px">Met een klantaccount kun je geen advertenties plaatsen. Zet je account om naar adverteerder via je <a href="dashboard.html" style="color:#7351c0">dashboard</a>.</p></div></div>`;bindLogout();return;}
-  const cost=()=>(S.bump?R.bump:0)+S.topDays*R.topDay+(S.vip?R.vip7:0);
+  const cost=()=>({none:0,bump:R.bump,bundle:R.bump10,sms:0}[S.vis]||0)+S.topDays*R.topDay+(S.vip?R.vip7:0)+(+R.adPrice||0);
+  const isMan=()=>['Man','Shemale','Trans'].includes(S.cat);
+  const priceRows=(k,arr)=>arr.map((p,i)=>`<div class="pdx-row" style="margin-bottom:6px"><input class="pdx-in" style="flex:1" data-${k}t="${i}" value="${esc(p[0])}" placeholder="Duur, bijv. 1 uur"><input class="pdx-in" style="width:110px" data-${k}p="${i}" value="${esc(String(p[1]).replace('€',''))}" placeholder="€" inputmode="numeric"></div>`).join('')+`<button type="button" class="pdx-btn sm" data-addrow="${k}">+ Regel</button>`;
   function view(){
     const st=S.step;
     const body=[
-     ()=>`<div class="pdx-f two"><div class="full"><span class="pdx-lbl">Ik adverteer als</span><div class="pdx-grid pdx-g3">${['Vrouw','Man','Shemale','Trans','Stel'].map(c=>`<label class="pdx-opt"><input type="radio" name="cat" value="${c}" ${S.cat===c?'checked':''}> ${c}</label>`).join('')}</div></div>
-       <div class="full"><span class="pdx-lbl">Soort advertentie</span><div class="pdx-grid pdx-g3">${['Escort','Privé ontvangst','Massage','Online','BDSM','Sugardating'].map(c=>`<label class="pdx-opt"><input type="radio" name="type" value="${c}" ${S.type===c?'checked':''}> ${c}</label>`).join('')}</div></div></div>`,
-     ()=>`<p class="pdx-small pdx-muted" style="margin-bottom:10px">Upload tot 8 foto’s. <b>Concept:</b> uploads worden niet opgeslagen; klik op een vak om een placeholder te zetten. Eerste foto = hoofdfoto. Geen gezichten van anderen, geen minderjarigen, alleen eigen beeld.</p>
-       <div class="pdx-grid" style="grid-template-columns:repeat(4,minmax(0,1fr))">${Array.from({length:8},(_,i)=>`<div class="pdx-ph${i<S.photos?' on':''}" data-ph="${i}">${i<S.photos?'<i class="fa fa-image"></i>':'<i class="fa fa-plus"></i>'}</div>`).join('')}</div>
-       <p class="pdx-xs pdx-muted" style="margin-top:8px">${S.photos} / 8 foto’s · in productie: automatische check op dubbele/gestolen foto’s + handmatige moderatie.</p>`,
-     ()=>`<div class="pdx-f two"><div class="full"><label class="pdx-lbl">Titel *</label><input class="pdx-in" id="wTitle" maxlength="70" value="${esc(S.title)}" placeholder="Bijv. Sophie – discreet en gezellig in Rotterdam"></div>
-       <div class="full"><label class="pdx-lbl">Omschrijving *</label><textarea class="pdx-in" id="wDesc" maxlength="3000" placeholder="Vertel iets over jezelf, je services en afspraken. Geen telefoonnummers in de tekst.">${esc(S.desc)}</textarea></div>
-       <div><label class="pdx-lbl">Leeftijd * (21+)</label><input class="pdx-in" id="wAge" type="number" min="21" max="99" value="${esc(S.age)}"></div><div></div>
-       <div class="full"><span class="pdx-lbl">Tarieven (optioneel)</span>${S.prices.map((p,i)=>`<div class="pdx-row" style="margin-bottom:6px"><input class="pdx-in" style="flex:1" data-pt="${i}" value="${esc(p[0])}"><input class="pdx-in" style="width:120px" data-pp="${i}" value="${esc(p[1])}" placeholder="€"></div>`).join('')}<button type="button" class="pdx-btn sm" id="addP">+ Tarief</button></div></div>`,
-     ()=>`<div class="pdx-f two"><div><label class="pdx-lbl">Stad *</label><input class="pdx-in" id="wCity" list="wCities" value="${esc(S.city)}"><datalist id="wCities">${cities.map(c=>`<option value="${esc(c)}">`).join('')}</datalist></div>
-       <div><label class="pdx-lbl">Telefoon (zakelijk, optioneel)</label><input class="pdx-in" id="wTel" value="${esc(S.tel)}" placeholder="06…" inputmode="tel"></div>
-       <label class="pdx-opt"><input type="checkbox" id="wWa" ${S.wa?'checked':''}> WhatsApp tonen</label><label class="pdx-opt"><input type="checkbox" id="wMail" ${S.mail?'checked':''}> Berichten via Paydates (e-mail verborgen)</label>
-       <label class="pdx-opt"><input type="checkbox" id="wIn" ${S.incall?'checked':''}> Ontvangst (incall)</label><label class="pdx-opt"><input type="checkbox" id="wOut" ${S.outcall?'checked':''}> Escort (outcall)</label></div>`,
-     ()=>`<p class="pdx-small pdx-muted" style="margin-bottom:10px">Basisplaatsing is gratis (${d.settings.adDays} dagen). Kies optioneel extra zichtbaarheid. Saldo: <b>${me().credits}</b> credits.</p>
-       <div style="display:grid;gap:8px"><label class="pdx-opt"><input type="checkbox" id="wBump" ${S.bump?'checked':''}><span><b>Direct omhoog plaatsen</b> · ${R.bump} cr<br><span class="pdx-xs pdx-muted">Bovenaan in de lijst van je stad</span></span></label>
+     ()=>`<div class="pdx-f two"><div class="full"><span class="pdx-lbl">Ik adverteer als</span><div class="pdx-grid pdx-g3">${cats.map(c=>`<label class="pdx-opt"><input type="radio" name="cat" value="${esc(c)}" ${S.cat===c?'checked':''}> ${esc(c)}</label>`).join('')}</div></div>
+       <div class="full"><span class="pdx-lbl">Soort advertentie (meerdere mogelijk)</span><div class="pdx-grid pdx-g3">${types.map(c=>`<label class="pdx-opt"><input type="checkbox" name="type" value="${esc(c)}" ${S.types.includes(c)?'checked':''}> ${esc(c)}</label>`).join('')}</div><span class="pdx-xs pdx-muted">“Online” heette op de oude site “Virtueel”.</span></div></div>`,
+     ()=>`<div class="pdx-f two"><div><label class="pdx-lbl">Weergavenaam *</label><input class="pdx-in" id="wName" maxlength="40" value="${esc(S.name)}" placeholder="Bijv. Sophie"></div>
+       <div><label class="pdx-lbl">Leeftijd * (21+)</label><input class="pdx-in" id="wAge" type="number" min="21" max="99" value="${esc(S.age)}"></div>
+       <div><label class="pdx-lbl">Geslacht</label><select class="pdx-in" id="wGender">${['','Vrouw','Man','Trans','Non-binair','Stel'].map(g=>`<option ${S.gender===g?'selected':''} value="${g}">${g||'— kies —'}</option>`).join('')}</select></div>
+       <div><label class="pdx-lbl">Gemeente / stad *</label><input class="pdx-in" id="wCity" list="wCities" value="${esc(S.city)}"><datalist id="wCities">${cities.map(c=>`<option value="${esc(c)}">`).join('')}</datalist></div>
+       <div class="full"><label class="pdx-lbl">Titel *</label><input class="pdx-in" id="wTitle" maxlength="70" value="${esc(S.title)}" placeholder="Bijv. Sophie – discreet en gezellig in Rotterdam"></div>
+       <div class="full"><label class="pdx-lbl">Subtitel</label><input class="pdx-in" id="wSub" maxlength="90" value="${esc(S.subtitle)}" placeholder="Korte zin onder je naam"></div>
+       <div class="full"><label class="pdx-lbl">Omschrijving *</label><textarea class="pdx-in" id="wDesc" maxlength="3000" rows="6" placeholder="Vertel iets over jezelf, je services en afspraken. Geen telefoonnummers in de tekst.">${esc(S.desc)}</textarea></div></div>`,
+     ()=>`<p class="pdx-small pdx-muted" style="margin-bottom:10px">Upload tot 12 foto’s. <b>Concept:</b> uploads worden niet opgeslagen; klik op een vak om een placeholder te zetten. Eerste foto = hoofdfoto (avatar). Alleen eigen, recent beeld.</p>
+       <div class="pdx-grid" style="grid-template-columns:repeat(6,minmax(0,1fr))">${Array.from({length:12},(_,i)=>`<div class="pdx-ph${i<S.photos?' on':''}" data-ph="${i}">${i<S.photos?'<i class="fa fa-image"></i>':'<i class="fa fa-plus"></i>'}</div>`).join('')}</div>
+       <p class="pdx-xs pdx-muted" style="margin-top:8px">${S.photos} / 12 foto’s · in productie: check op dubbele/gestolen foto’s + handmatige moderatie.</p>
+       <div class="pdx-f two" style="margin-top:12px"><div><label class="pdx-lbl">Video’s</label><select class="pdx-in" id="wVid">${[0,1,2,3].map(n=>`<option ${S.videos===n?'selected':''}>${n}</option>`).join('')}</select><span class="pdx-xs pdx-muted">1e video gratis, extra video’s 20 credits</span></div>
+       <label class="pdx-opt"><input type="checkbox" id="wAud" ${S.audio?'checked':''}> Audiobericht (stemfragment) toevoegen</label></div>`,
+     ()=>`<div class="pdx-f two">${KENM.filter(k=>k[0]!=='Penisgrootte'||isMan()).filter(k=>k[0]!=='BH maat'||!['Man'].includes(S.cat)).map(([k,o])=>`<div><label class="pdx-lbl">${esc(k)}</label>${o?`<select class="pdx-in" data-kenm="${esc(k)}"><option value="">—</option>${o.map(v=>`<option ${S.kenm[k]===v?'selected':''}>${esc(v)}</option>`).join('')}</select>`:`<input class="pdx-in" data-kenm="${esc(k)}" value="${esc(S.kenm[k]||'')}" placeholder="${k.startsWith('Gesproken')?'Nederlands, Engels':'bijv. 170 Cm'}">`}</div>`).join('')}</div>`,
+     ()=>`<p class="pdx-small pdx-muted" style="margin-bottom:8px">Vink aan wat je aanbiedt. Optioneel: meerprijs in euro’s. Gekozen: <b id="mogN">${S.mog.size}</b></p>${Object.entries(MOG).map(([g,L])=>`<details class="pdx-card" style="margin-bottom:8px" ${g==='Standaard'||(g==='Online'&&S.types.includes('Online'))||(g==='Massage'&&S.types.includes('Erotische massage'))||(g==='BDSM'&&S.types.includes('BDSM'))?'open':''}><summary class="pdx-card-h" style="cursor:pointer">${esc(g)} <span class="pdx-xs pdx-muted">${L.filter(x=>S.mog.has(x)).length} / ${L.length}</span></summary><div class="pdx-card-b pdx-grid pdx-g3">${L.map(x=>`<div class="pdx-row" style="gap:6px;flex-wrap:nowrap"><label class="pdx-opt" style="flex:1;padding:6px 8px"><input type="checkbox" data-mog="${esc(x)}" ${S.mog.has(x)?'checked':''}> ${esc(x)}</label><input class="pdx-in" style="width:64px;padding:6px" data-mogp="${esc(x)}" value="${esc(S.mog.get(x)||'')}" placeholder="+€"></div>`).join('')}</div></details>`).join('')}`,
+     ()=>`<div class="pdx-f two"><div><label class="pdx-lbl">Uurtarief (vanaf, €)</label><input class="pdx-in" id="wHour" inputmode="numeric" value="${esc(S.hour)}"></div><div></div>
+       <div><span class="pdx-lbl">Ontvangst prijzen</span>${priceRows('in',S.ratesIn)}</div><div><span class="pdx-lbl">Escort prijzen</span>${priceRows('out',S.ratesOut)}</div>
+       <div class="full"><span class="pdx-lbl">Beschikbaarheid</span><div style="display:grid;gap:6px">${S.avail.map((a,i)=>{const m=/^(\d\d:\d\d) – (\d\d:\d\d)$/.exec(a[1]||'');const mode=!a[1]?'niet':a[1]==='Hele dag'?'hele':'tijd';return `<div class="pdx-row" style="flex-wrap:nowrap"><b style="width:96px" class="pdx-small">${a[0]}</b><select class="pdx-in" style="width:140px" data-avm="${i}">${[['niet','Niet beschikbaar'],['hele','Hele dag'],['tijd','Van – tot']].map(o=>`<option value="${o[0]}" ${mode===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select><input class="pdx-in" type="time" style="width:110px" data-avf="${i}" value="${m?m[1]:'10:00'}" ${mode==='tijd'?'':'disabled'}><input class="pdx-in" type="time" style="width:110px" data-avt="${i}" value="${m?m[2]:'22:00'}" ${mode==='tijd'?'':'disabled'}></div>`}).join('')}</div></div></div>`,
+     ()=>`<div class="pdx-f two">${CT.map(([k,l,ph])=>`<div><label class="pdx-lbl">${l}</label><input class="pdx-in" data-ct="${k}" value="${esc(S.ct[k]||'')}" placeholder="${ph}"></div>`).join('')}
+       <label class="pdx-opt"><input type="checkbox" id="wWa" ${S.wa?'checked':''}> WhatsApp tonen (op telefoonnummer)</label><label class="pdx-opt"><input type="checkbox" id="wDm" ${S.dm?'checked':''}> Berichten via Paydates (e-mail verborgen)</label>
+       <label class="pdx-opt"><input type="checkbox" id="wRev" ${S.reviews?'checked':''}> Reviews toestaan op deze advertentie</label></div>`,
+     ()=>`<p class="pdx-small pdx-muted" style="margin-bottom:10px">Plaatsen is ${+R.adPrice?R.adPrice+' credits':'gratis'} (${d.settings.adDays} dagen). Kies optioneel extra zichtbaarheid. Wallet: <b>${me().credits}</b> credits.</p>
+       <div style="display:grid;gap:8px">${[['none','Geen extra','Je advertentie komt op volgorde van plaatsing in de lijst'],['sms','1× omhoog via bellen of sms · '+eur(R.smsCallEur),'Geen credits nodig: na plaatsing bel of sms je en voer je de code in bij Mijn advertenties'],['bump','Direct omhoog · '+R.bump+' cr','Bovenaan in de lijst van je stad'],['bundle','Bundel 10× omhoog · '+R.bump10+' cr','1× nu, 9× wanneer jij wilt (25% voordeel)']].map(o=>`<label class="pdx-opt"><input type="radio" name="vis" value="${o[0]}" ${S.vis===o[0]?'checked':''}><span><b>${o[1]}</b><br><span class="pdx-xs pdx-muted">${o[2]}</span></span></label>`).join('')}
+       <label class="pdx-opt"><input type="checkbox" id="wAuto" ${S.auto?'checked':''}><span><b>Elke dag automatisch omhoog</b> · ${R.autoBumpDay} cr per dag<br><span class="pdx-xs pdx-muted">Stopt vanzelf als je saldo op is; wordt pas afgeschreven na goedkeuring</span></span></label>
        <label class="pdx-opt"><span style="flex:1"><b>TOP-plaatsing</b> · ${R.topDay} cr per dag<br><span class="pdx-xs pdx-muted">In de TOP-rij op home en stadspagina</span></span><select class="pdx-in" style="width:120px" id="wTop">${[0,1,3,7].map(n=>`<option value="${n}" ${S.topDays===n?'selected':''}>${n?n+' dag'+(n>1?'en':''):'Geen'}</option>`).join('')}</select></label>
-       <label class="pdx-opt"><input type="checkbox" id="wVip" ${S.vip?'checked':''}><span><b>VIP 7 dagen</b> · ${R.vip7} cr<br><span class="pdx-xs pdx-muted">Gouden kader + stories</span></span></label></div>
-       <div class="pdx-between" style="margin-top:12px;font-size:14px"><span>Totaal</span><b id="wCost">${cost()} credits</b></div>`,
-     ()=>{const okKyc=me().kyc==='goedgekeurd';return `<div class="pdx-grid pdx-g2 pdx-small"><div><span class="pdx-muted">Categorie</span><br><b>${esc(S.cat)} · ${esc(S.type)}</b></div><div><span class="pdx-muted">Stad</span><br><b>${esc(S.city||'—')}</b></div><div><span class="pdx-muted">Titel</span><br><b>${esc(S.title||'—')}</b></div><div><span class="pdx-muted">Foto’s</span><br><b>${S.photos}</b></div><div><span class="pdx-muted">Extra’s</span><br><b>${[S.bump&&'Omhoog',S.topDays&&('TOP '+S.topDays+'d'),S.vip&&'VIP 7d'].filter(Boolean).join(', ')||'geen'}</b></div><div><span class="pdx-muted">Kosten</span><br><b>${cost()} credits</b> (saldo ${me().credits})</div></div>
+       <label class="pdx-opt"><input type="checkbox" id="wVip" ${S.vip?'checked':''}><span><b>VIP 7 dagen</b> · ${R.vip7} cr<br><span class="pdx-xs pdx-muted">Gouden kader, stories op de homepage, dagelijkse gratis bump</span></span></label></div>
+       <div class="pdx-between" style="margin-top:12px;font-size:14px"><span>Nu af te rekenen</span><b id="wCost">${cost()} credits</b></div>`,
+     ()=>{const okKyc=me().kyc==='goedgekeurd';const ctN=CT.filter(c=>S.ct[c[0]]).length;return `<div class="pdx-grid pdx-g2 pdx-small"><div><span class="pdx-muted">Categorie</span><br><b>${esc(S.cat)} · ${esc(S.types.join(', '))}</b></div><div><span class="pdx-muted">Naam &amp; stad</span><br><b>${esc(S.name||'—')} · ${esc(S.city||'—')}</b></div><div><span class="pdx-muted">Titel</span><br><b>${esc(S.title||'—')}</b></div><div><span class="pdx-muted">Media</span><br><b>${S.photos} foto’s · ${S.videos} video’s${S.audio?' · audio':''}</b></div><div><span class="pdx-muted">Mogelijkheden</span><br><b>${S.mog.size}</b></div><div><span class="pdx-muted">Contactkanalen</span><br><b>${ctN}</b>${S.dm?' + berichten':''}</div><div><span class="pdx-muted">Beschikbaar</span><br><b>${S.avail.filter(a=>a[1]).length} dagen</b></div><div><span class="pdx-muted">Extra’s</span><br><b>${[{sms:'Omhoog via bellen/sms',bump:'Omhoog',bundle:'10× omhoog'}[S.vis],S.auto&&'Auto-omhoog',S.topDays&&('TOP '+S.topDays+'d'),S.vip&&'VIP 7d'].filter(Boolean).join(', ')||'geen'}</b></div><div><span class="pdx-muted">Kosten nu</span><br><b>${cost()} credits</b> (wallet ${me().credits})</div></div>
        ${okKyc?'':'<div class="pdx-demo" style="margin-top:12px"><i class="fa fa-id-card"></i><div>Je account is nog niet geverifieerd. Je advertentie wordt na moderatie geplaatst <b>zonder</b> paars vinkje. <a href="kyc.html" style="color:#7351c0;font-weight:600">Nu verifiëren</a></div></div>'}
        <label class="pdx-opt" style="margin-top:12px"><input type="checkbox" id="wAgree"> Ik bevestig dat ik 21+ ben, de foto’s van mijzelf zijn en ik akkoord ga met de <a href="algemene-voorwaarden.html" target="_blank" style="color:#7351c0">voorwaarden</a>. Geen dwang, geen derden.</label>`;}
     ][st]();
     root.innerHTML=`<div class="pdx-side">${accBar(u,'new')}<div style="display:grid;gap:16px;min-width:0"><div><h1 class="pdx-h1">${ex?'Advertentie bewerken':'Nieuwe advertentie plaatsen'}</h1><p class="pdx-sub">Stap ${st+1} van ${steps.length}: ${steps[st]}</p></div>
-     <ol class="pdx-steps">${steps.map((s,i)=>`<li class="${i<st?'done':i===st?'on':''}">${i+1}. ${s}</li>`).join('')}</ol>
+     <ol class="pdx-steps">${steps.map((s,i)=>`<li class="${i<st?'done':i===st?'on':''}" ${ex?`data-go="${i}" style="cursor:pointer"`:''}>${i+1}. ${s}</li>`).join('')}</ol>
      <div class="pdx-card"><div class="pdx-card-b" id="wBody">${body}</div><div class="pdx-card-b pdx-between" style="border-top:1px solid #eef1f7"><button class="pdx-btn" id="wPrev" ${st?'':'disabled'}><i class="fa fa-angle-left"></i> Vorige</button><span class="pdx-xs pdx-muted" id="wErr" style="color:#c92a2a"></span>${st<steps.length-1?'<button class="pdx-btn pd" id="wNext">Volgende <i class="fa fa-angle-right"></i></button>':`<button class="pdx-btn pd" id="wDone"><i class="fa fa-paper-plane"></i> ${ex?'Wijzigingen opslaan':'Plaatsen'}${cost()?' · '+cost()+' cr':''}</button>`}</div></div>
      ${demoNote}</div></div>`;
     bindLogout();
     root.querySelectorAll('[data-ph]').forEach(p=>p.onclick=()=>{collect();const i=+p.dataset.ph;S.photos=i<S.photos?i:i+1;view();});
-    const ap=$('#addP');if(ap)ap.onclick=()=>{collect();S.prices.push(['','']);view();};
-    ['wBump','wTop','wVip'].forEach(id=>{const e=$('#'+id);if(e)e.onchange=()=>{collect();$('#wCost').textContent=cost()+' credits';};});
+    root.querySelectorAll('[data-addrow]').forEach(b=>b.onclick=()=>{collect();(b.dataset.addrow==='in'?S.ratesIn:S.ratesOut).push(['','']);view();});
+    root.querySelectorAll('[data-avm]').forEach(s=>s.onchange=()=>{const i=s.dataset.avm;$(`[data-avf="${i}"]`).disabled=$(`[data-avt="${i}"]`).disabled=s.value!=='tijd';});
+    root.querySelectorAll('[data-mog]').forEach(c=>c.onchange=()=>{collect();$('#mogN').textContent=S.mog.size;});
+    root.querySelectorAll('[data-go]').forEach(li=>li.onclick=()=>{collect();S.step=+li.dataset.go;view();});
+    root.querySelectorAll('input[name=vis],#wTop,#wVip,#wAuto').forEach(e=>e.onchange=()=>{collect();const c=$('#wCost');if(c)c.textContent=cost()+' credits';});
     $('#wPrev').onclick=()=>{collect();S.step--;view();};
     const n=$('#wNext');if(n)n.onclick=()=>{collect();const e=validate();if(e){$('#wErr').textContent=e;return;}S.step++;view();};
     const dn=$('#wDone');if(dn)dn.onclick=finish;
   }
-  function collect(){const v=id=>{const e=$('#'+id);return e?(e.type==='checkbox'?e.checked:e.value):undefined};
-    const c=document.querySelector('input[name=cat]:checked');if(c)S.cat=c.value;const t=document.querySelector('input[name=type]:checked');if(t)S.type=t.value;
-    if($('#wTitle')){S.title=v('wTitle').trim();S.desc=v('wDesc').trim();S.age=v('wAge');S.prices=S.prices.map((p,i)=>[($('[data-pt="'+i+'"]')||{}).value||p[0],($('[data-pp="'+i+'"]')||{}).value||'']);}
-    if($('#wCity')){S.city=v('wCity').trim();S.tel=v('wTel').trim();S.wa=v('wWa');S.mail=v('wMail');S.incall=v('wIn');S.outcall=v('wOut');}
-    if($('#wBump')){S.bump=v('wBump');S.topDays=+v('wTop');S.vip=v('wVip');}}
+  function collect(){const v=id=>{const e=$('#'+id);return e?(e.type==='checkbox'?e.checked:e.value):undefined};const all=s=>[...root.querySelectorAll(s)];
+    const c=document.querySelector('input[name=cat]:checked');if(c)S.cat=c.value;
+    if(all('input[name=type]').length)S.types=all('input[name=type]:checked').map(x=>x.value);
+    if($('#wTitle')){S.name=v('wName').trim();S.age=v('wAge');S.gender=v('wGender');S.city=v('wCity').trim();S.title=v('wTitle').trim();S.subtitle=v('wSub').trim();S.desc=v('wDesc').trim();}
+    if($('#wVid')){S.videos=+v('wVid');S.audio=v('wAud');}
+    all('[data-kenm]').forEach(e=>{S.kenm[e.dataset.kenm]=e.value.trim();});
+    if(all('[data-mog]').length){all('[data-mog]').forEach(e=>{const k=e.dataset.mog;const p=(root.querySelector(`[data-mogp="${CSS.escape(k)}"]`)||{}).value||'';if(e.checked)S.mog.set(k,p.replace(/[^\d,.]/g,''));else S.mog.delete(k);});}
+    if($('#wHour')){S.hour=v('wHour').replace(/[^\d]/g,'');['in','out'].forEach(k=>{const arr=k==='in'?S.ratesIn:S.ratesOut;arr.forEach((p,i)=>{p[0]=($(`[data-${k}t="${i}"]`)||{}).value||'';p[1]=(($(`[data-${k}p="${i}"]`)||{}).value||'').replace(/[^\d]/g,'');});});
+      S.avail=S.avail.map((a,i)=>{const m=$(`[data-avm="${i}"]`).value;return [a[0],m==='niet'?'':m==='hele'?'Hele dag':$(`[data-avf="${i}"]`).value+' – '+$(`[data-avt="${i}"]`).value];});}
+    all('[data-ct]').forEach(e=>{S.ct[e.dataset.ct]=e.value.trim();});
+    if($('#wWa')){S.wa=v('wWa');S.dm=v('wDm');S.reviews=v('wRev');}
+    const vs=document.querySelector('input[name=vis]:checked');if(vs){S.vis=vs.value;S.topDays=+v('wTop');S.vip=v('wVip');S.auto=v('wAuto');}}
   function validate(){const s=S.step;
-    if(s===1&&S.photos<1)return 'Voeg minimaal 1 foto toe.';
-    if(s===2){if(S.title.length<5)return 'Titel is te kort.';if(S.desc.length<20)return 'Omschrijving: minimaal 20 tekens.';if(!(+S.age>=21))return 'Adverteerders moeten 21+ zijn.';if(/(\+31|06)[\s-]?\d{8}/.test(S.desc))return 'Zet geen telefoonnummer in de tekst; gebruik het contactveld.';}
-    if(s===3&&!S.city)return 'Kies een stad.';
-    if(s===4&&cost()>me().credits)return 'Onvoldoende credits voor deze extra’s.';
+    if(s===0&&!S.types.length)return 'Kies minimaal één soort advertentie.';
+    if(s===1){if(!S.name)return 'Vul een weergavenaam in.';if(!(+S.age>=21))return 'Adverteerders moeten 21+ zijn.';if(!S.city)return 'Kies een gemeente of stad.';if(S.title.length<5)return 'Titel is te kort.';if(S.desc.length<20)return 'Omschrijving: minimaal 20 tekens.';if(/(\+31|06)[\s-]?\d{8}/.test(S.desc))return 'Zet geen telefoonnummer in de tekst; gebruik het contactveld.';}
+    if(s===2&&S.photos<1)return 'Voeg minimaal 1 foto toe.';
+    if(s===6&&!CT.some(c=>S.ct[c[0]])&&!S.dm)return 'Kies minimaal één manier waarop klanten je kunnen bereiken.';
+    if(s===7&&cost()>me().credits)return 'Onvoldoende credits voor deze extra’s. Kies “1× omhoog via bellen of sms” of koop credits.';
     return '';}
   function finish(){collect();if(!$('#wAgree').checked){$('#wErr').textContent='Bevestig de voorwaarden.';return;}
     const c=cost(); if(c>me().credits){$('#wErr').textContent='Onvoldoende credits.';return;}
     const d2=db(); const usr=d2.users.find(x=>x.id===u.id); const mod=d2.settings.modRequired;
     let a=ex?d2.ads.find(x=>x.id===ex.id):null;
     if(!a){a={id:P.uid('a'),owner:u.id,created:P.now(),expires:new Date(Date.now()+d2.settings.adDays*864e5).toISOString(),bumps:0,views:0,clicks:0};d2.ads.unshift(a);}
-    Object.assign(a,{title:S.title,cat:S.cat,type:S.type,city:S.city,desc:S.desc,age:+S.age,prices:S.prices.filter(p=>p[0]&&p[1]),photos:S.photos,contact:{tel:S.tel,wa:S.wa,mail:S.mail},incall:S.incall,outcall:S.outcall,status:mod?'wacht':'live',mod:mod?'in behandeling':'goedgekeurd',modNote:''});
+    const clean=r=>r.filter(p=>p[0]&&p[1]);
+    Object.assign(a,{title:S.title,subtitle:S.subtitle,name:S.name,gender:S.gender,cat:S.cat,type:S.types[0],types:S.types.slice(),city:S.city,desc:S.desc,age:+S.age,photos:S.photos,videos:S.videos,audio:S.audio,
+      kenm:Object.fromEntries(Object.entries(S.kenm).filter(k=>k[1])),mog:[...S.mog.entries()],hour:+S.hour||0,ratesIn:clean(S.ratesIn),ratesOut:clean(S.ratesOut),prices:clean(S.ratesIn).concat(clean(S.ratesOut)),avail:S.avail,
+      ct:Object.fromEntries(Object.entries(S.ct).filter(k=>k[1])),contact:{tel:S.ct.tel||'',wa:S.wa,mail:S.dm},dm:S.dm,reviewsOff:!S.reviews,auto:S.auto,
+      incall:S.types.includes('Privé ontvangst'),outcall:S.types.includes('Escort'),status:mod?'wacht':'live',mod:mod?'in behandeling':'goedgekeurd',modNote:''});
     if(c){usr.credits-=c;ledger(usr,-c,'Extra’s bij plaatsen: '+S.title);}
-    if(S.bump){a.bumps++;a.bumpedAt=P.now();} if(S.topDays){a.top=true;a.topUntil=new Date(Date.now()+S.topDays*864e5).toISOString();} if(S.vip){a.vip=true;a.vipUntil=new Date(Date.now()+7*864e5).toISOString();}
+    if(S.vis==='bump'||S.vis==='bundle'){a.bumps=(a.bumps||0)+1;a.bumpedAt=a.lastBump=P.now();} if(S.vis==='bundle')a.bumpStock=(a.bumpStock||0)+9;
+    if(S.topDays){a.top=true;a.topUntil=new Date(Date.now()+S.topDays*864e5).toISOString();} if(S.vip){a.vip=true;a.vipUntil=new Date(Date.now()+7*864e5).toISOString();}
     d2.audit.unshift({at:P.now(),actor:usr.username,action:ex?'ad-edit':'ad-create',target:a.id,detail:S.title+(c?' · -'+c+' cr':'')});save(d2);
-    root.innerHTML=`<div class="pdx-side">${accBar(u,'new')}<div class="pdx-card pdx-card-b" style="text-align:center;padding:40px"><div style="width:56px;height:56px;margin:0 auto;border-radius:50%;background:#2f9e4420;color:#2f9e44;display:flex;align-items:center;justify-content:center;font-size:24px"><i class="fa fa-check"></i></div><h1 class="pdx-h1" style="margin-top:12px">${mod?'Ingediend voor moderatie':'Je advertentie staat online'}</h1><p class="pdx-sub" style="margin-top:4px">${mod?'Een moderator controleert je advertentie (meestal binnen enkele uren). Concept: zie admin → Advertenties.':''}</p><div class="pdx-row" style="justify-content:center;margin-top:16px"><a href="mijn-advertenties.html" class="pdx-btn pd">Naar mijn advertenties</a><a href="advertentie-plaatsen.html" class="pdx-btn">Nog een plaatsen</a></div></div></div>`;bindLogout();
+    root.innerHTML=`<div class="pdx-side">${accBar(u,'new')}<div class="pdx-card pdx-card-b" style="text-align:center;padding:40px"><div style="width:56px;height:56px;margin:0 auto;border-radius:50%;background:#2f9e4420;color:#2f9e44;display:flex;align-items:center;justify-content:center;font-size:24px"><i class="fa fa-check"></i></div><h1 class="pdx-h1" style="margin-top:12px">${mod?'Ingediend voor moderatie':'Je advertentie staat online'}</h1><p class="pdx-sub" style="margin-top:4px">${mod?'Een moderator controleert je advertentie (meestal binnen enkele uren). Concept: zie admin → Advertenties.':''}${S.vis==='sms'?' Daarna kun je bij Mijn advertenties 1× omhoog via bellen of sms.':''}</p><div class="pdx-row" style="justify-content:center;margin-top:16px"><a href="mijn-advertenties.html" class="pdx-btn pd">Naar mijn advertenties</a><a href="advertentie.html?ad=${a.id}" class="pdx-btn" target="_blank"><i class="fa fa-eye"></i> Voorbeeld bekijken</a><a href="advertentie-plaatsen.html" class="pdx-btn">Nog een plaatsen</a></div></div></div>`;bindLogout();
   }
   view();
 }
@@ -281,14 +350,61 @@ function pageClaim(root){
    <label class="pdx-opt full"><input type="checkbox" required id="clOk"> Ik ben bevoegd namens dit bedrijf te handelen. Paydates mag dit controleren via KvK en het zakelijke e-mailadres/telefoonnummer.</label>
    <div class="full pdx-between"><span class="pdx-xs pdx-muted">Concept: de claim komt in admin → Claims. Er gaat geen e-mail de deur uit.</span><button class="pdx-btn pd"><i class="fa fa-paper-plane"></i> Claim indienen</button></div></form></div>`;
   $('#clF').addEventListener('submit',e=>{e.preventDefault();const g=id=>$('#'+id).value.trim();const d=db();
-    const c={id:P.uid('cl'),club:g('clClub'),clubRef:ref,name:g('clName'),role:g('clRole'),email:g('clEmail'),phone:g('clTel'),kvk:g('clKvk'),web:g('clWeb'),msg:g('clMsg'),userId:u?u.id:'',status:'nieuw',at:P.now(),note:''};
+    const c={id:P.uid('cl'),club:g('clClub'),clubRef:ref,clubId:((ref.match(/club\.html\?id=([^&]+)/)||[])[1]?decodeURIComponent(ref.match(/club\.html\?id=([^&]+)/)[1]):''),name:g('clName'),role:g('clRole'),email:g('clEmail'),phone:g('clTel'),kvk:g('clKvk'),web:g('clWeb'),msg:g('clMsg'),userId:u?u.id:'',status:'nieuw',at:P.now(),note:''};
     d.claims.unshift(c);d.audit.unshift({at:P.now(),actor:u?u.username:'gast',action:'claim',target:c.club,detail:'Claim ingediend'});save(d);
     P.mailSim({name:c.name,email:c.email,id:''},'claim',{bedrijf:c.club});
     root.querySelector('form').outerHTML='<div class="pdx-card pdx-card-b" style="text-align:center;padding:30px"><i class="fa fa-circle-check" style="font-size:32px;color:#2f9e44"></i><h2 class="pdx-h1" style="font-size:18px;margin-top:8px">Claim ontvangen</h2><p class="pdx-sub">We controleren je gegevens en nemen binnen 2 werkdagen contact op via support@paydates.nl.</p></div>';});
 }
 
+/* ================= ACCOUNTINSTELLINGEN (zoals /settings op de huidige site) ================= */
+function pageSettings(root){
+  const u=P.requireLogin(); if(!u)return; const d=db();
+  const favs=(()=>{try{return JSON.parse(localStorage.getItem('pdFav')||'[]')}catch(e){return []}})();
+  const myReviews=(d.reviews||[]).filter(r=>d.ads.some(a=>a.id===r.adId&&a.owner===u.id));
+  root.innerHTML=`<div class="pdx-side">${accBar(u,'set')}<div style="display:grid;gap:16px;min-width:0">
+   <div><h1 class="pdx-h1">Instellingen</h1><p class="pdx-sub">Account, wallet, beveiliging en privacy.</p></div>${demoNote}
+   <div class="pdx-grid pdx-g3"><div class="pdx-card pdx-card-b pdx-kpi"><div class="l">Credits</div><div class="n">${u.credits}</div></div><div class="pdx-card pdx-card-b pdx-kpi"><div class="l">Bonus</div><div class="n">${u.bonus||0}</div><div class="s">bonuscredits bij grotere bundels</div></div><div class="pdx-card pdx-card-b pdx-kpi"><div class="l">Totaal</div><div class="n">${u.credits+(u.bonus||0)}</div><div class="s"><a href="credits.html" style="color:#7351c0">Opwaarderen</a></div></div></div>
+   <div class="pdx-grid pdx-g2">
+    <form class="pdx-card" id="sGen"><div class="pdx-card-h">Algemeen</div><div class="pdx-card-b pdx-f two">
+     <div><label class="pdx-lbl">Weergavenaam</label><input class="pdx-in" name="name" value="${esc(u.name||'')}"></div><div><label class="pdx-lbl">Gebruikersnaam</label><input class="pdx-in" value="${esc(u.username)}" disabled></div>
+     <div class="full"><label class="pdx-lbl">E-mailadres</label><input class="pdx-in" type="email" name="email" value="${esc(u.email)}"></div>
+     <div><label class="pdx-lbl">Stad</label><input class="pdx-in" name="city" value="${esc(u.city||'')}"></div><div></div>
+     <label class="pdx-opt full"><input type="checkbox" name="marketing" ${u.marketing?'checked':''}> Nieuws en acties per e-mail (afmelden kan altijd)</label>
+     <div class="full"><button class="pdx-btn pd">Opslaan</button></div></div></form>
+    ${u.role==='bedrijf'||u.company?`<form class="pdx-card" id="sCo"><div class="pdx-card-h">Bedrijfsgegevens</div><div class="pdx-card-b pdx-f two">
+     <div class="full"><label class="pdx-lbl">Bedrijfsnaam</label><input class="pdx-in" name="cname" value="${esc((u.company||{}).name||'')}"></div>
+     <div><label class="pdx-lbl">KvK-nummer</label><input class="pdx-in" name="kvk" value="${esc((u.company||{}).kvk||'')}" inputmode="numeric"></div><div><label class="pdx-lbl">Btw-nummer</label><input class="pdx-in" name="vat" value="${esc((u.company||{}).vat||'')}"></div>
+     <div class="full"><label class="pdx-lbl">Factuuradres</label><input class="pdx-in" name="addr" value="${esc((u.company||{}).addr||'')}"></div>
+     <div class="full"><button class="pdx-btn pd">Opslaan</button></div></div></form>`:`<div class="pdx-card"><div class="pdx-card-h">Bedrijfsaccount</div><div class="pdx-card-b pdx-small">Agency, club of privéhuis? Met een bedrijfsaccount beheer je meerdere profielen met één factuur. <a href="adverteren.html#bedrijf" style="color:#7351c0">Bekijk pakketten</a></div></div>`}
+    <form class="pdx-card" id="sPw"><div class="pdx-card-h">Wachtwoord wijzigen</div><div class="pdx-card-b pdx-f">
+     <div><label class="pdx-lbl">Huidig wachtwoord</label><input class="pdx-in" type="password" name="old" autocomplete="current-password"></div>
+     <div><label class="pdx-lbl">Nieuw wachtwoord (min. 10 tekens)</label><input class="pdx-in" type="password" name="n1" autocomplete="new-password"></div>
+     <div><label class="pdx-lbl">Herhaal nieuw wachtwoord</label><input class="pdx-in" type="password" name="n2" autocomplete="new-password"></div>
+     <button class="pdx-btn pd">Wachtwoord wijzigen</button></div></form>
+    <div class="pdx-card"><div class="pdx-card-h">Tweestapsverificatie (2FA) <span class="pdx-badge ${u.twofa?'ok':''}">${u.twofa?'aan':'uit'}</span></div><div class="pdx-card-b pdx-small">
+     <p>Extra beveiliging met een code uit een authenticator-app bij het inloggen.</p>${u.twofa?'<button class="pdx-btn sm red" id="s2off" style="margin-top:8px">2FA uitzetten</button>':`<div class="pdx-row" style="margin-top:8px"><code style="background:#f1f3f8;padding:6px 8px;border-radius:6px">DEMO-JBSW-Y3DP-EHPK</code><input class="pdx-in" id="s2c" style="width:120px" placeholder="6 cijfers" inputmode="numeric" maxlength="6"><button class="pdx-btn sm pd" id="s2on">Aanzetten</button></div><p class="pdx-xs pdx-muted" style="margin-top:6px">Concept: elke 6-cijferige code werkt.</p>`}</div></div>
+    <div class="pdx-card"><div class="pdx-card-h">Bankverificatie</div><div class="pdx-card-b pdx-small"><p>Voor uitbetalingen en facturen op naam. In productie: verificatie met een iDEAL-betaling van € 0,01 vanaf je eigen rekening (via bunq).</p>
+     <div class="pdx-row" style="margin-top:8px"><input class="pdx-in" id="sIban" style="flex:1" placeholder="NL00 BANK 0000 0000 00" value="${esc(u.iban||'')}"><button class="pdx-btn sm" id="sBank">${u.iban?'Bijwerken':'Verifiëren'}</button></div><p class="pdx-xs pdx-muted" style="margin-top:6px">${u.ibanStatus?'Status: '+esc(u.ibanStatus):'Nog niet geverifieerd'} · betalingen staan in dit concept uit.</p></div></div>
+    <div class="pdx-card"><div class="pdx-card-h">Reviews &amp; favorieten</div><div class="pdx-card-b pdx-small">
+     <label class="pdx-opt"><input type="checkbox" id="sRev" ${u.reviewsOff?'':'checked'}> Reviews standaard toestaan op mijn advertenties</label>
+     <p style="margin-top:8px">${myReviews.length} review(s) op je advertenties · ${favs.length} favoriet(en) opgeslagen · <a href="account.html#favorieten" style="color:#7351c0">Favorieten bekijken</a></p></div></div>
+    <div class="pdx-card" style="border-color:#f3c2c2"><div class="pdx-card-h" style="color:#c92a2a">Account verwijderen</div><div class="pdx-card-b pdx-small"><p>Je advertenties gaan direct offline. Credits vervallen. Binnen 30 dagen kun je herstel aanvragen via support@paydates.nl; daarna verwijderen we je gegevens (AVG).</p>
+     <button class="pdx-btn red" id="sDel" style="margin-top:8px"><i class="fa fa-trash"></i> Account verwijderen</button></div></div>
+   </div></div></div>`;
+  bindLogout();const again=()=>pageSettings(root);
+  $('#sGen').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);const em=String(f.get('email')).trim().toLowerCase();if(db().users.some(x=>x.id!==u.id&&x.email.toLowerCase()===em))return toast('E-mailadres al in gebruik');
+    userMut(x=>{x.name=String(f.get('name')).trim();x.city=String(f.get('city')).trim();x.marketing=!!f.get('marketing');if(x.email!==em){x.email=em;P.mailSim(x,'welcome',{});}});audit('settings','self','algemeen');toast('Opgeslagen');again();};
+  const co=$('#sCo');if(co)co.onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);userMut(x=>{x.company=Object.assign(x.company||{},{name:f.get('cname'),kvk:f.get('kvk'),vat:f.get('vat'),addr:f.get('addr')});});audit('settings','self','bedrijf');toast('Opgeslagen');};
+  $('#sPw').onsubmit=e=>{e.preventDefault();const f=e.target;if(f.old.value!==me().pw)return toast('Huidig wachtwoord klopt niet');if(f.n1.value.length<10)return toast('Minimaal 10 tekens');if(f.n1.value!==f.n2.value)return toast('Wachtwoorden zijn niet gelijk');userMut(x=>{x.pw=f.n1.value;});audit('password','self','gewijzigd');toast('Wachtwoord gewijzigd (alleen in deze demo)');f.reset();};
+  const on=$('#s2on');if(on)on.onclick=()=>{if(!/^\d{6}$/.test($('#s2c').value))return toast('Vul 6 cijfers in');userMut(x=>{x.twofa=true;});audit('2fa','self','aan');again();};
+  const off=$('#s2off');if(off)off.onclick=()=>{userMut(x=>{x.twofa=false;});audit('2fa','self','uit');again();};
+  $('#sBank').onclick=()=>{const v=$('#sIban').value.replace(/\s/g,'').toUpperCase();if(!/^NL\d{2}[A-Z]{4}\d{10}$/.test(v))return toast('Ongeldig Nederlands IBAN');userMut(x=>{x.iban=v;x.ibanStatus='wacht op verificatiebetaling (concept)';});audit('bank','self','iban');again();};
+  $('#sRev').onchange=e=>{userMut(x=>{x.reviewsOff=!e.target.checked;});toast('Opgeslagen');};
+  $('#sDel').onclick=()=>{if(!confirm('Weet je het zeker? Je account en advertenties gaan offline.'))return;userMut((x,d2)=>{x.prevStatus=x.status;x.status='verwijderd';x.deletedAt=P.now();d2.ads.filter(a=>a.owner===x.id&&a.status!=='verwijderd').forEach(a=>{a.prevStatus=a.status;a.status='verwijderd';a.deletedAt=P.now();a.deletedBy='eigenaar';});});audit('account-delete','self','');P.logout();location.href='index.html';};
+}
+
 /* ================= router ================= */
 header();
 const root=document.getElementById('pdxRoot');
-({login:pageLogin,register:pageRegister,'wachtwoord-vergeten':pageReset,account:pageAccount,dashboard:pageDashboard,'mijn-advertenties':pageMyAds,'advertentie-plaatsen':pageWizard,kyc:pageKyc,'bedrijf-claimen':pageClaim}[PAGE]||function(){})(root);
+({login:pageLogin,register:pageRegister,'wachtwoord-vergeten':pageReset,account:pageAccount,dashboard:pageDashboard,'mijn-advertenties':pageMyAds,'advertentie-plaatsen':pageWizard,kyc:pageKyc,'bedrijf-claimen':pageClaim,'account-instellingen':pageSettings}[PAGE]||function(){})(root);
 })();

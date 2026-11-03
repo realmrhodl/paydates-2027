@@ -108,9 +108,9 @@
 <div class="grid lg:grid-cols-[minmax(0,1fr)_320px] gap-4 mt-3">
 <section class="block p-5 sm:p-7"><h1 class="text-[22px] font-bold text-[#212529]">Contact</h1><p class="text-ink-muted mt-1">Vragen over je account, credits, adverteren of partnerships? Stuur ons een bericht.</p>
 <form data-pd-form class="mt-4"><div data-hide-on-ok class="space-y-3.5">
- <div class="grid sm:grid-cols-2 gap-3"><div><label class="lbl">Naam</label><input required class="inp"></div><div><label class="lbl">E-mailadres</label><input type="email" required class="inp"></div></div>
- <div><label class="lbl">Onderwerp</label><select id="onderwerp" class="inp"><option value="account">Mijn account</option><option value="credits">Credits &amp; betalingen</option><option value="adverteren">Adverteren</option><option value="banners">Banners &amp; partnerships</option><option value="account-verwijderen">Account verwijderen</option><option value="pers">Pers</option><option value="anders">Anders</option></select></div>
- <div><label class="lbl">Bericht</label><textarea required rows="6" class="inp"></textarea></div>
+ <div class="grid sm:grid-cols-2 gap-3"><div><label class="lbl">Naam</label><input required name="naam" class="inp"></div><div><label class="lbl">E-mailadres</label><input type="email" required name="email" class="inp"></div></div>
+ <div><label class="lbl">Onderwerp</label><select id="onderwerp" name="onderwerp" class="inp"><option value="account">Mijn account</option><option value="credits">Credits &amp; betalingen</option><option value="adverteren">Adverteren</option><option value="banners">Banners &amp; partnerships</option><option value="account-verwijderen">Account verwijderen</option><option value="pers">Pers</option><option value="anders">Anders</option></select></div>
+ <div><label class="lbl">Bericht</label><textarea required rows="6" name="bericht" class="inp"></textarea></div>
  <button class="btn btn-pd"><i class="fa fa-paper-plane"></i> Versturen</button>
  <p class="text-[11px] text-ink-muted"><i class="fa fa-flask mr-1"></i>Concept-versie: nog niet gekoppeld aan de backend.</p></div>
  <div data-ok class="hidden py-6 text-center"><i class="fa fa-circle-check text-[#2f9e44] text-3xl"></i><h2 class="font-bold text-[18px] text-[#212529] mt-2">Bericht ontvangen</h2><p class="text-ink-muted">We reageren meestal binnen één werkdag.</p></div></form></section>

@@ -1,4 +1,4 @@
-/* Paydates V2 admin — advertenties, KYC, seksclubs-import, claims, polls (concept) */
+/* Paydates V2 admin — advertenties, KYC, claims, polls (concept) */
 (function(){
 'use strict';
 const A=window.PDXA; if(!A)return;
@@ -54,65 +54,7 @@ R.kyc=function(){
   draw();
 };
 
-/* ---------- seksclubs-import (preview, geen publicatie) ---------- */
-R.seksclubs=function(){
-  const C=window.PDX_CLUBS; if(!C){main().innerHTML=head('Seksclubs-import','clubs-inventory.js ontbreekt.');return;}
-  const V=C.venues.map((v,i)=>Object.assign({key:'v'+i},v));
-  const F={tab:location.hash.slice(1)||'clubs',q:'',prov:'',status:'',type:'',dec:'',rev:''};
-  const decB=x=>x?`<span class="pdx-badge ${x.s==='goedgekeurd'?'ok':x.s==='afgewezen'?'bad':'warn'}">${esc(x.s)}</span>`:'<span class="pdx-badge">nog niet</span>';
-  const sB=s=>`<span class="pdx-badge ${s==='actief'?'ok':s==='mogelijk_gesloten'?'bad':''}">${esc(String(s).replace('_',' '))}</span>`;
-  const hoursTxt=v=>!v.opening_hours||v.opening_hours==='onbekend'?'<span class="pdx-muted">onbekend → nooit “Nu open”</span>':esc(typeof v.opening_hours==='string'?v.opening_hours:JSON.stringify(v.opening_hours));
-  function draw(){const d=db();const dec=d.clubImport.decisions;const s=C.summary;
-    const tabs=[['clubs','Clubs & privéhuizen'],['parenclubs','Parenclubs (apart)'],['prov','Per provincie'],['links','Bronnen'],['stats','Profielstatistieken']];
-    let body='';
-    if(F.tab==='clubs'||F.tab==='parenclubs'){const q=F.q.toLowerCase();
-      const L=V.filter(v=>(F.tab==='parenclubs'?v.is_parenclub:!v.is_parenclub)&&(!q||[v.name,v.city,(v.aliases||[]).join(' ')].join(' ').toLowerCase().includes(q))&&(!F.prov||v.province===F.prov)&&(!F.status||v.status===F.status)&&(!F.type||v.type===F.type)&&(!F.rev||String(!!v.needs_manual_review)===F.rev)&&(!F.dec||(F.dec==='none'?!dec[v.key]:dec[v.key]&&dec[v.key].s===F.dec)));
-      const provs=[...new Set(V.map(v=>v.province))].sort();
-      body=`${F.tab==='parenclubs'?'<div class="pdx-demo" style="margin-bottom:12px"><i class="fa fa-people-arrows"></i><div>Parenclubs worden <b>apart</b> gehouden en niet gemengd met seksclubs/privéhuizen in stads- of provinciepagina’s.</div></div>':''}
-      <div class="pdx-card pdx-card-b pdx-row"><input class="pdx-in" style="flex:2;min-width:160px" id="cq" placeholder="Zoek naam, stad, alias…" value="${esc(F.q)}">
-       <select class="pdx-in" style="flex:1" id="cprov"><option value="">Alle provincies</option>${provs.map(p=>`<option ${F.prov===p?'selected':''}>${esc(p)}</option>`).join('')}</select>
-       <select class="pdx-in" style="flex:1" id="cstatus"><option value="">Alle statussen</option>${['actief','mogelijk_gesloten','onbekend'].map(p=>`<option value="${p}" ${F.status===p?'selected':''}>${p.replace('_',' ')}</option>`).join('')}</select>
-       ${F.tab==='clubs'?`<select class="pdx-in" style="flex:1" id="ctype"><option value="">Alle types</option>${['seksclub','privehuis','overig_onbekend'].map(p=>`<option ${F.type===p?'selected':''}>${p}</option>`).join('')}</select>`:''}
-       <select class="pdx-in" style="flex:1" id="crev"><option value="">Review: alles</option><option value="true" ${F.rev==='true'?'selected':''}>Handmatig nodig</option><option value="false" ${F.rev==='false'?'selected':''}>Geen review nodig</option></select>
-       <select class="pdx-in" style="flex:1" id="cdec"><option value="">Besluit: alles</option><option value="none" ${F.dec==='none'?'selected':''}>Nog niet beoordeeld</option>${['goedgekeurd','handmatig','afgewezen'].map(p=>`<option ${F.dec===p?'selected':''}>${p}</option>`).join('')}</select></div>
-      <div class="pdx-card"><div class="pdx-card-h"><span>${L.length} van ${V.filter(v=>F.tab==='parenclubs'?v.is_parenclub:!v.is_parenclub).length}</span><span class="pdx-xs pdx-muted">Klik op een rij voor controle</span></div><div class="pdx-scroll"><table class="pdx-table"><thead><tr><th>Naam</th><th>Plaats</th><th>Type</th><th>Status (research)</th><th>Contact</th><th>Tijden</th><th>Bronnen</th><th>Review</th><th>Besluit</th></tr></thead><tbody>
-      ${L.map(v=>`<tr data-k="${v.key}" style="cursor:pointer"><td><b>${esc(v.name)}</b>${v.existing_paydates_listing?' <span class="pdx-badge pd">al op site</span>':''}</td><td class="pdx-small">${esc(v.city||'')}<div class="pdx-xs pdx-muted">${esc(v.province||'')}</div></td><td class="pdx-xs">${esc(v.type)}</td><td>${sB(v.status)}</td>
-       <td class="pdx-xs">${v.website?'<i class="fa fa-globe" title="website"></i> ':''}${v.phone?'<i class="fa fa-phone" title="telefoon"></i>':''}${!v.website&&!v.phone?'<span class="pdx-muted">—</span>':''}</td><td class="pdx-xs">${v.opening_hours&&v.opening_hours!=='onbekend'?'<i class="fa fa-clock" style="color:#2f9e44"></i>':'<span class="pdx-muted">onbekend</span>'}</td>
-       <td class="pdx-xs">${v.source_count}</td><td>${v.needs_manual_review?'<span class="pdx-badge warn">ja</span>':'<span class="pdx-badge ok">nee</span>'}</td><td>${decB(dec[v.key])}</td></tr>`).join('')}</tbody></table></div></div>`;}
-    if(F.tab==='prov'){const PP=C.per_province;body=`<div class="pdx-card"><div class="pdx-scroll"><table class="pdx-table"><thead><tr><th>Provincie</th><th>Totaal</th><th>Actief</th><th>Mogelijk gesloten</th><th>Onbekend</th><th>Seksclub</th><th>Privéhuis</th><th>Parenclub</th><th>Zonder website</th><th>Zonder tijden</th><th>Handmatig</th><th>Gesloten (ref.)</th></tr></thead><tbody>${Object.entries(PP).map(([p,x])=>`<tr><td><b>${esc(p)}</b></td><td>${x.totaal}</td><td>${x.actief}</td><td>${x.mogelijk_gesloten}</td><td>${x.onbekend}</td><td>${x.seksclub}</td><td>${x.privehuis}</td><td>${x.parenclub}</td><td>${x.zonder_website}</td><td>${x.zonder_openingstijden}</td><td>${x.handmatig}</td><td>${x.gesloten_referentie}</td></tr>`).join('')}</tbody></table></div></div>`;}
-    if(F.tab==='links'){const S=C.sources_status;body=`<div class="pdx-card"><div class="pdx-card-h">Bronstatus (research ${esc(s.verified_at)})</div><div class="pdx-card-b"><pre class="pdx-pre">${esc(JSON.stringify(S,null,2))}</pre></div></div><div class="pdx-card"><div class="pdx-card-h">Kanttekeningen</div><div class="pdx-card-b pdx-small"><ul style="padding-left:18px;list-style:disc">${(C.caveats||[]).map(c=>`<li>${esc(c)}</li>`).join('')}</ul></div></div>`;}
-    if(F.tab==='stats'){const st=JSON.parse(localStorage.getItem('pdx_stats')||'{}');const rows=Object.entries(st).sort((a,b)=>(b[1].view||0)-(a[1].view||0));
-      body=`<div class="pdx-demo" style="margin-bottom:12px"><i class="fa fa-flask"></i><div>Alleen events uit <b>deze browser</b> (localStorage). In productie: server-side, privacyvriendelijk (geen IP-opslag), per pakket Premium/Spotlight zichtbaar voor de club.</div></div><div class="pdx-card"><div class="pdx-scroll"><table class="pdx-table"><thead><tr><th>Pagina</th><th>Weergaven</th><th>Websitekliks</th><th>Telefoonkliks</th></tr></thead><tbody>${rows.map(([k,v])=>`<tr><td><a href="../${esc(k)}" target="_blank" style="color:#7351c0">${esc(k)}</a></td><td>${v.view||0}</td><td>${v.web||0}</td><td>${v.tel||0}</td></tr>`).join('')||'<tr><td colspan="4" class="pdx-muted">Nog geen events. Open een seksclub-/privéhuispagina op de site.</td></tr>'}</tbody></table></div></div>`;}
-    main().innerHTML=head('Seksclubs-import',`Preview van de research-inventaris (${s.raw_records} ruwe records → ${s.total_unique} uniek, ${s.duplicates_merged} duplicaten samengevoegd). <b>Niets wordt gepubliceerd</b>; dit is een droog-run beoordeling.`,`<button class="pdx-btn" id="dry"><i class="fa fa-vial"></i> Droog-run</button><button class="pdx-btn" id="exp"><i class="fa fa-download"></i> Export besluiten</button>`)+
-     `<div class="pdx-grid pdx-g4">${kpi('Uniek',s.total_unique,`${s.types.seksclub} clubs · ${s.types.privehuis} privéhuizen · ${s.types.overig_onbekend} onbekend type`)}${kpi('Actief (research)',s.actief,`${s.mogelijk_gesloten} mogelijk gesloten · ${s.onbekend} onbekend`)}${kpi('Handmatig nodig',s.needs_manual_review,`${Object.keys(dec).length} beoordeeld in admin`)}${kpi('Met openingstijden',s.with_opening_hours,'rest: nooit “Nu open”')}</div>
-     <div class="pdx-demo" style="margin-bottom:12px"><i class="fa fa-triangle-exclamation"></i><div>${esc((C.caveats||[])[0]||'')}</div></div>
-     <div class="adm-tabs">${tabs.map(t=>`<a href="#${t[0]}" data-t="${t[0]}" class="${F.tab===t[0]?'on':''}">${t[1]}</a>`).join('')}</div>${body}`;
-    $$('[data-t]').forEach(t=>t.onclick=e=>{e.preventDefault();F.tab=t.dataset.t;history.replaceState(null,'','#'+F.tab);draw();});
-    const cq=$('#cq');if(cq)cq.oninput=e=>{F.q=e.target.value;const p=e.target.selectionStart;draw();const n=$('#cq');n.focus();n.setSelectionRange(p,p);};
-    ['prov','status','type','rev','dec'].forEach(k=>{const el=$('#c'+k);if(el)el.onchange=e=>{F[k]=e.target.value;draw();};});
-    $$('tr[data-k]').forEach(r=>r.onclick=()=>check(V.find(v=>v.key===r.dataset.k)));
-    $('#exp').onclick=()=>{const d2=db();dl('seksclubs-besluiten-demo.json',JSON.stringify({generated:P.now(),note:'Concept-export. Geen productie-import.',decisions:Object.entries(d2.clubImport.decisions).map(([k,x])=>{const v=V.find(y=>y.key===k)||{};return {key:k,name:v.name,city:v.city,type:v.type,research_status:v.status,besluit:x.s,notitie:x.n,door:x.by,op:x.at};})},null,2));audit('club-export','besluiten','JSON (demo)');};
-    $('#dry').onclick=()=>{const d2=db();const dc=d2.clubImport.decisions;const ok=V.filter(v=>dc[v.key]&&dc[v.key].s==='goedgekeurd');
-      const blocked=ok.filter(v=>v.status!=='actief'&&!d2.flags.clubsPublishUnverified);
-      modal('Droog-run import (er gebeurt niets)',`<div class="pdx-small" style="display:grid;gap:6px"><div>Goedgekeurd in admin: <b>${ok.length}</b></div><div>Zou aangemaakt worden als concept-profiel: <b>${ok.length-blocked.length}</b></div><div>Geblokkeerd (status niet “actief”, flag “ongeverifieerd publiceren” staat uit): <b>${blocked.length}</b></div><div>Parenclubs gaan naar aparte sectie: <b>${ok.filter(v=>v.is_parenclub).length}</b></div><div>Zonder openingstijden (geen “Nu open”): <b>${ok.filter(v=>!v.opening_hours||v.opening_hours==='onbekend').length}</b></div><div>Al bestaand op site (overslaan/samenvoegen): <b>${ok.filter(v=>v.existing_paydates_listing).length}</b></div>
-       <div class="pdx-demo"><i class="fa fa-lock"></i><div>Echte import is uitgeschakeld in dit concept. Vereist: controle door Stefan, backup, en database-migratie in staging.</div></div></div>`);audit('club-dryrun','import',ok.length+' goedgekeurd');};
-  }
-  function check(v){const d=db();const x=d.clubImport.decisions[v.key]||{};
-    modal('Controle: '+esc(v.name),`<div class="pdx-small" style="display:grid;gap:6px">
-      <div class="pdx-row">${sB(v.status)} <span class="pdx-badge">${esc(v.type)}</span>${v.is_parenclub?'<span class="pdx-badge pd">parenclub</span>':''}${v.needs_manual_review?'<span class="pdx-badge warn">handmatig</span>':''}</div>
-      <div><b>Adres:</b> ${esc([v.address,v.postcode,v.city].filter(Boolean).join(', ')||'onbekend')} (${esc(v.province)})</div>
-      <div><b>Website:</b> ${v.website?`<a href="${esc(v.website)}" target="_blank" rel="noopener nofollow" style="color:#7351c0">${esc(v.website)}</a>`:'—'} · <b>Telefoon:</b> ${esc(v.phone||'—')} · <b>E-mail:</b> ${esc(v.email||'—')}</div>
-      <div><b>Openingstijden:</b> ${hoursTxt(v)}</div><div><b>Aliassen:</b> ${esc((v.aliases||[]).join(', ')||'—')}</div>
-      ${(v.review_reasons||[]).length?`<div><b>Reviewredenen:</b><ul style="padding-left:18px;list-style:disc">${v.review_reasons.map(r=>`<li>${esc(r)}</li>`).join('')}</ul></div>`:''}
-      ${(v.notes||[]).length?`<div><b>Notities research:</b><ul style="padding-left:18px;list-style:disc">${v.notes.map(r=>`<li>${esc(r)}</li>`).join('')}</ul></div>`:''}
-      <div><b>Bronnen (${v.source_count}):</b> ${(v.source_urls||[]).map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener nofollow" style="color:#7351c0">${esc(u.replace(/^https?:\/\//,'').split('/')[0])}</a>`).join(' · ')}</div>
-      <div class="pdx-xs pdx-muted">Geverifieerd: ${esc(v.verified_at)} · Foto’s/logo: ${esc(v.logo_photos)}</div>
-      <hr style="border:0;border-top:1px solid #eef1f7"><label class="pdx-lbl">Besluit</label><select class="pdx-in" id="dS"><option value="">— nog niet —</option>${['goedgekeurd','handmatig','afgewezen'].map(o=>`<option ${x.s===o?'selected':''}>${o}</option>`).join('')}</select>
-      <label class="pdx-lbl">Notitie</label><input class="pdx-in" id="dN" value="${esc(x.n||'')}" placeholder="Bijv. gebeld op …, KvK bevestigd">
-      ${v.status!=='actief'?'<div class="pdx-xs" style="color:#c92a2a">Status is niet “actief”: kan niet gepubliceerd worden zolang de flag “ongeverifieerd publiceren” uit staat.</div>':''}</div>`,m=>{
-      const s=m.querySelector('#dS').value,n=m.querySelector('#dN').value;const d2=db();if(!s)delete d2.clubImport.decisions[v.key];else d2.clubImport.decisions[v.key]={s,n,by:me.username,at:P.now()};save(d2);audit('club-'+(s||'reset'),v.name,n);draw();});}
-  draw();
-};
+/* seksclubs-beheer: zie pages-clubs.js */
 
 /* ---------- claims ---------- */
 R.claims=function(){
@@ -121,7 +63,8 @@ R.claims=function(){
     `<div class="pdx-card"><div class="pdx-scroll"><table class="pdx-table"><thead><tr><th>Profiel</th><th>Aanvrager</th><th>KvK</th><th>Ontvangen</th><th>Status</th><th>Notitie</th><th></th></tr></thead><tbody>${d.claims.map(c=>`<tr><td><b>${esc(c.club)}</b>${c.clubRef?`<div class="pdx-xs"><a href="../${esc(c.clubRef)}" target="_blank" style="color:#7351c0">${esc(c.clubRef)}</a></div>`:''}</td><td class="pdx-small">${esc(c.name)}<div class="pdx-xs pdx-muted">${esc(c.email)} ${esc(c.phone||'')} · ${esc(c.role||'')}</div></td><td class="pdx-xs">${esc(c.kvk||'—')}</td><td class="pdx-xs">${fmtDT(c.at)}</td><td><span class="pdx-badge ${c.status==='goedgekeurd'?'ok':c.status==='afgewezen'?'bad':'warn'}">${esc(c.status)}</span></td><td class="pdx-xs">${esc(c.note||'')}</td>
       <td style="white-space:nowrap">${c.status==='nieuw'||c.status==='in behandeling'?`<button class="pdx-btn sm" data-h="${c.id}">In behandeling</button> <button class="pdx-btn sm green" data-a="${c.id}">Goedkeuren</button> <button class="pdx-btn sm red" data-r="${c.id}">Afwijzen</button>`:''}</td></tr>`).join('')||'<tr><td colspan="7" class="pdx-muted">Geen claims.</td></tr>'}</tbody></table></div></div>`;
     const set=(id,s,needNote)=>{const n=needNote?prompt('Notitie / reden:')||'':'';if(needNote&&!n)return;const d2=db();const c=d2.claims.find(x=>x.id===id);c.status=s;if(n)c.note=n;c.by=me.username;
-      if(s==='goedgekeurd'){let u=d2.users.find(x=>x.email.toLowerCase()===String(c.email).toLowerCase());if(u&&u.role==='klant')u.role='bedrijf';if(u){u.company=u.company||{name:c.club,kvk:c.kvk||'',plan:'basic'};u.company.claimed=c.clubRef;}c.note=(c.note?c.note+' · ':'')+(u?'Gekoppeld aan '+u.username:'Geen account met dit e-mailadres: uitnodiging nodig');}
+      if(s==='goedgekeurd'){let u=d2.users.find(x=>x.email.toLowerCase()===String(c.email).toLowerCase());if(u&&u.role==='klant')u.role='bedrijf';if(u){u.company=u.company||{name:c.club,kvk:c.kvk||'',plan:'basic'};u.company.claimed=c.clubRef;}
+        if(window.PDXClubs){const v=PDXClubs.all().find(x=>PDXClubs.url(x)===c.clubRef||x.id===c.clubId);if(v)PDXClubs.update(v.id,{claim:'geclaimd',claimManual:false,owner:u?u.id:null});}c.note=(c.note?c.note+' · ':'')+(u?'Gekoppeld aan '+u.username:'Geen account met dit e-mailadres: uitnodiging nodig');}
       save(d2);audit('claim-'+s,c.club,n);draw();};
     $$('[data-h]').forEach(b=>b.onclick=()=>set(b.dataset.h,'in behandeling'));$$('[data-a]').forEach(b=>b.onclick=()=>set(b.dataset.a,'goedgekeurd'));$$('[data-r]').forEach(b=>b.onclick=()=>set(b.dataset.r,'afgewezen',true));
   }

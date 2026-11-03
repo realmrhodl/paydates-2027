@@ -3,7 +3,7 @@
 patcht bestaande pagina's (idempotent, met markers). Raakt geen data/backends aan."""
 import os,re,json,glob,sys
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)),'..'))
-sys.path.insert(0,'_build'); from gap_data import GAP
+sys.path.insert(0,'_build'); from gap_data import GAP, EXTRA_MD
 changed=[]
 def rd(p): return open(p,encoding='utf-8').read()
 def wr(p,s):
@@ -19,11 +19,11 @@ for p,t in (('P0','Blokkerend voor livegang'),('P1','Kort na livegang'),('P2','L
     md+=[f'| {a} | {s} | {d} |' for (pp,a,s,d) in GAP if pp==p]; md+=['']
 md+=['## Demo-logins (wachtwoord `demo`)','','- admin@demo.paydates.test (admin)','- moderatie@demo.paydates.test (moderator: geen toegang tot BV, betalingen, instellingen)','- adverteerder@demo.paydates.test (adverteerder, 450 credits)','- bedrijf@demo.paydates.test (bedrijf, KYC ingediend)','',
  '## Harde grenzen in dit concept','','- Geen echte e-mail: alles in het mail-log met status "gesimuleerd (niet verzonden)". Massamail vereist het typen van SIMULEER.','- Flags `paymentsLive`, `realEmail`, `kycProvider` en `clubsPublishUnverified` zijn vergrendeld.','- Openingstijden onbekend ⇒ nooit "Nu open". Parenclubs apart.','- Bestaande publieke pagina\'s zijn alleen aangevuld (poll, claim-blok, scripts), niet herschreven.','- Contact altijd via support@paydates.nl (nooit info@).','']
-wr('admin/README-GAP.md','\n'.join(md))
+wr('admin/README-GAP.md','\n'.join(md)+EXTRA_MD)
 wr('admin/assets/gap.js','/* gegenereerd door _build/platform.py */\nwindow.PDX_GAP='+json.dumps([{'p':p,'t':a,'s':s,'d':d} for (p,a,s,d) in GAP],ensure_ascii=False)+';\n')
 
 # ---------- admin pages ----------
-ADMIN={'index':'Dashboard','gebruikers':'Gebruikers','gebruiker':'Gebruiker','advertenties':'Advertenties','kyc':'KYC-wachtrij','email':'E-mail','bv':'BV & eigendom','betalingen':'Betalingen & tarieven','seksclubs':'Seksclubs-import','claims':'Claims','polls':'Community polls','instellingen':'Instellingen','audit':'Auditlog','gap':'Gap-analyse'}
+ADMIN={'index':'Dashboard','gebruikers':'Gebruikers','gebruiker':'Gebruiker','advertenties':'Advertenties','kyc':'KYC-wachtrij','email':'E-mail','bv':'BV & eigendom','betalingen':'Betalingen & tarieven','seksclubs':'Seksclubs-beheer','meldingen':'Meldingen','support':'Support','reviews':'Reviews','categorieen':'Categorieën','content':'Content & menu','claims':'Claims','polls':'Community polls','instellingen':'Instellingen','audit':'Auditlog','gap':'Gap-analyse'}
 for k,t in ADMIN.items():
     extra='<script src="assets/clubs-inventory.js"></script>\n' if k in('seksclubs','index') else ''
     extra+='<script src="assets/gap.js"></script>\n' if k=='gap' else ''
@@ -36,8 +36,8 @@ for k,t in ADMIN.items():
 <link rel="stylesheet" href="../assets/pdx.css"><link rel="stylesheet" href="assets/admin.css">
 </head><body data-page="{k}"><noscript>JavaScript is nodig voor het adminpanel.</noscript>
 <script src="../assets/data.js"></script>
-{extra}<script src="../assets/pdx.js"></script>
-<script src="assets/admin.js"></script><script src="assets/pages-users.js"></script><script src="assets/pages-content.js"></script><script src="assets/pages-biz.js"></script><script src="assets/boot.js"></script>
+{extra}<script src="../assets/pdx.js"></script><script src="../assets/clubs-data.js"></script><script src="../assets/clubs-store.js"></script>
+<script src="assets/admin.js"></script><script src="assets/pages-users.js"></script><script src="assets/pages-content.js"></script><script src="assets/pages-biz.js"></script><script src="assets/pages-clubs.js"></script><script src="assets/pages-live.js"></script><script src="assets/boot.js"></script>
 </body></html>
 ''')
 
@@ -56,7 +56,8 @@ for fn,title,desc,page in [('dashboard.html','Mijn dashboard | Paydates.nl','Jou
     ('mijn-advertenties.html','Mijn advertenties | Paydates.nl','Beheer je advertenties.','mijn-advertenties'),
     ('advertentie-plaatsen.html','Advertentie plaatsen | Paydates.nl','Plaats een advertentie op Paydates.nl.','advertentie-plaatsen'),
     ('kyc.html','Verificatie (KYC) | Paydates.nl','Verifieer je account.','kyc'),
-    ('bedrijf-claimen.html','Bedrijfsprofiel claimen | Paydates.nl','Claim het profiel van je club of privéhuis.','bedrijf-claimen')]:
+    ('bedrijf-claimen.html','Bedrijfsprofiel claimen | Paydates.nl','Claim het profiel van je club of privéhuis.','bedrijf-claimen'),
+    ('account-instellingen.html','Instellingen | Paydates.nl','Accountinstellingen, wallet en beveiliging.','account-instellingen')]:
     shell(fn,title,desc,('<div class="pdx-wrap" id="pdxRoot"><div class="pdx-card pdx-card-b pdx-muted">Laden…</div></div>',ACC%page),page)
 shell('polls.html','Community polls – archief | Paydates.nl','Bekijk de uitslagen van eerdere community polls op Paydates.nl.',
  ('''<div class="pdx-wrap" style="max-width:1000px"><h1 class="pdx-h1">Community polls</h1><p class="pdx-sub">Stem mee op de homepage en bekijk hier de uitslagen van eerdere polls. Anoniem: we slaan geen persoonsgegevens op bij je stem.</p>

@@ -152,6 +152,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     b.querySelector('i').className=(favs.has(id)?'fa-solid':'fa-regular')+' fa-heart';toast(favs.has(id)?'<i class="fa fa-heart text-gold mr-1"></i>Opgeslagen in je favorieten':'Verwijderd uit favorieten');});
   // formulieren (concept: nog niet gekoppeld aan backend)
   $$('form[data-pd-form]').forEach(f=>f.addEventListener('submit',e=>{e.preventDefault();if(!f.reportValidity())return;
+    try{const fd=new FormData(f),o={};fd.forEach((v,k)=>{if(v instanceof File)return;o[k]=k in o?[].concat(o[k],v):v;});const pg=location.pathname.split('/').pop();
+      if(/melden|contact/.test(pg)){const ib=JSON.parse(localStorage.getItem('pdx_inbox')||'[]');ib.push({kind:/melden/.test(pg)?'melding':'support',page:pg,at:new Date().toISOString(),f:o});localStorage.setItem('pdx_inbox',JSON.stringify(ib));}}catch(_){}
     const ok=f.querySelector('[data-ok]');if(ok){f.querySelectorAll('[data-hide-on-ok]').forEach(x=>x.classList.add('hidden'));ok.classList.remove('hidden');ok.scrollIntoView({block:'center',behavior:'smooth'});}else toast('Verzonden');}));
   // actieve navlink
   const page=document.body.dataset.page;if(page)$$(`[data-nav~="${page}"]`).forEach(a=>a.classList.add('active'));
