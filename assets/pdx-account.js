@@ -191,6 +191,11 @@ function pageMyAds(root){
     if(act==='del'){if(!confirm('Advertentie verwijderen? Hij gaat direct offline.'))return;mut(a=>{a.prevStatus=a.status;a.status='verwijderd';a.deletedAt=P.now();a.deletedBy='eigenaar';a.auto=false;});}
     audit('ad-'+act,id,'door eigenaar');toast({pause:'Gepauzeerd',resume:'Weer online',extend:'Verlengd',bump:'Omhoog geplaatst',bundle:'10× omhoog toegevoegd',top:'In de TOP',vip:'VIP actief',del:'Verwijderd'}[act]);again();
   });
+  // Boost uit de bottom-nav: mijn-advertenties.html?boost=<id>&m=sms|cr
+  if(!pageMyAds._boosted&&qs('boost')){pageMyAds._boosted=true;const card=root.querySelector(`[data-ad="${CSS.escape(qs('boost'))}"]`);
+    if(card){card.scrollIntoView({block:'center'});card.style.boxShadow='0 0 0 3px #7351c0';setTimeout(()=>card.style.boxShadow='',2500);
+      const m=qs('m');if(m==='sms')smsBump(qs('boost'),again);
+      else if(m==='cr'){const btn=card.querySelector('[data-act="bump"]');if(btn&&!btn.disabled&&confirm('1× omhoog plaatsen voor '+R.bump+' credits?'))btn.click();}}}
 }
 
 /* ================= WIZARD (plaatsen + bewerken) ================= */

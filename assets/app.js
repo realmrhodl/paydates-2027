@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   // favorieten
   document.addEventListener('click',e=>{const b=e.target.closest('[data-fav]');if(!b)return;e.preventDefault();e.stopPropagation();
     const id=+b.dataset.fav;favs.has(id)?favs.delete(id):favs.add(id);localStorage.setItem('pdFav',JSON.stringify([...favs]));
-    b.querySelector('i').className=(favs.has(id)?'fa-solid':'fa-regular')+' fa-heart';toast(favs.has(id)?'<i class="fa fa-heart text-gold mr-1"></i>Opgeslagen in je favorieten':'Verwijderd uit favorieten');});
+    b.querySelector('i').className=(favs.has(id)?'fa-solid':'fa-regular')+' fa-heart';toast(favs.has(id)?'<i class="fa fa-heart text-gold mr-1"></i>Opgeslagen in je favorieten':'Verwijderd uit favorieten');document.dispatchEvent(new CustomEvent('pd:fav',{detail:{id,on:favs.has(id),n:favs.size}}));});
   // formulieren (concept: nog niet gekoppeld aan backend)
   $$('form[data-pd-form]').forEach(f=>f.addEventListener('submit',e=>{e.preventDefault();if(!f.reportValidity())return;
     try{const fd=new FormData(f),o={};fd.forEach((v,k)=>{if(v instanceof File)return;o[k]=k in o?[].concat(o[k],v):v;});const pg=location.pathname.split('/').pop();
@@ -200,4 +200,45 @@ const s=document.createElement('script');s.src='assets/searchmodal.js';s.defer=t
 if(!window.PDX_HEADER){const hs=document.createElement('script');hs.src='assets/pdx-header.js';document.head.appendChild(hs);}
 // live zoeken (typeahead) in het header-zoekveld
 if(!window.PD_LIVESEARCH){const ls=document.createElement('script');ls.src='assets/livesearch.js';ls.defer=true;document.head.appendChild(ls);}
+})();
+
+/* Mobiele bottom-nav v3: Home · Zoeken · Nu beschikbaar · Favorieten (adverteerder: Boost) · Menu */
+(function(){
+if(!window.PD)return;const{$,$$,esc,D}=PD;
+const nav=document.getElementById('pdBottomNav');if(!nav)return;
+const nowN=(D.L||[]).filter(x=>x.now).length;$$('.nowN',nav).forEach(e=>{e.textContent=nowN;e.classList.toggle('hidden',!nowN);});
+const favN=n=>$$('.favN',nav).forEach(e=>{e.textContent=n>99?'99+':n;e.classList.toggle('hidden',!n);});
+try{favN(JSON.parse(localStorage.getItem('pdFav')||'[]').length);}catch(e){}
+document.addEventListener('pd:fav',e=>{favN(e.detail.n);const h=nav.querySelector('[data-bnav-slot4]');if(h&&e.detail.on){h.classList.remove('pd-bnav-pop');void h.offsetWidth;h.classList.add('pd-bnav-pop');}});
+// actief: "Beschikbaar" op search.html?f=now, anders Zoeken op zoekpagina
+const pg=(location.pathname.split('/').pop()||'index.html');const f=new URLSearchParams(location.search).get('f')||'';
+if(pg==='search.html'){(f.split(',').includes('now')?nav.querySelector('[data-bnav-now]'):nav.querySelector('[data-bnav-search]')).classList.add('active');}
+// adverteerder/bedrijf ingelogd → slot 4 wordt Boost
+let u=null,db=null;try{const ss=JSON.parse(localStorage.getItem('pdx_session')||'null');db=JSON.parse(localStorage.getItem('pdx_v1')||'null');u=ss&&db&&db.users?db.users.find(x=>x.id===ss.id):null;}catch(e){}
+if(!u||!(u.role==='adverteerder'||u.role==='bedrijf'))return;
+const R=(db.pay&&db.pay.rates)||{bump:20,smsCallEur:2};const eur=n=>'€'+Number(n).toLocaleString('nl-NL',{minimumFractionDigits:0,maximumFractionDigits:2});
+const ads=(db.ads||[]).filter(a=>a.owner===u.id&&a.status!=='verwijderd');const live=ads.filter(a=>a.status==='live');
+const s4=nav.querySelector('[data-bnav-slot4]');
+const b=document.createElement('button');b.type='button';b.className='pd-bnav-i pd-bnav-boost';b.setAttribute('aria-label','Boost je advertentie');b.setAttribute('aria-haspopup','dialog');
+b.innerHTML='<span class="pd-bnav-boost-ic"><i class="fa fa-rocket"></i></span><span>Boost</span>'+(live.length?`<b class="pd-bnav-badge pd-bnav-gold">${live.length}</b>`:'');
+s4.replaceWith(b);
+let sh=null;
+function sheet(){if(sh){sh.remove();sh=null;}
+ sh=document.createElement('div');sh.className='pd-bsheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');sh.setAttribute('aria-label','Boost');
+ const rows=live.length?live.map(a=>`<div class="pd-bs-ad"><div class="pd-bs-ad-h"><b>${esc(a.title)}</b><small>${esc(a.city||'')}${a.vip?' · VIP':''}${a.top?' · TOP':''} · ${(a.bumps||0)}× omhoog</small></div>
+   <div class="pd-bs-act"><a class="pd-bs-btn pd" href="mijn-advertenties.html?boost=${encodeURIComponent(a.id)}&m=sms"><i class="fa fa-phone"></i> Bel/sms · ${eur(R.smsCallEur)}</a>
+   <a class="pd-bs-btn" href="mijn-advertenties.html?boost=${encodeURIComponent(a.id)}&m=cr"><i class="fa fa-coins"></i> ${R.bump} credits</a></div></div>`).join('')
+  :`<div class="pd-bs-empty"><i class="fa fa-rectangle-list"></i><p>${ads.length?'Geen advertentie live om te boosten.':'Je hebt nog geen advertentie.'}</p><a class="pd-bs-btn pd" href="${ads.length?'mijn-advertenties.html':'advertentie-plaatsen.html'}">${ads.length?'Naar mijn advertenties':'<i class="fa fa-plus"></i> Advertentie plaatsen'}</a></div>`;
+ sh.innerHTML=`<div class="pd-bs-panel"><div class="pd-bs-grip"></div>
+  <div class="pd-bs-top"><div><div class="pd-bs-t"><i class="fa fa-rocket"></i> Boost</div><div class="pd-bs-s">Zet je advertentie direct weer bovenaan in je stad.</div></div><button type="button" class="pd-bs-x" data-bs-x aria-label="Sluiten"><i class="fa fa-xmark"></i></button></div>
+  <div class="pd-bs-bal"><span><i class="fa fa-coins"></i> Saldo <b>${Number(u.credits||0).toLocaleString('nl-NL')}</b> credits</span><a href="credits.html">Opwaarderen</a></div>
+  <div class="pd-bs-list">${rows}</div>
+  <div class="pd-bs-more"><a href="mijn-advertenties.html"><i class="fa fa-crown"></i> TOP, VIP &amp; elke dag automatisch omhoog</a><a href="dashboard.html"><i class="fa fa-gauge"></i> Dashboard</a></div>
+  <p class="pd-bs-note">Bellen/sms: geen credits nodig, betaal via je telefoonrekening (alleen NL).</p></div>`;
+ document.body.appendChild(sh);document.body.style.overflow='hidden';requestAnimationFrame(()=>sh.classList.add('open'));
+ const close=()=>{if(!sh)return;const el=sh;sh=null;el.classList.remove('open');document.body.style.overflow='';setTimeout(()=>el.remove(),200);};
+ sh.addEventListener('click',e=>{if(e.target===sh||e.target.closest('[data-bs-x]'))close();});
+ addEventListener('keydown',function k(e){if(e.key==='Escape'){close();removeEventListener('keydown',k);}});}
+b.addEventListener('click',sheet);
+if(new URLSearchParams(location.search).get('boost')==='open')sheet();
 })();
