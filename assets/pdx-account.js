@@ -26,7 +26,7 @@ function header(){
 
 /* ---- concept-balk boven accountpagina's ---- */
 function accBar(u,active){
-  const items=[['dashboard','dashboard.html','fa-gauge','Dashboard'],['ads','mijn-advertenties.html','fa-rectangle-list','Mijn advertenties'],['new','advertentie-plaatsen.html','fa-plus','Nieuwe advertentie'],['kyc','kyc.html','fa-id-card','Verificatie (KYC)'],['credits','credits.html','fa-coins','Credits kopen'],['fav','account.html#favorieten','fa-heart','Favorieten'],['set','account-instellingen.html','fa-gear','Instellingen']];
+  const items=[['dashboard','dashboard.html','fa-gauge','Dashboard'],['ads','mijn-advertenties.html','fa-rectangle-list','Mijn advertenties'],['new','advertentie-plaatsen.html','fa-plus','Nieuwe advertentie'],['kyc','kyc.html','fa-id-card','Verificatie (KYC)'],['credits','credits.html','fa-coins','Credits kopen'],['fav','favorieten.html','fa-heart','Favorieten'],['set','account-instellingen.html','fa-gear','Instellingen']];
   if(u.role==='bedrijf')items.splice(4,0,['claim','bedrijf-claimen.html','fa-building','Bedrijf claimen']);
   if(P.isAdmin(u))items.push(['admin','admin/index.html','fa-user-shield','Adminpanel']);
   return `<nav class="pdx-card pdx-nav" aria-label="Accountmenu">${items.map(i=>`<a href="${i[1]}" class="${i[0]===active?'on':''}"><i class="fa ${i[2]}"></i>${i[3]}</a>`).join('')}<a href="#" data-logout><i class="fa fa-right-from-bracket"></i>Uitloggen</a></nav>`;
@@ -364,7 +364,7 @@ function pageClaim(root){
 /* ================= ACCOUNTINSTELLINGEN (zoals /settings op de huidige site) ================= */
 function pageSettings(root){
   const u=P.requireLogin(); if(!u)return; const d=db();
-  const favs=(()=>{try{return JSON.parse(localStorage.getItem('pdFav')||'[]')}catch(e){return []}})();
+  const favs=(()=>{try{return JSON.parse(localStorage.getItem('pdFav:'+u.id)||'[]')}catch(e){return []}})();
   const myReviews=(d.reviews||[]).filter(r=>d.ads.some(a=>a.id===r.adId&&a.owner===u.id));
   root.innerHTML=`<div class="pdx-side">${accBar(u,'set')}<div style="display:grid;gap:16px;min-width:0">
    <div><h1 class="pdx-h1">Instellingen</h1><p class="pdx-sub">Account, wallet, beveiliging en privacy.</p></div>${demoNote}
@@ -392,7 +392,7 @@ function pageSettings(root){
      <div class="pdx-row" style="margin-top:8px"><input class="pdx-in" id="sIban" style="flex:1" placeholder="NL00 BANK 0000 0000 00" value="${esc(u.iban||'')}"><button class="pdx-btn sm" id="sBank">${u.iban?'Bijwerken':'Verifiëren'}</button></div><p class="pdx-xs pdx-muted" style="margin-top:6px">${u.ibanStatus?'Status: '+esc(u.ibanStatus):'Nog niet geverifieerd'} · betalingen staan in dit concept uit.</p></div></div>
     <div class="pdx-card"><div class="pdx-card-h">Reviews &amp; favorieten</div><div class="pdx-card-b pdx-small">
      <label class="pdx-opt"><input type="checkbox" id="sRev" ${u.reviewsOff?'':'checked'}> Reviews standaard toestaan op mijn advertenties</label>
-     <p style="margin-top:8px">${myReviews.length} review(s) op je advertenties · ${favs.length} favoriet(en) opgeslagen · <a href="account.html#favorieten" style="color:#7351c0">Favorieten bekijken</a></p></div></div>
+     <p style="margin-top:8px">${myReviews.length} review(s) op je advertenties · ${favs.length} favoriet(en) opgeslagen · <a href="favorieten.html" style="color:#7351c0">Favorieten bekijken</a></p></div></div>
     <div class="pdx-card" style="border-color:#f3c2c2"><div class="pdx-card-h" style="color:#c92a2a">Account verwijderen</div><div class="pdx-card-b pdx-small"><p>Je advertenties gaan direct offline. Credits vervallen. Binnen 30 dagen kun je herstel aanvragen via support@paydates.nl; daarna verwijderen we je gegevens (AVG).</p>
      <button class="pdx-btn red" id="sDel" style="margin-top:8px"><i class="fa fa-trash"></i> Account verwijderen</button></div></div>
    </div></div></div>`;

@@ -23,6 +23,7 @@
 <link rel="stylesheet" href="assets/tailwind.css">
 
 <script id="pd18-head">(function(){var ok=0;try{var v=localStorage.getItem('pd18');if(v==='1'||(v&&Date.now()-(+v)<7776e6))ok=1}catch(e){}if(ok||/(?:^|;\s*)pd18=1/.test(document.cookie)||/(^|;)pd18(;|$)/.test(window.name)||/[?&]pd18=1(&|$)/.test(location.search)||location.hash==='#noage')document.documentElement.classList.add('pd18ok')})();</script>
+<script>try{var _s=JSON.parse(localStorage.getItem("pdx_session")||"null");if(_s&&_s.id)document.documentElement.classList.add("pd-authed");else location.replace("login.html?next=favorieten.html");}catch(e){location.replace("login.html?next=favorieten.html");}</script>
 </head>
 <body class="font-sans antialiased" data-page="favorieten">
 <!-- 18+ poort -->
@@ -101,11 +102,12 @@
 <nav id="pdBottomNav" class="pd-bnav" aria-label="Snelmenu">
   <a href="index.html" data-nav="index" class="pd-bnav-i"><i class="fa fa-house"></i><span>Home</span></a>
   <button type="button" data-bnav-search class="pd-bnav-i"><i class="fa fa-magnifying-glass"></i><span>Zoeken</span></button>
-  <a href="search.html?f=now" data-bnav-now class="pd-bnav-i" aria-label="Nu beschikbaar"><i class="fa fa-bolt"></i><span>Beschikbaar</span><b class="pd-bnav-badge pd-bnav-live nowN" title="nu beschikbaar"></b></a>
+  <a href="videos.html" data-nav="videos video" class="pd-bnav-i"><i class="fa fa-film"></i><span>Video's</span></a>
   <a href="favorieten.html" data-nav="favorieten" data-bnav-slot4 class="pd-bnav-i"><i class="fa-regular fa-heart"></i><span>Favorieten</span><b class="pd-bnav-badge pd-bnav-fav favN hidden"></b></a>
   <button type="button" data-open-drawer class="pd-bnav-i" aria-label="Menu openen"><i class="fa fa-bars"></i><span>Menu</span></button>
 </nav>
-<main class="max-w-[1920px] mx-auto px-3 lg:px-6 py-5">
+<style>html:not(.pd-authed) #favMain{visibility:hidden}</style>
+<main id="favMain" class="max-w-[1920px] mx-auto px-3 lg:px-6 py-5">
   <div class="flex items-end justify-between gap-3 mb-3">
     <div><h1 class="text-[20px] font-bold text-[#212529]"><i class="fa fa-heart text-pd mr-1"></i> Favorieten</h1>
     <p class="text-ink-muted text-[13px]" id="favSub">Tik op het hartje bij een advertentie om haar hier te bewaren.</p></div>
@@ -113,10 +115,9 @@
   </div>
   <div id="favGrid" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-3"></div>
   <div id="favEmpty" class="hidden block p-8 text-center bg-white rounded-lg shadow-block"><i class="fa-regular fa-heart text-[34px] text-pd"></i>
-    <p class="font-semibold text-[#212529] mt-2">Nog geen favorieten</p><p class="text-ink-muted text-[13px] mt-1">Bewaar advertenties met het hartje — ze staan hier op dit apparaat, ook zonder account.</p>
+    <p class="font-semibold text-[#212529] mt-2">Nog geen favorieten</p><p class="text-ink-muted text-[13px] mt-1">Bewaar advertenties met het hartje — ze staan hier in je account.</p>
     <div class="flex flex-wrap justify-center gap-2 mt-4"><a href="search.html?f=now" class="btn btn-pd"><i class="fa fa-bolt"></i> Nu beschikbaar</a><a href="vrouwen.html" class="btn btn-ghost">Vrouwen</a><a href="locaties.html" class="btn btn-ghost">Per stad</a></div></div>
-  <p class="text-[11.5px] text-ink-muted mt-4">Favorieten worden lokaal in je browser bewaard. Log in om ze straks op al je apparaten te hebben.</p>
-</main>
+  </main>
 <!-- FOOTER -->
 <footer class="bg-white border-t border-line mt-8 text-[13px]">
   <section class="border-b border-line bg-body-light">
@@ -162,8 +163,8 @@
 </footer>
 <script src="assets/data.js"></script>
 <script src="assets/app.js"></script>
-<script>(function(){const{L,grid,$}=PD;let only=false;
-function render(){const ids=new Set(JSON.parse(localStorage.getItem('pdFav')||'[]'));let r=L.filter(x=>ids.has(x.id));const all=r.length;if(only)r=r.filter(x=>x.now);
+<script>(function(){if(!window.PD_FAV||!PD_FAV.key){location.replace(PD_FAV?PD_FAV.loginUrl('favorieten.html'):'login.html?next=favorieten.html');return;}const{L,grid,$}=PD;let only=false;
+function render(){const ids=new Set(JSON.parse(localStorage.getItem(PD_FAV.key)||'[]'));let r=L.filter(x=>ids.has(x.id));const all=r.length;if(only)r=r.filter(x=>x.now);
  $('#favGrid').innerHTML=r.map(x=>PD.card(x)).join('');$('#favEmpty').classList.toggle('hidden',all>0);$('#favNowBtn').classList.toggle('hidden',!all);
  $('#favNowBtn').classList.toggle('active',only);$('#favSub').textContent=all?all+' opgeslagen · '+L.filter(x=>ids.has(x.id)&&x.now).length+' nu beschikbaar':'Tik op het hartje bij een advertentie om haar hier te bewaren.';}
 $('#favNowBtn').onclick=()=>{only=!only;render();};

@@ -50,7 +50,13 @@ const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelect
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const slug=s=>String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const qs=k=>new URLSearchParams(location.search).get(k)||'';
-const favs=new Set(JSON.parse(localStorage.getItem('pdFav')||'[]'));
+// favorieten = accountfunctie: alleen ingelogd, per gebruiker opgeslagen (pdFav:<userId>)
+const pdUid=(()=>{try{const x=JSON.parse(localStorage.getItem('pdx_session')||'null');return x&&x.id||'';}catch(e){return ''}})();
+const FAVK=pdUid?'pdFav:'+pdUid:'';
+const favs=new Set(FAVK?JSON.parse(localStorage.getItem(FAVK)||'[]'):[]);
+if(FAVK){try{const pend=+sessionStorage.getItem('pdFavPending');if(pend){sessionStorage.removeItem('pdFavPending');favs.add(pend);localStorage.setItem(FAVK,JSON.stringify([...favs]));}}catch(e){}}
+const loginUrl=next=>'login.html?next='+encodeURIComponent(next||((location.pathname.split('/').pop()||'index.html')+location.search));
+window.PD_FAV={key:FAVK,uid:pdUid,loginUrl};
 const cityPage=c=>{const m=D.CITIES.find(x=>x.n===c);return m?`escort-${m.slug}.html`:`search.html?city=${encodeURIComponent(c)}`};
 
 function card(x,w=''){
@@ -148,7 +154,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   $$('form[data-search]').forEach(f=>f.addEventListener('submit',e=>{e.preventDefault();const v=f.querySelector('input').value.trim();location.href='search.html'+(v?'?q='+encodeURIComponent(v):'');}));
   // favorieten
   document.addEventListener('click',e=>{const b=e.target.closest('[data-fav]');if(!b)return;e.preventDefault();e.stopPropagation();
-    const id=+b.dataset.fav;favs.has(id)?favs.delete(id):favs.add(id);localStorage.setItem('pdFav',JSON.stringify([...favs]));
+    const id=+b.dataset.fav;
+    if(!FAVK){try{sessionStorage.setItem('pdFavPending',String(id));}catch(_){}toast('<i class="fa fa-lock mr-1"></i>Log in om favorieten te bewaren');setTimeout(()=>location.href=loginUrl(),700);return;}
+    favs.has(id)?favs.delete(id):favs.add(id);localStorage.setItem(FAVK,JSON.stringify([...favs]));
     b.querySelector('i').className=(favs.has(id)?'fa-solid':'fa-regular')+' fa-heart';toast(favs.has(id)?'<i class="fa fa-heart text-gold mr-1"></i>Opgeslagen in je favorieten':'Verwijderd uit favorieten');document.dispatchEvent(new CustomEvent('pd:fav',{detail:{id,on:favs.has(id),n:favs.size}}));});
   // formulieren (concept: nog niet gekoppeld aan backend)
   $$('form[data-pd-form]').forEach(f=>f.addEventListener('submit',e=>{e.preventDefault();if(!f.reportValidity())return;
@@ -202,17 +210,20 @@ if(!window.PDX_HEADER){const hs=document.createElement('script');hs.src='assets/
 if(!window.PD_LIVESEARCH){const ls=document.createElement('script');ls.src='assets/livesearch.js';ls.defer=true;document.head.appendChild(ls);}
 })();
 
-/* Mobiele bottom-nav v3: Home · Zoeken · Nu beschikbaar · Favorieten (adverteerder: Boost) · Menu */
+/* Mobiele bottom-nav v3: Home · Zoeken · Video's · Favorieten (adverteerder: Boost) · Menu */
 (function(){
 if(!window.PD)return;const{$,$$,esc,D}=PD;
 const nav=document.getElementById('pdBottomNav');if(!nav)return;
 const nowN=(D.L||[]).filter(x=>x.now).length;$$('.nowN',nav).forEach(e=>{e.textContent=nowN;e.classList.toggle('hidden',!nowN);});
 const favN=n=>$$('.favN',nav).forEach(e=>{e.textContent=n>99?'99+':n;e.classList.toggle('hidden',!n);});
-try{favN(JSON.parse(localStorage.getItem('pdFav')||'[]').length);}catch(e){}
+const FV=window.PD_FAV||{};const s4a=nav.querySelector('[data-bnav-slot4]');
+if(FV.key){try{favN(JSON.parse(localStorage.getItem(FV.key)||'[]').length);}catch(e){}}
+else if(s4a){s4a.href=FV.loginUrl?FV.loginUrl('favorieten.html'):'login.html?next=favorieten.html';s4a.setAttribute('aria-label','Favorieten (inloggen)');}
 document.addEventListener('pd:fav',e=>{favN(e.detail.n);const h=nav.querySelector('[data-bnav-slot4]');if(h&&e.detail.on){h.classList.remove('pd-bnav-pop');void h.offsetWidth;h.classList.add('pd-bnav-pop');}});
 // actief: "Beschikbaar" op search.html?f=now, anders Zoeken op zoekpagina
 const pg=(location.pathname.split('/').pop()||'index.html');const f=new URLSearchParams(location.search).get('f')||'';
-if(pg==='search.html'){(f.split(',').includes('now')?nav.querySelector('[data-bnav-now]'):nav.querySelector('[data-bnav-search]')).classList.add('active');}
+if(pg==='search.html'){const a=f.split(',').includes('now')&&nav.querySelector('[data-bnav-now]')||nav.querySelector('[data-bnav-search]');if(a)a.classList.add('active');}
+if(/^video-/.test(pg)){const v=nav.querySelector('a[href="videos.html"]');if(v)v.classList.add('active');}
 // adverteerder/bedrijf ingelogd → slot 4 wordt Boost
 let u=null,db=null;try{const ss=JSON.parse(localStorage.getItem('pdx_session')||'null');db=JSON.parse(localStorage.getItem('pdx_v1')||'null');u=ss&&db&&db.users?db.users.find(x=>x.id===ss.id):null;}catch(e){}
 if(!u||!(u.role==='adverteerder'||u.role==='bedrijf'))return;
