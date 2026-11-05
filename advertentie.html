@@ -319,10 +319,6 @@ $('#ad').innerHTML=`
      <div data-p="tijden" class="hidden max-w-md">${avail||'<span class="text-ink-muted">Op afspraak.</span>'}</div>
    </div>
   </section>
-  <section class="block p-4 flex flex-col sm:flex-row gap-3 sm:items-center justify-between text-[13px]">
-   <div class="flex items-start gap-3"><i class="fa fa-shield-halved text-pd text-lg mt-0.5"></i><p class="text-ink-muted">Klopt er iets niet aan deze advertentie, of vermoed je dwang of minderjarigheid? Meld het ons – we reageren binnen 24 uur.</p></div>
-   <a href="melden.html?id=${x.id}" class="btn btn-ghost !py-1.5 !text-[12px] shrink-0"><i class="fa fa-flag"></i> Advertentie melden</a>
-  </section>
  </div>
  <aside class="min-w-0">
  <div class="pd-aside-sticky space-y-3">
@@ -359,6 +355,10 @@ $('#ad').innerHTML=`
 </div>
 <section class="mt-6"><div class="flex items-end justify-between mb-3"><h2 class="text-[15px] font-semibold text-[#212529]">Vergelijkbare advertenties</h2><a href="${cityPage(x.c)}" class="text-[12px] text-pd">Meer in ${esc(x.c)} <i class="fa fa-angle-right"></i></a></div>
 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">${sim.map(a=>card(a)).join('')}</div></section>
+  <section class="block mt-6 p-4 flex flex-col sm:flex-row gap-3 sm:items-center justify-between text-[13px]">
+   <div class="flex items-start gap-3"><i class="fa fa-shield-halved text-pd text-lg mt-0.5"></i><p class="text-ink-muted">Klopt er iets niet aan deze advertentie, of vermoed je dwang of minderjarigheid? Meld het ons – we reageren binnen 24 uur.</p></div>
+   <a href="melden.html?id=${x.id}" class="btn btn-ghost !py-1.5 !text-[12px] shrink-0"><i class="fa fa-flag"></i> Advertentie melden</a>
+  </section>
 <div class="pd-above-bnav lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-line px-3 py-2.5 flex items-center gap-3 shadow-[0_-6px_20px_rgba(0,0,0,.08)]"><div class="min-w-0"><div class="text-[11px] text-ink-muted truncate">${esc(x.n)} · ${esc(x.c)}</div><div class="font-bold text-[#212529]">${x.p?'Vanaf € '+x.p:'Op aanvraag'}</div></div>${ctMain?`<a href="${esc(ctMain.h)}"${ext(ctMain.h)} class="btn btn-pd ${ctMain.cls} ml-auto !py-2 !text-[13px]"><i class="${ctMain.ic}"></i> ${ctMain.t}</a>`:`<a href="#contact-m" class="btn btn-pd ml-auto !py-2 !text-[13px]"><i class="fa fa-address-book"></i> Contact</a>`}</div><div class="lg:hidden h-16"></div>`;
 $$('#tabs .tab').forEach(t=>t.onclick=()=>{$$('#tabs .tab').forEach(b=>b.classList.toggle('on',b===t));$$('[data-p]').forEach(p=>p.classList.toggle('hidden',p.dataset.p!==t.dataset.t));});
 // galerij + lightbox
