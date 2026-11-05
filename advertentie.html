@@ -307,7 +307,7 @@ $('#ad').innerHTML=`
      ${(x.langs||[]).length?`<span><i class="fa fa-language text-pd mr-1"></i>${x.langs.map(l=>LANG[l]||l).join(', ')}</span>`:''}
      <span><i class="fa fa-image text-pd mr-1"></i>${P.length} foto's</span>${vids.length?`<button type="button" data-m="videos" class="hover:text-pd"><i class="fa fa-film text-pd mr-1"></i>${vids.length} video${vids.length>1?"'s":''}</button>`:''}
     </div>
-    <div class="lg:hidden mt-4">${ctBlock()}</div>
+    <div class="lg:hidden mt-4 scroll-mt-20" id="contact-m">${ctBlock()}</div>
    </div>
    <div class="border-t border-line flex overflow-x-auto scrollbar-none text-[13px]" id="tabs">
      <button class="tab on" data-t="over">Over mij</button><button class="tab" data-t="prijzen">Tarieven</button><button class="tab" data-t="mog">Mogelijkheden</button><button class="tab" data-t="tijden">Beschikbaarheid</button>
@@ -328,7 +328,7 @@ $('#ad').innerHTML=`
  <div class="pd-aside-sticky space-y-3">
   <div class="block p-4">
    <div class="text-[12px] text-ink-muted">Vanaf</div><div class="text-[26px] font-bold text-[#212529] leading-none">${x.p?'€ '+x.p:'Op aanvraag'}</div>
-   <div class="mt-4" id="contact">${ctBlock()}</div>
+   <div class="mt-4 hidden lg:block" id="contact">${ctBlock()}</div>
    <a href="chatten.html" class="btn btn-ghost w-full mt-3"><i class="fa fa-comments"></i> Chat met leden</a>
    <p class="text-[11px] text-ink-muted mt-3 leading-snug"><i class="fa fa-circle-info mr-1"></i>Je neemt rechtstreeks contact op met de adverteerder. Zeg dat je via Paydates.nl komt.</p>
    <div class="mt-4 pt-4 border-t border-line text-[12px] space-y-1.5">
@@ -359,7 +359,7 @@ $('#ad').innerHTML=`
 </div>
 <section class="mt-6"><div class="flex items-end justify-between mb-3"><h2 class="text-[15px] font-semibold text-[#212529]">Vergelijkbare advertenties</h2><a href="${cityPage(x.c)}" class="text-[12px] text-pd">Meer in ${esc(x.c)} <i class="fa fa-angle-right"></i></a></div>
 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">${sim.map(a=>card(a)).join('')}</div></section>
-<div class="pd-above-bnav lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-line px-3 py-2.5 flex items-center gap-3 shadow-[0_-6px_20px_rgba(0,0,0,.08)]"><div class="min-w-0"><div class="text-[11px] text-ink-muted truncate">${esc(x.n)} · ${esc(x.c)}</div><div class="font-bold text-[#212529]">${x.p?'Vanaf € '+x.p:'Op aanvraag'}</div></div>${ctMain?`<a href="${esc(ctMain.h)}"${ext(ctMain.h)} class="btn btn-pd ${ctMain.cls} ml-auto !py-2 !text-[13px]"><i class="${ctMain.ic}"></i> ${ctMain.t}</a>`:`<a href="#contact" class="btn btn-pd ml-auto !py-2 !text-[13px]"><i class="fa fa-address-book"></i> Contact</a>`}</div><div class="lg:hidden h-16"></div>`;
+<div class="pd-above-bnav lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-line px-3 py-2.5 flex items-center gap-3 shadow-[0_-6px_20px_rgba(0,0,0,.08)]"><div class="min-w-0"><div class="text-[11px] text-ink-muted truncate">${esc(x.n)} · ${esc(x.c)}</div><div class="font-bold text-[#212529]">${x.p?'Vanaf € '+x.p:'Op aanvraag'}</div></div>${ctMain?`<a href="${esc(ctMain.h)}"${ext(ctMain.h)} class="btn btn-pd ${ctMain.cls} ml-auto !py-2 !text-[13px]"><i class="${ctMain.ic}"></i> ${ctMain.t}</a>`:`<a href="#contact-m" class="btn btn-pd ml-auto !py-2 !text-[13px]"><i class="fa fa-address-book"></i> Contact</a>`}</div><div class="lg:hidden h-16"></div>`;
 $$('#tabs .tab').forEach(t=>t.onclick=()=>{$$('#tabs .tab').forEach(b=>b.classList.toggle('on',b===t));$$('[data-p]').forEach(p=>p.classList.toggle('hidden',p.dataset.p!==t.dataset.t));});
 // galerij + lightbox
 let cur=0;const lb=$('#lb');
