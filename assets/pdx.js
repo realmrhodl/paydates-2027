@@ -117,7 +117,7 @@ function seed(){
 
 /* migratie: velden die de live Paydates-admin/-account ook heeft (zonder reset van bestaande demo-data) */
 function migrate(d){
-  if(d.m>=6)return false;
+  if(d.m>=7)return false;
   if(!(d.m>=5)){
   const r=d.pay.rates; if(r.bump===8)r.bump=20; if(r.adPrice==null)r.adPrice=0; if(r.bump10==null)r.bump10=150; if(r.autoBumpDay==null)r.autoBumpDay=15;
   /* V2-verdienmodel (concept): laagdrempelig instappen via 1× bellen/SMS, schalen via bundels, groot geld bij bedrijven */
@@ -130,7 +130,7 @@ function migrate(d){
     ['credits','Overige creditbundels (gem. €50)',100,50],['agency_s','Agency S (€99/mnd)',40,99],['agency_m','Agency M (€249/mnd)',25,249],['agency_l','Agency L (€499/mnd)',12,499],
     ['club_p','Club Premium (€49/mnd)',80,49],['club_s','Club Spotlight (€99/mnd)',25,99],['banner','Banners (gem. €99/mnd)',40,99],['sponsor','Homepage-sponsorweek (€1.000)',4,1000]]};
   d.cats=d.cats||[['Vrouw','Vrouwen','vrouwen'],['Man','Mannen','mannen'],['Shemale','Shemales','shemales'],['Stel','Stellen','stellen'],['Trans','Trans','trans']].map((c,i)=>({id:'cat_'+c[2],k:c[0],t:c[1],slug:c[2],active:true,order:i+1}));
-  d.adTypes=d.adTypes||['Escort','Privé ontvangst','Online','BDSM','Erotische massage','Sugardating'].map((t,i)=>({id:'typ_'+i,t,active:true,order:i+1}));
+  d.adTypes=d.adTypes||['Escort','Privé ontvangst','Online','BDSM','Erotische massage'].map((t,i)=>({id:'typ_'+i,t,active:true,order:i+1}));
   d.users.forEach(u=>{if(u.level==null)u.level=u.role==='admin'?5:u.role==='moderator'?4:u.role==='bedrijf'?2:1;if(u.bonus==null)u.bonus=0;});
   const live=d.ads.filter(a=>a.listingId).slice(0,6);
   d.reports=d.reports||[
@@ -143,13 +143,17 @@ function migrate(d){
   d.reviews=d.reviews||live.slice(0,5).map((a,i)=>({id:'rv_'+i,adId:a.id,by:['jeroen','mark84','sven_utr','dennis','tom.nl'][i],stars:[5,4,5,2,4][i],text:['Heel vriendelijk en precies zoals op de foto’s.','Fijne afspraak, goede communicatie.','Top, kom zeker terug.','Was 30 minuten te laat.','Discreet en netjes.'][i]+' (demo)',at:daysAgo(2+i*3),status:i===3?'wacht':i===4?'wacht':'goedgekeurd'}));
   d.deleted=d.deleted||{reports:[],payments:[]};
   d.m=5;}
+  if(!(d.m>=6)){
   /* m6: banners per week (zoals adverteren.html), bonus op grotere creditbundels, auto-promotie per advertentie */
   d.pay.banners=[{t:'Leaderboard (alle pagina’s)',eur:149,per:'week'},{t:'Sidebar sticky',eur:99,per:'week'},{t:'Native in de grid',eur:79,per:'week'},{t:'Stadspagina (exclusief)',eur:49,per:'week'}];
   const bon={50:0,100:50,150:100,200:200,250:300,300:400,350:500,400:600,450:700,500:1000};
   if(d.pay.packs.every(p=>!p.bonus))d.pay.packs.forEach(p=>{p.bonus=bon[p.eur]||0;});
   d.pay.model.rows.forEach(r=>{if(r[0]==='banner'){r[1]='Bannerweken (gem. €99/week)';}});
   d.ads.forEach(a=>{if(a.auto==null)a.auto=false;});
-  d.m=6; return true;
+  d.m=6;}
+  /* m7: sugardating is geen Paydates-categorie meer (zusterplatform SugarDates.nl) */
+  if(d.adTypes) d.adTypes=d.adTypes.filter(t=>(t.t||t)!=='Sugardating');
+  d.m=7; return true;
 }
 function db(){
   let d=null; try{d=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}

@@ -5,7 +5,7 @@ OLD={x['href']:x for x in json.loads(re.search(r'const L=(\[.*?\]);',src,re.S).g
 hrefs=json.load(open('hrefs.json'))
 J='/tmp/pdjar.txt'
 def clean(s): return re.sub(r'\s+',' ',s or '').strip()
-TYPEMAP={'prive-ontvangst':'Privé ontvangst','escort':'Escort','virtueel':'Online','erotische-massage':'Massage','bdsm':'BDSM','sugardating':'Sugardating','gratis-sekscontact':'Gratis sekscontact','diversen':'Diversen'}
+TYPEMAP={'prive-ontvangst':'Privé ontvangst','escort':'Escort','virtueel':'Online','erotische-massage':'Massage','bdsm':'BDSM','gratis-sekscontact':'Gratis sekscontact','diversen':'Diversen'}
 GMAP={'vrouwen':'Vrouw','mannen':'Man','stellen':'Stel','shemales':'Shemale'}
 out=[]
 for i,u in enumerate(hrefs):

@@ -6,7 +6,7 @@ CHAT_BADGE='<span class="chatOnline ml-1.5 inline-flex items-center gap-1 rounde
 
 # (data-nav keys, href, label) — volgorde zoals Stefan wil
 NAV=[('vrouwen','vrouwen.html','Vrouwen'),('mannen','mannen.html','Mannen'),('trans shemales','trans.html','Trans'),
-     ('stellen','stellen.html','Stellen'),('sugardating','sugardating.html','Sugardating'),('agency','agency.html','Agencies'),
+     ('stellen','stellen.html','Stellen'),('agency','agency.html','Agencies'),
      ('videos','videos.html',"Video's"),('chatten','chatten.html','<i class="fa fa-comments mr-1 text-pd"></i>Chatten'+CHAT_BADGE),
      ('nieuws','nieuws.html','Nieuws')]
 
