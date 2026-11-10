@@ -6,7 +6,7 @@
 const PD_PAY=window.PD_PAY=Object.assign({
   VERIFY_URL:'/api/pay/verify',          // POST {method:'0906'|'sms', code, product} -> {valid, credits?, error?}
   BTC_URL:'/api/pay/bitcoin',            // POST {product, product_id?, amount_eur} -> {address, amount_btc, uri, expires_at}
-  NUMBER_0906:'0906-XXXXXXX',            // TODO: definitief 0906-nummer
+  NUMBER_0906:'0906-2020290',
   TARIFF_0906:'tarief volgt',            // TODO
   SMS_SHORTCODE:'3010',
   SMS_KEYWORD:'PAYDATES',

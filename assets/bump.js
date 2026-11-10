@@ -7,7 +7,7 @@
 const PD_BUMP={
   CONCEPT:true,
   API_URL:'/api/bump/verify',            // POST {method:'0906'|'sms', code, ad_id} -> {valid:bool, bumped_at?, error?}
-  NUMBER_0906:'0906-XXXXXXX',            // TODO: definitief 0906-nummer invullen
+  NUMBER_0906:'0906-2020290',
   TARIFF_0906:'tarief volgt',            // TODO: bv. "€ x,xx per gesprek"
   SMS_SHORTCODE:'3010',
   SMS_KEYWORD:'Paydates',
