@@ -1,5 +1,6 @@
 import json,re,collections
 from layout import *
+import apply_sugardating
 L=json.load(open('listings.json')); V=json.load(open('videos.json')); B=json.load(open('blogs.json'))
 # ---- data opschonen ----
 L=[x for x in L if x['id'] not in (597,607) and x['photos'] and x['n'].strip()]
@@ -67,6 +68,7 @@ script=script.replace('<a href="#" class="flex items-center gap-3 rounded-lg bor
 # cityLink: klik filtert op homepage (zoals live), href is SEO-stadspagina
 assert 'const L=PD.D.L' in script and 'const card=PD.card' in script
 built.append(page('index.html','Paydates.nl – Escorts, privé ontvangst & sekscontact in Nederland','Paydates.nl: echte escorts, privé ontvangst, erotische massage en online sekscontact in heel Nederland. Alle adverteerders 21+.',body,'index',script))
+apply_sugardating.apply_file()  # houdt SugarDates-sectie in de homepage
 leftover=re.findall(r'href="#"',body+script)
 print('index # links over:',len(leftover))
 
