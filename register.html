@@ -124,7 +124,18 @@
   <div class="grid sm:grid-cols-2 gap-3"><div><label class="lbl">Bedrijfsnaam</label><input class="inp"></div><div><label class="lbl">Type</label><select class="inp"><option>Escortbureau</option><option>Club / privéhuis</option><option>Bedrijf / overig</option><option>Raamexploitatie</option><option>Overig</option></select></div></div>
   <div class="grid sm:grid-cols-2 gap-3"><div><label class="lbl">KvK-nummer</label><input class="inp" inputmode="numeric" pattern="[0-9]{8}" placeholder="8 cijfers"></div><div><label class="lbl">Btw-nummer</label><input class="inp" placeholder="NL…B01"></div></div>
  </div>
-</div>
+  <div data-for="sekswerker bedrijf" class="hidden rounded-lg bg-[#7351c010] p-3 text-[12px] text-ink"><i class="fa fa-id-card text-pd mr-1"></i>Adverteerders moeten <b>21 jaar of ouder</b> zijn. Na registratie verifieer je je identiteit; lees <a href="verificatie.html" class="text-pd font-semibold">hoe verificatie werkt</a>.</div>
+ <label class="flex items-start gap-2 text-[13px]"><input type="checkbox" required class="mt-1" id="age-agree"> <span id="age-agree-txt">Ik ben 18 jaar of ouder en ga akkoord met de <a href="algemene-voorwaarden.html" class="text-pd">algemene voorwaarden</a> en het <a href="privacy.html" class="text-pd">privacybeleid</a>.</span></label>
+ <label class="flex items-start gap-2 text-[13px]"><input type="checkbox" class="mt-1"> <span>Houd me op de hoogte van acties en nieuws (optioneel).</span></label>
+ <input type="hidden" name="type" id="rtype"><button class="btn btn-pd w-full"><i class="fa fa-user-plus"></i> Account aanmaken</button>
+ <p class="text-center text-[13px] text-ink-muted">Al een account? <a href="login.html" class="text-pd font-semibold">Inloggen</a></p></div>
+ <div data-ok class="hidden text-center py-6"><div class="w-14 h-14 mx-auto rounded-full bg-[#2f9e4420] text-[#2f9e44] flex items-center justify-center text-2xl"><i class="fa fa-check"></i></div><h2 class="text-[18px] font-bold text-[#212529] mt-3">Bijna klaar!</h2><p class="text-ink-muted mt-1">We hebben je een bevestigingsmail gestuurd. Klik op de link om je account te activeren.</p><a href="index.html" class="btn btn-ghost mt-4">Naar de homepage</a></div></form></div>
+  <div class="md:col-span-2 hero-bg text-white p-6 sm:p-8 flex flex-col"><a href="index.html" class="inline-flex items-center gap-2.5 self-start"><img src="img/header-logo.png" alt="" width="37" height="40" class="h-10 w-auto shrink-0 object-contain"><span class="text-[22px] font-bold tracking-tight leading-none">Paydates</span></a><h2 class="text-[20px] font-bold mt-4 leading-snug">Hét paydate-platform van Nederland: betaald daten, discreet geregeld</h2>
+<ul class="mt-4 space-y-2.5 text-[13px] text-white/90"><li><i class="fa fa-check mr-2 text-gold"></i>Bewaar favorieten &amp; zoekopdrachten</li><li><i class="fa fa-check mr-2 text-gold"></i>Chat in de Paydates Chat</li><li><i class="fa fa-check mr-2 text-gold"></i>Adverteer en boost met credits</li><li><i class="fa fa-check mr-2 text-gold"></i>100% discreet: jouw gegevens blijven privé en jij bepaalt wat anderen van je zien</li></ul>
+<div class="mt-auto pt-6 text-[11px] text-white/70">Alleen voor volwassenen (18+). Adverteerders 21+.</div></div>
+ </div></div>
+
+
 <!-- FOOTER -->
 <footer class="bg-white border-t border-line mt-8 text-[13px]">
   <section class="border-b border-line bg-body-light">
