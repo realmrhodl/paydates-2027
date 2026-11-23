@@ -75,7 +75,7 @@ print('index # links over:',len(leftover))
 # ---- overzichtspagina's ----
 TYPES=[('Escort','Escort'),('Privé ontvangst','Privé'),('Massage','Massage'),('Online','Online'),('BDSM','BDSM')]
 def filters(lockG=None,svc=False,lang=True):
-  g='' if lockG else '''<div><div class="text-[12px] text-ink-muted mb-2">Geslacht</div><div class="grid grid-cols-2 gap-2 text-[12px]">'''+''.join(f'<button data-g="{x}" class="gchip pill py-1.5">{x}</button>' for x in ['Vrouw','Man','Shemale','Stel'])+'</div></div>'
+  g='' if lockG else '''<div><div class="text-[12px] text-ink-muted mb-2">Geslacht</div><div class="gseg gseg-2" role="group" aria-label="Geslacht">'''+''.join(f'<button type="button" data-g="{x}" class="gchip">{x}</button>' for x in ['Vrouw','Man','Shemale','Stel'])+'</div></div>'
   s=''
   if svc:
     s='<div><div class="text-[12px] text-ink-muted mb-2">Mogelijkheden</div><div id="svcList" class="max-h-[260px] overflow-y-auto pr-1 space-y-1.5 text-[13px]"></div></div>'
@@ -87,7 +87,7 @@ def filters(lockG=None,svc=False,lang=True):
         <div><div class="text-[12px] text-ink-muted mb-1.5">Zoekwoord</div><input id="fQ" type="search" class="inp !py-2 !text-[13px]" placeholder="Naam, service…"></div>
         <div><div class="text-[12px] text-ink-muted mb-1.5">Stad</div><select id="fCity" class="inp !py-2 !text-[13px]"></select></div>
         {g}
-        <div><div class="text-[12px] text-ink-muted mb-2">Type</div><div class="grid grid-cols-2 gap-2 text-[12px]">{''.join(f'<button data-type="{a}" class="tchip pill py-1.5">{b}</button>' for a,b in TYPES)}</div></div>
+        <div><div class="text-[12px] text-ink-muted mb-2">Type</div><div class="gseg gseg-2" role="group" aria-label="Type">{''.join(f'<button type="button" data-type="{a}" class="tchip">{b}</button>' for a,b in TYPES)}</div></div>
         <div><div class="flex justify-between text-[12px] text-ink-muted mb-1"><span>Leeftijd</span><span id="ageLbl" class="text-ink font-semibold">18 – 60+</span></div><input id="fAgeMax" type="range" min="21" max="60" value="60" class="w-full"></div>
         <div><div class="flex justify-between text-[12px] text-ink-muted mb-1"><span>Max. tarief p/u</span><span id="priceLbl" class="text-ink font-semibold">Alle</span></div><input id="fPrice" type="range" min="0" max="500" step="25" value="0" class="w-full"></div>
         {'<div><div class="text-[12px] text-ink-muted mb-1.5">Taal</div><select id="fLang" class="inp !py-2 !text-[13px]"><option value="">Alle talen</option><option value="dutch">Nederlands</option><option value="english">Engels</option><option value="german">Duits</option><option value="spanish">Spaans</option><option value="french">Frans</option></select></div>' if lang else ''}

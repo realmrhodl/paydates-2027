@@ -78,10 +78,13 @@ def build_videos():
   </section>
 
   <section class="block mt-5 p-3 sm:p-4 lg:sticky lg:top-14 z-20" id="vfilters">
-   <div class="flex flex-wrap gap-1.5" role="group" aria-label="Categorie">
-    <button type="button" class="vg pill px-3 py-1.5 text-[12px] on" data-g="">Alle</button>{''.join(f'<button type="button" class="vg pill px-3 py-1.5 text-[12px]" data-g="{g}">{GN[g]}</button>' for g in GN)}
-    <span class="hidden sm:block w-px bg-line mx-1"></span>
-    {''.join(f'<button type="button" class="vt pill px-3 py-1.5 text-[12px]" data-type="{E(t)}">{E(t)}</button>' for t in types)}
+   <div class="flex flex-wrap items-center gap-2">
+    <div class="gseg gseg-wrap" role="group" aria-label="Geslacht">
+     <button type="button" class="vg on" data-g="">Alle</button>{''.join(f'<button type="button" class="vg" data-g="{g}">{GN[g]}</button>' for g in GN)}
+    </div>
+    <div class="gseg gseg-inline" role="group" aria-label="Type">
+     {''.join(f'<button type="button" class="vt" data-type="{E(t)}">{E(t)}</button>' for t in types)}
+    </div>
    </div>
    <div class="flex flex-wrap items-center gap-2 mt-3">
     <div class="relative flex-1 min-w-[180px]"><i class="fa fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-ink-soft text-xs"></i><input id="vq" type="search" class="inp !py-1.5 !pl-8 !text-[13px]" placeholder="Zoek op titel, naam of stad…"></div>

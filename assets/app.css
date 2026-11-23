@@ -16,6 +16,25 @@ html,body{overflow-x:hidden}@supports (overflow:clip){html,body{overflow-x:clip}
 .pill{background:#fff;color:#5d738d;font-weight:600;border-radius:1.125rem;border:2px solid transparent;box-shadow:0 0 .875rem 0 #e3e4e5;transition:.15s}
 .pill:hover{background:#7351c017;color:#7351c0}
 .pill.on{border-color:#7351c0;color:#7351c0}
+
+/* Segmented control: geslacht (Vrouw/Man/…) en typefilters */
+.gseg{display:flex;align-items:stretch;width:100%;background:#f3f0f8;border:1px solid #e4dcf3;border-radius:999px;padding:3px;gap:2px;box-sizing:border-box}
+.gseg-2{display:grid;grid-template-columns:1fr 1fr;border-radius:16px}
+.gseg-wrap{flex-wrap:wrap;border-radius:16px;width:100%}
+.gseg-hero{width:100%}
+.gseg-inline{width:auto;flex:0 1 auto;max-width:100%}
+.gseg button{flex:1 1 0;min-width:0;min-height:40px;margin:0;padding:0 8px;border:0;border-radius:999px;background:transparent;box-shadow:none;color:#534a68;font:inherit;font-weight:600;font-size:12.5px;line-height:1.15;letter-spacing:.01em;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s ease,color .15s ease,box-shadow .15s ease;-webkit-tap-highlight-color:transparent}
+.gseg-2 button,.gseg-wrap button{border-radius:12px}
+.gseg-wrap button{flex:1 1 calc(33.33% - 4px);max-width:calc(33.33% - 4px)}
+.gseg button:hover{background:#fff;color:#7351c0}
+.gseg button.on{background:#7351c0;color:#fff;box-shadow:0 1px 2px rgba(72,40,130,.28)}
+.gseg button:focus-visible{outline:2px solid #7351c0;outline-offset:2px}
+@media(min-width:768px){
+  .gseg-hero{width:auto;flex:1 1 300px;max-width:420px}
+  .gseg-wrap{width:auto;max-width:640px;flex-wrap:nowrap;border-radius:999px}
+  .gseg-wrap button{flex:1 1 auto;max-width:none;min-width:4.5rem;border-radius:999px;padding:0 14px}
+  .gseg button{font-size:13px;padding:0 12px}
+}
 .mini{display:inline-flex;align-items:center;gap:3px;background:#343a40;color:#fff;font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px}
 .card .ph{transition:transform .4s}.card:hover .ph{transform:scale(1.04)}
 .scrollbar-none::-webkit-scrollbar{display:none}.scrollbar-none{scrollbar-width:none}
