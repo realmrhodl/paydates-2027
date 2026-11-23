@@ -14,7 +14,9 @@
 <!-- /pd-seo -->
 <link rel="icon" href="img/header-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="assets/app.css">
 <link rel="stylesheet" href="assets/tailwind.css">
@@ -124,18 +126,21 @@
    <div class="min-w-0"><h3 id="bumpT" class="font-semibold text-[15px] leading-tight">Advertentie omhoog plaatsen</h3><div class="text-[11px] text-white/75 truncate"><span id="bumpName"></span> · advertentie #<span id="bumpId"></span></div></div>
    <button data-bump-close class="ml-auto text-2xl leading-none w-8 h-8" aria-label="Sluiten">×</button>
   </div>
-  <form id="bumpForm" class="p-5 text-[13px]" novalidate>
-   <p class="text-ink-muted">Je advertentie komt direct weer <b class="text-[#212529]">bovenaan</b> in je categorie en je stad. Kies hoe je betaalt: bellen, sms of je eigen credits.</p>
-<div class="mt-4 flex flex-wrap items-center gap-2">
+    <form id="bumpForm" class="p-5 text-[13px]" novalidate>
+   <p id="bumpIntro" class="text-ink-muted">Je advertentie komt direct weer <b class="text-[#212529]">bovenaan</b> in je categorie en je stad. Kies hoe je betaalt: bellen, sms, credits of Bitcoin.</p>
+   <div class="mt-4 flex flex-wrap items-center gap-2">
     <label for="bumpCountry" class="text-[12px] font-semibold text-[#212529]">Land</label>
-    <div class="relative"><button type="button" id="bumpCountry" aria-haspopup="listbox" aria-expanded="false" class="inline-flex items-center gap-2 rounded-lg border border-line bg-white pl-2.5 pr-3 py-1.5 text-[13px] font-semibold text-[#212529] hover:border-pd"><svg viewBox="0 0 9 6" class="w-5 h-[14px] rounded-[2px] shadow-sm shrink-0" aria-hidden="true"><rect width="9" height="2" fill="#AE1C28"/><rect y="2" width="9" height="2" fill="#fff"/><rect y="4" width="9" height="2" fill="#21468B"/></svg>Nederland <span class="text-ink-muted font-normal">+31</span><i class="fa fa-angle-down text-[11px] text-ink-muted ml-1"></i></button>
-     <ul id="bumpCountryList" role="listbox" class="hidden absolute z-10 left-0 mt-1 w-[230px] rounded-lg border border-line bg-white shadow-lg py-1 text-[13px]"><li role="option" aria-selected="true" class="flex items-center gap-2 px-3 py-2 bg-[#7351c010] font-semibold"><svg viewBox="0 0 9 6" class="w-5 h-[14px] rounded-[2px] shadow-sm shrink-0" aria-hidden="true"><rect width="9" height="2" fill="#AE1C28"/><rect y="2" width="9" height="2" fill="#fff"/><rect y="4" width="9" height="2" fill="#21468B"/></svg>Nederland <span class="text-ink-muted font-normal">+31</span><i class="fa fa-check text-pd ml-auto"></i></li><li class="px-3 py-1.5 text-[11px] text-ink-muted border-t border-line">Omhoog plaatsen is alleen beschikbaar in Nederland.</li></ul></div>
-    <span class="text-[11px] text-ink-muted">Bellen &amp; sms alleen met een Nederlands nummer</span>
+    <div class="relative">
+     <button type="button" id="bumpCountry" aria-haspopup="listbox" aria-expanded="false" aria-label="Kies land" class="inline-flex items-center gap-2 rounded-lg border border-line bg-white pl-2.5 pr-3 py-1.5 text-[13px] font-semibold text-[#212529] hover:border-pd">Nederland <span class="text-ink-muted font-normal">+31</span><i class="fa fa-angle-down text-[11px] text-ink-muted ml-1"></i></button>
+     <ul id="bumpCountryList" role="listbox" class="hidden absolute z-10 left-0 mt-1 w-[260px] max-h-[280px] overflow-y-auto rounded-lg border border-line bg-white shadow-lg py-1 text-[13px]"></ul>
+    </div>
+    <span id="bumpCountryHint" class="text-[11px] text-ink-muted">Bellen &amp; sms alleen met een Nederlands nummer</span>
    </div>
-   <div class="grid grid-cols-3 gap-2 mt-3" role="tablist">
+   <div id="bumpTabs" class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3" role="tablist">
     <button type="button" data-bm="0906" role="tab" class="pill !rounded-lg p-2.5 text-left on"><i class="fa fa-phone text-pd"></i> <b class="text-[#212529]">Bellen</b><div class="text-[10px] font-medium mt-0.5 truncate"><span data-bump-num></span></div></button>
     <button type="button" data-bm="sms" role="tab" class="pill !rounded-lg p-2.5 text-left"><i class="fa fa-comment-sms text-pd"></i> <b class="text-[#212529]">SMS</b><div class="text-[10px] font-medium mt-0.5 truncate"><span data-bump-kw></span> naar <span data-bump-sc></span></div></button>
     <button type="button" data-bm="credits" role="tab" class="pill !rounded-lg p-2.5 text-left"><i class="fa fa-coins text-gold"></i> <b class="text-[#212529]">Credits</b><div class="text-[10px] font-medium mt-0.5 truncate"><span data-bump-credits></span> credits</div></button>
+    <button type="button" data-bm="btc" role="tab" class="pill !rounded-lg p-2.5 text-left"><i class="fa-brands fa-bitcoin text-[#f7931a]"></i> <b class="text-[#212529]">Bitcoin</b><div class="text-[10px] font-medium mt-0.5 truncate">€ <span data-bump-eur></span></div></button>
    </div>
    <div data-bp="0906" class="mt-4 rounded-lg bg-body-light border border-line p-4">
     <ol class="space-y-2.5">
@@ -160,6 +165,17 @@
     <div class="text-[12px] text-ink-muted mt-3">Je saldo: <b id="bumpBal" class="text-[#212529]">log in om je saldo te zien</b></div>
     <button type="button" id="bumpCreditsBtn" class="btn btn-pd w-full mt-3"><i class="fa fa-circle-arrow-up"></i> Plaats omhoog voor <span data-bump-credits></span> credits</button>
     <div class="text-[11px] text-ink-muted mt-2">Onvoldoende credits? <a href="credits.html#betalen" class="text-pd font-semibold">Credits kopen</a></div>
+   </div>
+   <div data-bp="btc" class="hidden mt-4 rounded-lg bg-body-light border border-line p-4">
+    <div class="flex items-center justify-between gap-3"><div><div class="font-semibold text-[#212529]">Betaal met Bitcoin</div><div class="text-[12px] text-ink-muted">Kosten: <b class="text-[#212529]">€ <span data-bump-eur></span></b> — hetzelfde als omhoog plaatsen met credits.</div></div>
+    <span class="w-10 h-10 shrink-0 rounded-full bg-[#f7931a22] text-[#f7931a] flex items-center justify-center"><i class="fa-brands fa-bitcoin"></i></span></div>
+    <div class="mt-3 rounded-lg bg-white border border-line p-3 text-[12px] space-y-2">
+     <div><div class="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">Bitcoin-adres</div><div class="text-ink-muted">Wordt getoond zodra je de betaling start</div></div>
+     <div><div class="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">Bedrag in BTC</div><div class="text-ink-muted">Wordt berekend tegen de koers op het moment van betalen</div></div>
+    </div>
+    <button type="button" id="bumpBtcBtn" class="btn btn-pd w-full mt-3"><i class="fa-brands fa-bitcoin"></i> Betaling starten</button>
+    <div id="bumpBtcOut" class="hidden mt-3 text-[12px] text-ink-muted leading-relaxed" aria-live="polite"></div>
+    <div class="text-[11px] text-ink-muted mt-2">Na ontvangst van de betaling gaat je advertentie automatisch omhoog. Liever nu? <button type="button" data-bm="credits" class="text-pd font-semibold">Betaal met credits</button></div>
    </div>
    <div id="bumpCodeRow">
    <label for="bumpCode" class="lbl mt-4">Pincode / sms-code</label>
@@ -274,8 +290,8 @@ $('#ad').innerHTML=`
    </div>
    <div data-mp="fotos" class="p-2 sm:p-3">
     <div id="gStage" class="relative rounded-lg overflow-hidden bg-[#1d1830] aspect-[4/5] sm:aspect-[4/3] select-none">
-     <img id="gBg" src="${esc(P[0])}" alt="" aria-hidden="true" class="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110">
-     <button type="button" id="gMain" class="absolute inset-0 w-full h-full cursor-zoom-in" aria-label="Foto vergroten"><img id="gImg" src="${esc(P[0])}" alt="${esc(x.n)} – ${esc(x.s)}" class="w-full h-full object-contain transition-opacity duration-200"></button>
+     <img id="gBg" src="${esc(PD.mediaUrl(P[0],800))}" alt="" aria-hidden="true" width="800" height="1000" decoding="async" class="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110">
+     <button type="button" id="gMain" class="absolute inset-0 w-full h-full cursor-zoom-in" aria-label="Foto vergroten"><img id="gImg" src="${esc(PD.mediaUrl(P[0],800))}" srcset="${esc(PD.mediaUrl(P[0],400))} 400w, ${esc(PD.mediaUrl(P[0],800))} 800w" sizes="(max-width:1023px) 100vw, 800px" alt="${esc(x.n)} – ${esc(x.s)}" width="800" height="1000" loading="eager" decoding="async" fetchpriority="high" class="w-full h-full object-contain transition-opacity duration-200"></button>
      <div class="absolute top-2.5 left-2.5 flex gap-1.5 pointer-events-none">${x.vip?'<span class="mini !bg-gold !text-[#212529] !text-[11px] !px-2 !py-0.5">VIP</span>':''}${x.v?'<span class="mini !bg-pd !text-[11px] !px-2 !py-0.5"><i class="fa fa-circle-check"></i> Geverifieerd</span>':''}</div>
      ${x.now?'<span class="absolute bottom-2.5 left-2.5 mini !bg-[#2f9e44] !text-[11px] !px-2 !py-0.5 pointer-events-none"><i class="fa fa-circle text-[6px]"></i> Nu beschikbaar</span>':''}
      ${vids.length?`<button type="button" data-m="videos" class="absolute bottom-2.5 right-2.5 mini !bg-black/70 !text-[11px] !px-2.5 !py-1 hover:!bg-pd"><i class="fa fa-play"></i> ${vids.length} video${vids.length>1?"'s":''}</button>`:''}
@@ -283,7 +299,7 @@ $('#ad').innerHTML=`
      <button type="button" id="gNext" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 text-pd shadow-lg flex items-center justify-center hover:bg-white" aria-label="Volgende foto"><i class="fa fa-angle-right text-lg"></i></button>
      <span id="gCount" class="absolute top-2.5 right-2.5 mini !bg-black/60 !text-[11px] !px-2 !py-0.5 pointer-events-none">1 / ${P.length}</span>`:''}
     </div>
-    ${P.length>1?`<div id="gThumbs" class="flex gap-2 mt-2 overflow-x-auto scrollbar-none pb-0.5">${P.map((p,i)=>`<button type="button" data-g="${i}" class="g-th relative shrink-0 w-[60px] h-[76px] sm:w-[76px] sm:h-[96px] rounded-md overflow-hidden bg-pd-lighter ring-2 ${i?'ring-transparent opacity-70':'ring-pd'} hover:opacity-100 transition" aria-label="Foto ${i+1}"><img src="${esc(p)}" alt="" loading="lazy" class="w-full h-full object-cover"></button>`).join('')}</div>`:''}
+    ${P.length>1?`<div id="gThumbs" class="flex gap-2 mt-2 overflow-x-auto scrollbar-none pb-0.5">${P.map((p,i)=>`<button type="button" data-g="${i}" class="g-th relative shrink-0 w-[60px] h-[76px] sm:w-[76px] sm:h-[96px] rounded-md overflow-hidden bg-pd-lighter ring-2 ${i?'ring-transparent opacity-70':'ring-pd'} hover:opacity-100 transition" aria-label="Foto ${i+1}"><img src="${esc(PD.mediaUrl(p,400))}" alt="" loading="lazy" decoding="async" width="76" height="96" class="w-full h-full object-cover"></button>`).join('')}</div>`:''}
    </div>
    ${vids.length?`<div data-mp="videos" class="hidden p-2 sm:p-3">
     <div class="relative rounded-lg overflow-hidden bg-black aspect-video"><video id="vPlayer" controls playsinline preload="none" poster="${esc(vids[0].thumb)}" class="w-full h-full bg-black"><source src="${esc(vids[0].mp4)}" type="video/mp4"></video></div>
@@ -362,9 +378,9 @@ $('#ad').innerHTML=`
 $$('#tabs .tab').forEach(t=>t.onclick=()=>{$$('#tabs .tab').forEach(b=>b.classList.toggle('on',b===t));$$('[data-p]').forEach(p=>p.classList.toggle('hidden',p.dataset.p!==t.dataset.t));});
 // galerij + lightbox
 let cur=0;const lb=$('#lb');
-const thumbsLb=$('#lbT');thumbsLb.innerHTML=P.length>1?P.map((p,i)=>`<button type="button" data-l="${i}" class="shrink-0 w-12 h-16 rounded overflow-hidden ring-2 ring-transparent opacity-60"><img src="${esc(p)}" alt="" loading="lazy" class="w-full h-full object-cover"></button>`).join(''):'';
-function go(i){cur=(i+P.length)%P.length;const src=P[cur];
-  const im=$('#gImg');if(im){im.style.opacity=.3;im.onload=()=>im.style.opacity=1;im.src=src;$('#gBg').src=src;}
+const thumbsLb=$('#lbT');thumbsLb.innerHTML=P.length>1?P.map((p,i)=>`<button type="button" data-l="${i}" class="shrink-0 w-12 h-16 rounded overflow-hidden ring-2 ring-transparent opacity-60"><img src="${esc(PD.mediaUrl(p,400))}" alt="" loading="lazy" decoding="async" width="76" height="96" class="w-full h-full object-cover"></button>`).join(''):'';
+function go(i){cur=(i+P.length)%P.length;const src=PD.mediaUrl(P[cur],800);
+  const im=$('#gImg');if(im){im.style.opacity=.3;im.onload=()=>im.style.opacity=1;im.removeAttribute('srcset');im.src=src;$('#gBg').src=src;}
   const c=$('#gCount');if(c)c.textContent=`${cur+1} / ${P.length}`;
   $$('.g-th').forEach(b=>{const on=+b.dataset.g===cur;b.classList.toggle('ring-pd',on);b.classList.toggle('ring-transparent',!on);b.classList.toggle('opacity-70',!on);if(on)b.scrollIntoView({block:'nearest',inline:'nearest'});});
   $('#lbI').src=src;$('#lbC').textContent=`${esc(x.n)} · ${cur+1} / ${P.length}`;
