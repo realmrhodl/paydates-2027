@@ -14,7 +14,7 @@ body='''<div class="max-w-[1400px] mx-auto px-3 lg:px-6 py-4">
   <button id="lbN" class="absolute right-2 sm:right-6 text-white text-3xl w-12 h-12" aria-label="Volgende"><i class="fa fa-angle-right"></i></button>
   <div id="lbC" class="absolute bottom-4 text-white/80 text-[12px]"></div>
 </div>
-<!-- omhoog plaatsen (0906 / SMS) -->
+<!-- omhoog plaatsen (bellen / sms / credits / bitcoin) -->
 <div id="bumpM" class="hidden fixed inset-0 z-[95] bg-black/60 flex items-end sm:items-center justify-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="bumpT">
  <div class="w-full sm:max-w-[520px] bg-white sm:rounded-lg rounded-t-xl overflow-hidden shadow-2xl max-h-[94vh] overflow-y-auto">
   <div class="bg-pd-header text-white px-5 py-3.5 flex items-center gap-3">
@@ -22,11 +22,21 @@ body='''<div class="max-w-[1400px] mx-auto px-3 lg:px-6 py-4">
    <div class="min-w-0"><h3 id="bumpT" class="font-semibold text-[15px] leading-tight">Advertentie omhoog plaatsen</h3><div class="text-[11px] text-white/75 truncate"><span id="bumpName"></span> · advertentie #<span id="bumpId"></span></div></div>
    <button data-bump-close class="ml-auto text-2xl leading-none w-8 h-8" aria-label="Sluiten">×</button>
   </div>
-  <form id="bumpForm" class="p-5 text-[13px]" novalidate>
-   <p class="text-ink-muted">Je advertentie komt direct weer <b class="text-[#212529]">bovenaan</b> in je categorie en je stad. Betaal met je telefoon en vul de code in die je ontvangt.</p>
-   <div class="grid grid-cols-2 gap-2 mt-4" role="tablist">
-    <button type="button" data-bm="0906" role="tab" class="pill !rounded-lg p-3 text-left on"><i class="fa fa-phone text-pd"></i> <b class="text-[#212529]">Bellen</b><div class="text-[11px] font-medium mt-0.5">via <span data-bump-num></span></div></button>
-    <button type="button" data-bm="sms" role="tab" class="pill !rounded-lg p-3 text-left"><i class="fa fa-comment-sms text-pd"></i> <b class="text-[#212529]">SMS</b><div class="text-[11px] font-medium mt-0.5"><span data-bump-kw></span> naar <span data-bump-sc></span></div></button>
+    <form id="bumpForm" class="p-5 text-[13px]" novalidate>
+   <p id="bumpIntro" class="text-ink-muted">Je advertentie komt direct weer <b class="text-[#212529]">bovenaan</b> in je categorie en je stad. Kies hoe je betaalt: bellen, sms, credits of Bitcoin.</p>
+   <div class="mt-4 flex flex-wrap items-center gap-2">
+    <label for="bumpCountry" class="text-[12px] font-semibold text-[#212529]">Land</label>
+    <div class="relative">
+     <button type="button" id="bumpCountry" aria-haspopup="listbox" aria-expanded="false" aria-label="Kies land" class="inline-flex items-center gap-2 rounded-lg border border-line bg-white pl-2.5 pr-3 py-1.5 text-[13px] font-semibold text-[#212529] hover:border-pd">Nederland <span class="text-ink-muted font-normal">+31</span><i class="fa fa-angle-down text-[11px] text-ink-muted ml-1"></i></button>
+     <ul id="bumpCountryList" role="listbox" class="hidden absolute z-10 left-0 mt-1 w-[260px] max-h-[280px] overflow-y-auto rounded-lg border border-line bg-white shadow-lg py-1 text-[13px]"></ul>
+    </div>
+    <span id="bumpCountryHint" class="text-[11px] text-ink-muted">Bellen &amp; sms alleen met een Nederlands nummer</span>
+   </div>
+   <div id="bumpTabs" class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3" role="tablist">
+    <button type="button" data-bm="0906" role="tab" class="pill !rounded-lg p-2.5 text-left on"><i class="fa fa-phone text-pd"></i> <b class="text-[#212529]">Bellen</b><div class="text-[10px] font-medium mt-0.5 truncate"><span data-bump-num></span></div></button>
+    <button type="button" data-bm="sms" role="tab" class="pill !rounded-lg p-2.5 text-left"><i class="fa fa-comment-sms text-pd"></i> <b class="text-[#212529]">SMS</b><div class="text-[10px] font-medium mt-0.5 truncate"><span data-bump-kw></span> naar <span data-bump-sc></span></div></button>
+    <button type="button" data-bm="credits" role="tab" class="pill !rounded-lg p-2.5 text-left"><i class="fa fa-coins text-gold"></i> <b class="text-[#212529]">Credits</b><div class="text-[10px] font-medium mt-0.5 truncate"><span data-bump-credits></span> credits</div></button>
+    <button type="button" data-bm="btc" role="tab" class="pill !rounded-lg p-2.5 text-left"><i class="fa-brands fa-bitcoin text-[#f7931a]"></i> <b class="text-[#212529]">Bitcoin</b><div class="text-[10px] font-medium mt-0.5 truncate">€ <span data-bump-eur></span></div></button>
    </div>
    <div data-bp="0906" class="mt-4 rounded-lg bg-body-light border border-line p-4">
     <ol class="space-y-2.5">
@@ -45,12 +55,32 @@ body='''<div class="max-w-[1400px] mx-auto px-3 lg:px-6 py-4">
     <a id="bumpSmsLink" href="sms:3010?&amp;body=Paydates" class="sm:hidden btn btn-ghost w-full mt-3 !py-2 !text-[12px]"><i class="fa fa-comment-sms"></i> Open je sms-app</a>
     <div class="text-[11px] text-ink-muted mt-3"><i class="fa fa-circle-info mr-1"></i>Kosten: <span data-bump-tariff-sms></span>. Je betaalt via je telefoonrekening of beltegoed.</div>
    </div>
+   <div data-bp="credits" class="hidden mt-4 rounded-lg bg-body-light border border-line p-4">
+    <div class="flex items-center justify-between gap-3"><div><div class="font-semibold text-[#212529]">Omhoog plaatsen met credits</div><div class="text-[12px] text-ink-muted">Kosten: <b class="text-[#212529]"><span data-bump-credits></span> credits</b> (€ <span data-bump-eur></span>)</div></div>
+    <span class="w-10 h-10 shrink-0 rounded-full bg-[#eebd2226] text-[#b58a00] flex items-center justify-center"><i class="fa fa-coins"></i></span></div>
+    <div class="text-[12px] text-ink-muted mt-3">Je saldo: <b id="bumpBal" class="text-[#212529]">log in om je saldo te zien</b></div>
+    <button type="button" id="bumpCreditsBtn" class="btn btn-pd w-full mt-3"><i class="fa fa-circle-arrow-up"></i> Plaats omhoog voor <span data-bump-credits></span> credits</button>
+    <div class="text-[11px] text-ink-muted mt-2">Onvoldoende credits? <a href="credits.html#betalen" class="text-pd font-semibold">Credits kopen</a></div>
+   </div>
+   <div data-bp="btc" class="hidden mt-4 rounded-lg bg-body-light border border-line p-4">
+    <div class="flex items-center justify-between gap-3"><div><div class="font-semibold text-[#212529]">Betaal met Bitcoin</div><div class="text-[12px] text-ink-muted">Kosten: <b class="text-[#212529]">€ <span data-bump-eur></span></b> — hetzelfde als omhoog plaatsen met credits.</div></div>
+    <span class="w-10 h-10 shrink-0 rounded-full bg-[#f7931a22] text-[#f7931a] flex items-center justify-center"><i class="fa-brands fa-bitcoin"></i></span></div>
+    <div class="mt-3 rounded-lg bg-white border border-line p-3 text-[12px] space-y-2">
+     <div><div class="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">Bitcoin-adres</div><div class="text-ink-muted">Wordt getoond zodra je de betaling start</div></div>
+     <div><div class="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">Bedrag in BTC</div><div class="text-ink-muted">Wordt berekend tegen de koers op het moment van betalen</div></div>
+    </div>
+    <button type="button" id="bumpBtcBtn" class="btn btn-pd w-full mt-3"><i class="fa-brands fa-bitcoin"></i> Betaling starten</button>
+    <div id="bumpBtcOut" class="hidden mt-3 text-[12px] text-ink-muted leading-relaxed" aria-live="polite"></div>
+    <div class="text-[11px] text-ink-muted mt-2">Na ontvangst van de betaling gaat je advertentie automatisch omhoog. Liever nu? <button type="button" data-bm="credits" class="text-pd font-semibold">Betaal met credits</button></div>
+   </div>
+   <div id="bumpCodeRow">
    <label for="bumpCode" class="lbl mt-4">Pincode / sms-code</label>
    <div class="flex gap-2"><input id="bumpCode" class="inp text-center tracking-[.3em] font-bold !text-[18px]" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="••••••" aria-describedby="bumpMsg">
    <button id="bumpBtn" class="btn btn-pd shrink-0"><i class="fa fa-circle-check"></i> Code controleren</button></div>
+   </div>
    <div id="bumpMsg" class="text-[12px] mt-2" aria-live="polite"></div>
-   <div class="mt-4 pt-3 border-t border-line flex flex-wrap items-center justify-between gap-2 text-[11px] text-ink-muted">
-    <span>Liever met credits? <a href="credits.html" class="text-pd font-semibold">Omhoog plaatsen met credits</a></span>
+   <div class="mt-4 pt-3 border-t border-line flex flex-wrap items-center justify-end gap-2 text-[11px] text-ink-muted">
+    <span>Hulp nodig? <a href="contact.html?onderwerp=betalen" class="text-pd font-semibold">Contact</a></span>
    </div>
   </form>
   <div id="bumpOk" class="hidden p-6 text-center">

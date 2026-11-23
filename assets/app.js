@@ -59,10 +59,63 @@ const loginUrl=next=>'login.html?next='+encodeURIComponent(next||((location.path
 window.PD_FAV={key:FAVK,uid:pdUid,loginUrl};
 const cityPage=c=>{const m=D.CITIES.find(x=>x.n===c);return m?`escort-${m.slug}.html`:`search.html?city=${encodeURIComponent(c)}`};
 
-function card(x,w=''){
+function bumpDigits(s){return String(s||'').replace(/\D/g,'');}
+const BUMP_CC=[['32','BE'],['33','FR'],['34','ES'],['31','NL'],['49','DE'],['44','GB'],['39','IT'],['43','AT'],['41','CH'],['352','LU'],['30','GR'],['351','PT'],['46','SE'],['47','NO'],['45','DK'],['48','PL'],['36','HU'],['420','CZ'],['421','SK'],['40','RO'],['359','BG'],['385','HR'],['386','SI'],['353','IE'],['358','FI'],['371','LV'],['370','LT'],['372','EE'],['90','TR'],['380','UA'],['7','RU'],['1','US']];
+const BUMP_CITY={
+  genk:'BE',antwerpen:'BE',antwerp:'BE',gent:'BE',brussel:'BE',brussels:'BE',brugge:'BE',leuven:'BE',luik:'BE',liege:'BE',hasselt:'BE',mechelen:'BE',oostende:'BE',kortrijk:'BE',aalst:'BE',charleroi:'BE',namen:'BE',namur:'BE',
+  bochum:'DE',berlijn:'DE',berlin:'DE',hamburg:'DE',munchen:'DE',munich:'DE',keulen:'DE',koln:'DE',dusseldorf:'DE',frankfurt:'DE',stuttgart:'DE',dortmund:'DE',essen:'DE',hannover:'DE',duisburg:'DE',aachen:'DE',aken:'DE',
+  paris:'FR',lyon:'FR',marseille:'FR',lille:'FR'
+};
+function bumpCcFromPhone(s){
+  const d=bumpDigits(s);
+  if(!d)return '';
+  if(/^0[1-9]\d{8,9}$/.test(d))return 'NL';
+  for(const [cc,k] of BUMP_CC){if(d.startsWith(cc))return k;}
+  return '';
+}
+function bumpCountry(ad){
+  if(!ad)return 'NL';
+  const land=String(ad.country||ad.land||ad.cc||'').trim().toUpperCase();
+  if(land==='NL'||land==='NEDERLAND'||land==='NETHERLANDS')return 'NL';
+  if(land && land!=='OTHER'){
+    const ok=new Set(BUMP_CC.map(x=>x[1]));
+    if(ok.has(land))return land;
+    if(land.length===2)return land;
+  }
+  const phones=[ad.tel,ad.wa,ad.phone,ad.mobile,ad.ct&&ad.ct.tel,ad.ct&&ad.ct.wa];
+  for(const p of phones){const k=bumpCcFromPhone(p);if(k)return k;}
+  const city=String(ad.c||ad.city||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  if(BUMP_CITY[city])return BUMP_CITY[city];
+  return 'NL';
+}
+function bumpIsNl(ad){return bumpCountry(ad)==='NL';}
+
+function mediaUrl(src,w){
+  w=w||800;
+  src=src==null?'':String(src);
+  const m=src.match(/^(.*\/)?img\/remote\/images\/([^/?#]+)\.[A-Za-z0-9]+$/);
+  if(!m)return src;
+  return (m[1]||'')+'img/remote/thumbs/'+m[2]+'-w'+w+'.webp';
+}
+function pdImg(src,alt,opt){
+  opt=opt||{};
+  const eager=!!opt.eager,lcp=!!opt.lcp;
+  const t400=mediaUrl(src,400),t800=mediaUrl(src,800);
+  const cls=opt.class||'';
+  const w=opt.w||400,h=opt.h||533;
+  const sizes=opt.sizes||'(max-width:640px) 50vw, (max-width:1023px) 33vw, 220px';
+  const orig=esc(src),a=esc(alt||'');
+  if(t800===src){
+    return `<img src="${orig}" alt="${a}" width="${w}" height="${h}" ${eager?'loading="eager"':'loading="lazy"'} decoding="async"${lcp?' fetchpriority="high"':''} class="${cls}">`;
+  }
+  return `<img src="${esc(t800)}" srcset="${esc(t400)} 400w, ${esc(t800)} 800w" sizes="${sizes}" width="${w}" height="${h}" alt="${a}" ${eager?'loading="eager"':'loading="lazy"'} decoding="async"${lcp?' fetchpriority="high"':''} class="${cls}" onerror="this.onerror=null;this.removeAttribute('srcset');this.src='${orig}'">`;
+}
+function card(x,w='',i){
+  i=i==null?99:+i;
+  const eager=i<4,lcp=i===0;
   return `<a href="advertentie.html?id=${x.id}" class="card group block bg-white rounded-lg overflow-hidden shadow-block hover:shadow-pill transition ${x.vip?'ring-2 ring-gold':''} ${w}">
    <div class="relative aspect-[3/4] overflow-hidden bg-pd-lighter">
-     <img src="${esc(x.img)}" alt="${esc(x.n)} – ${esc(x.s)}" loading="lazy" decoding="async" class="ph absolute inset-0 w-full h-full object-cover">
+     ${pdImg(x.img,`${x.n} – ${x.s}`,{eager,lcp,class:'ph absolute inset-0 w-full h-full object-cover',w:400,h:533})}
      <div class="absolute top-1.5 left-1.5 flex gap-1">${x.vip?'<span class="mini !bg-gold !text-[#212529]">VIP</span>':''}${x.vid?'<span class="mini"><i class="fa fa-play"></i> video</span>':''}</div>
      <button type="button" data-fav="${x.id}" aria-label="Favoriet" class="fav absolute top-1.5 right-1.5 w-7 h-7 rounded-full bg-white/90 flex items-center justify-center text-pd text-[12px]"><i class="${favs.has(x.id)?'fa-solid':'fa-regular'} fa-heart"></i></button>
      ${x.now?'<span class="absolute bottom-1.5 left-1.5 mini !bg-[#2f9e44]"><i class="fa fa-circle text-[6px]"></i> Nu beschikbaar</span>':''}
@@ -89,10 +142,10 @@ const mobileAd=`<a href="adverteren.html#vip" class="xl:hidden col-span-full adc
   <span class="w-11 h-11 shrink-0 rounded-full shine flex items-center justify-center text-[18px]"><i class="fa fa-crown"></i></span>
   <span class="min-w-0 flex-1"><span class="block text-[15px] font-bold leading-tight">VIP Boost</span><span class="block text-[11px] text-white/80 leading-snug">Bovenaan in jouw stad, met gouden kader.</span></span>
   <span class="adbtn bg-white text-pd px-3 py-1.5 text-[12px] shrink-0">Boost</span></a>`;
-function grid(list){let h='';list.forEach((x,i)=>{h+=card(x);if(i===6)h+=nativeAd;if(i===9)h+=mobileAd;});return h;}
+function grid(list){let h='';list.forEach((x,i)=>{h+=card(x,'',i);if(i===6)h+=nativeAd;if(i===9)h+=mobileAd;});return h;}
 function toast(msg){const t=document.createElement('div');t.className='toast';t.innerHTML=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3200);}
 
-window.PD={D,L:D.L,$,$$,esc,slug,qs,card,grid,nativeAd,mobileAd,toast,cityPage};
+window.PD={D,L:D.L,$,$$,esc,slug,qs,card,grid,nativeAd,mobileAd,toast,cityPage,mediaUrl,pdImg,bumpCountry,bumpIsNl,bumpCcFromPhone};
 
 document.addEventListener('DOMContentLoaded',()=>{
   // 18+ poort: zie los blok bovenaan dit bestand
@@ -236,16 +289,20 @@ s4.replaceWith(b);
 let sh=null;
 function sheet(){if(sh){sh.remove();sh=null;}
  sh=document.createElement('div');sh.className='pd-bsheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');sh.setAttribute('aria-label','Boost');
- const rows=live.length?live.map(a=>`<div class="pd-bs-ad"><div class="pd-bs-ad-h"><b>${esc(a.title)}</b><small>${esc(a.city||'')}${a.vip?' · VIP':''}${a.top?' · TOP':''} · ${(a.bumps||0)}× omhoog</small></div>
-   <div class="pd-bs-act"><a class="pd-bs-btn pd" href="mijn-advertenties.html?boost=${encodeURIComponent(a.id)}&m=sms"><i class="fa fa-phone"></i> Bel/sms · ${eur(R.smsCallEur)}</a>
-   <a class="pd-bs-btn" href="mijn-advertenties.html?boost=${encodeURIComponent(a.id)}&m=cr"><i class="fa fa-coins"></i> ${R.bump} credits</a></div></div>`).join('')
+ const rows=live.length?live.map(a=>{const nl=bumpIsNl(a);
+   const pay=nl?`<a class="pd-bs-btn pd" href="mijn-advertenties.html?boost=${encodeURIComponent(a.id)}&m=sms"><i class="fa fa-phone"></i> Bel/sms · ${eur(R.smsCallEur)}</a>
+   <a class="pd-bs-btn" href="mijn-advertenties.html?boost=${encodeURIComponent(a.id)}&m=cr"><i class="fa fa-coins"></i> ${R.bump} credits</a>`
+    :`<a class="pd-bs-btn pd" href="mijn-advertenties.html?boost=${encodeURIComponent(a.id)}&m=cr"><i class="fa fa-coins"></i> ${R.bump} credits</a>
+   <a class="pd-bs-btn" href="mijn-advertenties.html?boost=${encodeURIComponent(a.id)}&m=btc"><i class="fa-brands fa-bitcoin"></i> Bitcoin · ${eur(R.smsCallEur)}</a>`;
+   return `<div class="pd-bs-ad"><div class="pd-bs-ad-h"><b>${esc(a.title)}</b><small>${esc(a.city||'')}${a.vip?' · VIP':''}${a.top?' · TOP':''} · ${(a.bumps||0)}× omhoog</small></div>
+   <div class="pd-bs-act">${pay}</div></div>`;}).join('')
   :`<div class="pd-bs-empty"><i class="fa fa-rectangle-list"></i><p>${ads.length?'Geen advertentie live om te boosten.':'Je hebt nog geen advertentie.'}</p><a class="pd-bs-btn pd" href="${ads.length?'mijn-advertenties.html':'advertentie-plaatsen.html'}">${ads.length?'Naar mijn advertenties':'<i class="fa fa-plus"></i> Advertentie plaatsen'}</a></div>`;
  sh.innerHTML=`<div class="pd-bs-panel"><div class="pd-bs-grip"></div>
   <div class="pd-bs-top"><div><div class="pd-bs-t"><i class="fa fa-rocket"></i> Boost</div><div class="pd-bs-s">Zet je advertentie direct weer bovenaan in je stad.</div></div><button type="button" class="pd-bs-x" data-bs-x aria-label="Sluiten"><i class="fa fa-xmark"></i></button></div>
   <div class="pd-bs-bal"><span><i class="fa fa-coins"></i> Saldo <b>${Number(u.credits||0).toLocaleString('nl-NL')}</b> credits</span><a href="credits.html">Opwaarderen</a></div>
   <div class="pd-bs-list">${rows}</div>
   <div class="pd-bs-more"><a href="mijn-advertenties.html"><i class="fa fa-crown"></i> TOP, VIP &amp; elke dag automatisch omhoog</a><a href="dashboard.html"><i class="fa fa-gauge"></i> Dashboard</a></div>
-  <p class="pd-bs-note">Bellen/sms: geen credits nodig, betaal via je telefoonrekening (alleen NL).</p></div>`;
+  <p class="pd-bs-note">In Nederland kun je ook bellen of sms’en (via je telefoonrekening). Buiten Nederland plaats je omhoog met credits of Bitcoin.</p></div>`;
  document.body.appendChild(sh);document.body.style.overflow='hidden';requestAnimationFrame(()=>sh.classList.add('open'));
  const close=()=>{if(!sh)return;const el=sh;sh=null;el.classList.remove('open');document.body.style.overflow='';setTimeout(()=>el.remove(),200);};
  sh.addEventListener('click',e=>{if(e.target===sh||e.target.closest('[data-bs-x]'))close();});

@@ -135,13 +135,26 @@ const KENM=[['Haarkleur',['Zwart','Bruin','Blond','Donkerblond','Rood','Grijs','
 const DAYS=['Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag','Zondag'];
 const CT=[['tel','Telefoon','06…'],['mob','Mobiel (2e nummer)','06…'],['web','Website','https://'],['x','Twitter / X','@'],['ig','Instagram','@'],['snap','Snapchat',''],['of','OnlyFans',''],['fc','Fancentro',''],['f2f','F2F',''],['lf','Loyalfans',''],['tg','Telegram','@']];
 
-/* ---- omhoog via bellen/sms (V2-instap, €2) — zelfde flow als bump.js op de advertentiepagina ---- */
+/* ---- omhoog via bellen/sms (alleen NL) of Bitcoin (buiten NL) — zelfde idee als bump.js ---- */
+function adIsNl(a){if(window.PD&&PD.bumpIsNl)return PD.bumpIsNl(a);if(window.PD_BUMP&&PD_BUMP.isNl)return PD_BUMP.isNl(a);return true;}
+function btcBump(adId,done){const d=db();const r=d.pay.rates;const a=d.ads.find(x=>x.id===adId);
+  const m=document.createElement('div');m.className='pdx-modal';m.innerHTML=`<div><div class="pdx-card-h" style="border-radius:.6rem .6rem 0 0"><span><i class="fa-brands fa-bitcoin"></i> Omhoog plaatsen met Bitcoin · ${eur(r.smsCallEur)}</span><button class="pdx-btn sm" data-x>✕</button></div>
+   <div class="pdx-card-b pdx-small"><p>Kosten: <b>${eur(r.smsCallEur)}</b> — hetzelfde als omhoog plaatsen met credits. Het Bitcoin-adres en het bedrag in BTC worden getoond zodra je de betaling start, tegen de koers op dat moment.</p>
+   <div class="pdx-card pdx-card-b" style="margin:10px 0"><div class="pdx-xs pdx-muted">Bitcoin-adres</div><div>Wordt getoond zodra je de betaling start</div><div class="pdx-xs pdx-muted" style="margin-top:8px">Bedrag in BTC</div><div>Wordt berekend tegen de koers op het moment van betalen</div></div>
+   <button class="pdx-btn pd" id="btcGo" style="width:100%"><i class="fa-brands fa-bitcoin"></i> Betaling starten</button>
+   <p class="pdx-xs pdx-muted" id="btcMsg" style="margin-top:10px"></p>
+   <p class="pdx-xs pdx-muted">Na ontvangst van de betaling gaat je advertentie automatisch omhoog. Liever nu? Gebruik credits.</p></div></div>`;
+  document.body.appendChild(m);const close=()=>m.remove();m.querySelectorAll('[data-x]').forEach(b=>b.onclick=close);m.onclick=e=>{if(e.target===m)close();};
+  m.querySelector('#btcGo').onclick=()=>{const btn=m.querySelector('#btcGo'),msg=m.querySelector('#btcMsg');
+    btn.disabled=true;btn.innerHTML='<i class="fa fa-spinner fa-spin"></i> Betaling voorbereiden…';
+    setTimeout(()=>{btn.disabled=false;btn.innerHTML='<i class="fa-brands fa-bitcoin"></i> Betaling starten';
+      msg.textContent='Het Bitcoin-adres en het exacte bedrag in BTC verschijnen hier zodra de betaling beschikbaar is, tegen de koers op dat moment. Je kunt ook omhoog plaatsen met credits.';},700);};}
 function smsBump(adId,done){const d=db();const r=d.pay.rates;const call=d.pay.methods.find(m=>m.k==='call')||{},sms=d.pay.methods.find(m=>m.k==='sms')||{};
   const m=document.createElement('div');m.className='pdx-modal';m.innerHTML=`<div><div class="pdx-card-h" style="border-radius:.6rem .6rem 0 0"><span><i class="fa fa-phone"></i> 1× omhoog via bellen of sms · ${eur(r.smsCallEur)}</span><button class="pdx-btn sm" data-x>✕</button></div>
    <div class="pdx-card-b pdx-small"><p>Geen credits nodig. Je betaalt eenmalig via je telefoonrekening en krijgt een code.</p>
    <div class="pdx-grid pdx-g2" style="margin:10px 0"><div class="pdx-card pdx-card-b"><b><i class="fa fa-phone"></i> Bellen</b><div>${esc(window.PD_BUMP?PD_BUMP.NUMBER_0906:'0906-2020290')}</div><div class="pdx-xs pdx-muted">${esc(call.via||'')}</div></div><div class="pdx-card pdx-card-b"><b><i class="fa fa-comment-sms"></i> Sms</b><div>PAYDATES naar 3010</div><div class="pdx-xs pdx-muted">${esc(sms.via||'')}</div></div></div>
    <label class="pdx-lbl">Code uit het gesprek of de sms</label><div class="pdx-row"><input class="pdx-in" id="sbCode" style="flex:1" maxlength="8" placeholder="bijv. 4K7Q2"><button class="pdx-btn pd" id="sbGo">Code controleren</button></div><p class="pdx-xs" id="sbMsg" style="margin-top:6px;color:#c92a2a"></p>
-   <p class="pdx-xs pdx-muted">Alleen Nederlandse nummers. De code ontvang je na het bellen of sms’en.</p></div></div>`;
+   <p class="pdx-xs pdx-muted">Bellen en sms zijn alleen beschikbaar in Nederland. De code ontvang je na het bellen of sms’en.</p></div></div>`;
   document.body.appendChild(m);const close=()=>m.remove();m.querySelectorAll('[data-x]').forEach(b=>b.onclick=close);m.onclick=e=>{if(e.target===m)close();};
   m.querySelector('#sbGo').onclick=()=>{const c=m.querySelector('#sbCode').value.replace(/\s|-/g,'');const msg=m.querySelector('#sbMsg');
     if(!/^[0-9A-Za-z]{4,8}$/.test(c))return msg.textContent='Ongeldige code.';if(c==='0000')return msg.textContent='Deze code is al gebruikt.';if(c==='1111')return msg.textContent='Deze code is verlopen.';
@@ -154,7 +167,7 @@ function pageMyAds(root){
   const d=db(); const R=d.pay.rates; const ads=d.ads.filter(a=>a.owner===u.id&&a.status!=='verwijderd');
   root.innerHTML=`<div class="pdx-side">${accBar(u,'ads')}<div style="display:grid;gap:16px;min-width:0">
    <div class="pdx-between"><div><h1 class="pdx-h1">Mijn advertenties</h1><p class="pdx-sub">Wallet: <b id="bal">${u.credits}</b> credits${u.bonus?` + <b>${u.bonus}</b> bonus`:''} · <a href="credits.html" style="color:#7351c0">opwaarderen</a></p></div><a href="advertentie-plaatsen.html" class="pdx-btn pd"><i class="fa fa-plus"></i> Nieuwe advertentie</a></div>
-   <div class="pdx-card pdx-card-b pdx-small" style="background:#f6f3fc"><b><i class="fa fa-arrow-up" style="color:#7351c0"></i> Hoger in de lijst, vanaf ${eur(R.smsCallEur)}:</b> 1× bellen of sms (${eur(R.smsCallEur)}, geen credits nodig) · omhoog ${R.bump} cr · bundel 10× ${R.bump10} cr · automatisch elke dag ${R.autoBumpDay} cr · TOP ${R.topDay} cr/dag · VIP ${R.vip7} cr/7 dagen.</div>
+   <div class="pdx-card pdx-card-b pdx-small" style="background:#f6f3fc"><b><i class="fa fa-arrow-up" style="color:#7351c0"></i> Hoger in de lijst, vanaf ${eur(R.smsCallEur)}:</b> in Nederland 1× bellen of sms (${eur(R.smsCallEur)}, geen credits nodig) · buiten Nederland credits of Bitcoin · omhoog ${R.bump} cr · bundel 10× ${R.bump10} cr · automatisch elke dag ${R.autoBumpDay} cr · TOP ${R.topDay} cr/dag · VIP ${R.vip7} cr/7 dagen.</div>
    ${demoNote}
    ${ads.length?ads.map(a=>`<div class="pdx-card" data-ad="${a.id}"><div class="pdx-card-h"><span>${esc(a.title)} ${a.vip?'<span class="pdx-badge gold">VIP</span>':''} ${a.top?'<span class="pdx-badge pd">TOP</span>':''} ${a.auto?'<span class="pdx-badge ok"><i class="fa fa-rotate"></i> Auto</span>':''}</span>${adBadge(a)}</div>
      <div class="pdx-card-b"><div class="pdx-grid pdx-g4 pdx-small" style="margin-bottom:12px"><div><span class="pdx-muted">Categorie</span><br><b>${esc(a.cat)} · ${esc((a.types||[a.type]).join(', '))}</b></div><div><span class="pdx-muted">Locatie</span><br><b>${esc(a.city)}</b></div><div><span class="pdx-muted">Loopt tot</span><br><b>${fmtD(a.expires)}</b></div><div><span class="pdx-muted">Weergaven / kliks</span><br><b>${(a.views||0).toLocaleString('nl-NL')} / ${(a.clicks||0).toLocaleString('nl-NL')}</b></div></div>
@@ -166,7 +179,7 @@ function pageMyAds(root){
       <a class="pdx-btn sm" href="advertentie.html?${a.listingId?'id='+a.listingId:'ad='+a.id}" target="_blank"><i class="fa fa-eye"></i> ${a.listingId?'Bekijk':'Voorbeeld'}</a>
       <button class="pdx-btn sm red" data-act="del"><i class="fa fa-trash"></i> Verwijderen</button></div>
      <div class="pdx-row" style="padding-top:8px;border-top:1px solid #eef1f7"><span class="pdx-xs pdx-muted" style="width:100%">Promoten${a.bumpStock?` · nog <b>${a.bumpStock}×</b> omhoog in je bundel`:''}${a.lastBump||a.bumpedAt?` · laatst omhoog ${fmtDT(a.lastBump||a.bumpedAt)}`:''}</span>
-      <button class="pdx-btn sm pd" data-act="sms" ${a.status!=='live'?'disabled':''}><i class="fa fa-phone"></i> Omhoog via bellen/sms · ${eur(R.smsCallEur)}</button>
+      ${adIsNl(a)?`<button class="pdx-btn sm pd" data-act="sms" ${a.status!=='live'?'disabled':''}><i class="fa fa-phone"></i> Omhoog via bellen/sms · ${eur(R.smsCallEur)}</button>`:`<button class="pdx-btn sm pd" data-act="btc" ${a.status!=='live'?'disabled':''}><i class="fa-brands fa-bitcoin"></i> Omhoog met Bitcoin · ${eur(R.smsCallEur)}</button>`}
       <button class="pdx-btn sm" data-act="bump" ${a.status!=='live'?'disabled':''}><i class="fa fa-arrow-up"></i> ${a.bumpStock?'Omhoog uit bundel':'Omhoog · '+R.bump+' cr'}</button>
       <button class="pdx-btn sm" data-act="bundle"><i class="fa fa-layer-group"></i> Bundel 10× · ${R.bump10} cr</button>
       <label class="pdx-opt" style="padding:4px 10px"><input type="checkbox" data-auto ${a.auto?'checked':''}> Elke dag automatisch omhoog · ${R.autoBumpDay} cr/dag</label>
@@ -181,6 +194,7 @@ function pageMyAds(root){
     const id=b.closest('[data-ad]').dataset.ad; const act=b.dataset.act;
     const mut=fn=>{const d2=db();const a=d2.ads.find(x=>x.id===id);fn(a,d2);save(d2);};
     if(act==='sms')return smsBump(id,again);
+    if(act==='btc')return btcBump(id,again);
     if(act==='pause')mut(a=>a.status='gepauzeerd');
     if(act==='resume')mut(a=>a.status='live');
     if(act==='extend')mut((a,d2)=>{const base=Math.max(Date.now(),+new Date(a.expires));a.expires=new Date(base+d2.settings.adDays*864e5).toISOString();if(a.status==='verlopen')a.status='live';});
@@ -196,6 +210,7 @@ function pageMyAds(root){
   if(!pageMyAds._boosted&&qs('boost')){pageMyAds._boosted=true;const card=root.querySelector(`[data-ad="${CSS.escape(qs('boost'))}"]`);
     if(card){card.scrollIntoView({block:'center'});card.style.boxShadow='0 0 0 3px #7351c0';setTimeout(()=>card.style.boxShadow='',2500);
       const m=qs('m');if(m==='sms')smsBump(qs('boost'),again);
+      else if(m==='btc')btcBump(qs('boost'),again);
       else if(m==='cr'){const btn=card.querySelector('[data-act="bump"]');if(btn&&!btn.disabled&&confirm('1× omhoog plaatsen voor '+R.bump+' credits?'))btn.click();}}}
 }
 
@@ -243,7 +258,7 @@ function pageWizard(root){
        <label class="pdx-opt"><input type="checkbox" id="wWa" ${S.wa?'checked':''}> WhatsApp tonen (op telefoonnummer)</label><label class="pdx-opt"><input type="checkbox" id="wDm" ${S.dm?'checked':''}> Berichten via Paydates (e-mail verborgen)</label>
        <label class="pdx-opt"><input type="checkbox" id="wRev" ${S.reviews?'checked':''}> Reviews toestaan op deze advertentie</label></div>`,
      ()=>`<p class="pdx-small pdx-muted" style="margin-bottom:10px">Plaatsen is ${+R.adPrice?R.adPrice+' credits':'gratis'} (${d.settings.adDays} dagen). Kies optioneel extra zichtbaarheid. Wallet: <b>${me().credits}</b> credits.</p>
-       <div style="display:grid;gap:8px">${[['none','Geen extra','Je advertentie komt op volgorde van plaatsing in de lijst'],['sms','1× omhoog via bellen of sms · '+eur(R.smsCallEur),'Geen credits nodig: na plaatsing bel of sms je en voer je de code in bij Mijn advertenties'],['bump','Direct omhoog · '+R.bump+' cr','Bovenaan in de lijst van je stad'],['bundle','Bundel 10× omhoog · '+R.bump10+' cr','1× nu, 9× wanneer jij wilt (25% voordeel)']].map(o=>`<label class="pdx-opt"><input type="radio" name="vis" value="${o[0]}" ${S.vis===o[0]?'checked':''}><span><b>${o[1]}</b><br><span class="pdx-xs pdx-muted">${o[2]}</span></span></label>`).join('')}
+       <div style="display:grid;gap:8px">${[['none','Geen extra','Je advertentie komt op volgorde van plaatsing in de lijst'],['sms','1× omhoog via bellen of sms (alleen NL) · '+eur(R.smsCallEur),'Alleen in Nederland. Buiten Nederland kies je credits of Bitcoin bij Mijn advertenties.'],['bump','Direct omhoog · '+R.bump+' cr','Bovenaan in de lijst van je stad'],['bundle','Bundel 10× omhoog · '+R.bump10+' cr','1× nu, 9× wanneer jij wilt (25% voordeel)']].map(o=>`<label class="pdx-opt"><input type="radio" name="vis" value="${o[0]}" ${S.vis===o[0]?'checked':''}><span><b>${o[1]}</b><br><span class="pdx-xs pdx-muted">${o[2]}</span></span></label>`).join('')}
        <label class="pdx-opt"><input type="checkbox" id="wAuto" ${S.auto?'checked':''}><span><b>Elke dag automatisch omhoog</b> · ${R.autoBumpDay} cr per dag<br><span class="pdx-xs pdx-muted">Stopt vanzelf als je saldo op is; wordt pas afgeschreven na goedkeuring</span></span></label>
        <label class="pdx-opt"><span style="flex:1"><b>TOP-plaatsing</b> · ${R.topDay} cr per dag<br><span class="pdx-xs pdx-muted">In de TOP-rij op home en stadspagina</span></span><select class="pdx-in" style="width:120px" id="wTop">${[0,1,3,7].map(n=>`<option value="${n}" ${S.topDays===n?'selected':''}>${n?n+' dag'+(n>1?'en':''):'Geen'}</option>`).join('')}</select></label>
        <label class="pdx-opt"><input type="checkbox" id="wVip" ${S.vip?'checked':''}><span><b>VIP 7 dagen</b> · ${R.vip7} cr<br><span class="pdx-xs pdx-muted">Gouden kader, stories op de homepage, dagelijkse gratis bump</span></span></label></div>
@@ -284,7 +299,7 @@ function pageWizard(root){
     if(s===1){if(!S.name)return 'Vul een weergavenaam in.';if(!(+S.age>=21))return 'Adverteerders moeten 21+ zijn.';if(!S.city)return 'Kies een gemeente of stad.';if(S.title.length<5)return 'Titel is te kort.';if(S.desc.length<20)return 'Omschrijving: minimaal 20 tekens.';if(/(\+31|06)[\s-]?\d{8}/.test(S.desc))return 'Zet geen telefoonnummer in de tekst; gebruik het contactveld.';}
     if(s===2&&S.photos<1)return 'Voeg minimaal 1 foto toe.';
     if(s===6&&!CT.some(c=>S.ct[c[0]])&&!S.dm)return 'Kies minimaal één manier waarop klanten je kunnen bereiken.';
-    if(s===7&&cost()>me().credits)return 'Onvoldoende credits voor deze extra’s. Kies “1× omhoog via bellen of sms” of koop credits.';
+    if(s===7&&cost()>me().credits)return 'Onvoldoende credits voor deze extra’s. In Nederland kun je 1× omhoog via bellen of sms; anders koop je credits of betaal je met Bitcoin.';
     return '';}
   function finish(){collect();if(!$('#wAgree').checked){$('#wErr').textContent='Bevestig de voorwaarden.';return;}
     const c=cost(); if(c>me().credits){$('#wErr').textContent='Onvoldoende credits.';return;}
@@ -300,7 +315,7 @@ function pageWizard(root){
     if(S.vis==='bump'||S.vis==='bundle'){a.bumps=(a.bumps||0)+1;a.bumpedAt=a.lastBump=P.now();} if(S.vis==='bundle')a.bumpStock=(a.bumpStock||0)+9;
     if(S.topDays){a.top=true;a.topUntil=new Date(Date.now()+S.topDays*864e5).toISOString();} if(S.vip){a.vip=true;a.vipUntil=new Date(Date.now()+7*864e5).toISOString();}
     d2.audit.unshift({at:P.now(),actor:usr.username,action:ex?'ad-edit':'ad-create',target:a.id,detail:S.title+(c?' · -'+c+' cr':'')});save(d2);
-    root.innerHTML=`<div class="pdx-side">${accBar(u,'new')}<div class="pdx-card pdx-card-b" style="text-align:center;padding:40px"><div style="width:56px;height:56px;margin:0 auto;border-radius:50%;background:#2f9e4420;color:#2f9e44;display:flex;align-items:center;justify-content:center;font-size:24px"><i class="fa fa-check"></i></div><h1 class="pdx-h1" style="margin-top:12px">${mod?'Ingediend voor moderatie':'Je advertentie staat online'}</h1><p class="pdx-sub" style="margin-top:4px">${mod?'Een moderator controleert je advertentie (meestal binnen enkele uren).':''}${S.vis==='sms'?' Daarna kun je bij Mijn advertenties 1× omhoog via bellen of sms.':''}</p><div class="pdx-row" style="justify-content:center;margin-top:16px"><a href="mijn-advertenties.html" class="pdx-btn pd">Naar mijn advertenties</a><a href="advertentie.html?ad=${a.id}" class="pdx-btn" target="_blank"><i class="fa fa-eye"></i> Voorbeeld bekijken</a><a href="advertentie-plaatsen.html" class="pdx-btn">Nog een plaatsen</a></div></div></div>`;bindLogout();
+    root.innerHTML=`<div class="pdx-side">${accBar(u,'new')}<div class="pdx-card pdx-card-b" style="text-align:center;padding:40px"><div style="width:56px;height:56px;margin:0 auto;border-radius:50%;background:#2f9e4420;color:#2f9e44;display:flex;align-items:center;justify-content:center;font-size:24px"><i class="fa fa-check"></i></div><h1 class="pdx-h1" style="margin-top:12px">${mod?'Ingediend voor moderatie':'Je advertentie staat online'}</h1><p class="pdx-sub" style="margin-top:4px">${mod?'Een moderator controleert je advertentie (meestal binnen enkele uren).':''}${S.vis==='sms'?' Daarna kun je bij Mijn advertenties 1× omhoog via bellen of sms (in Nederland) of met credits of Bitcoin.':''}</p><div class="pdx-row" style="justify-content:center;margin-top:16px"><a href="mijn-advertenties.html" class="pdx-btn pd">Naar mijn advertenties</a><a href="advertentie.html?ad=${a.id}" class="pdx-btn" target="_blank"><i class="fa fa-eye"></i> Voorbeeld bekijken</a><a href="advertentie-plaatsen.html" class="pdx-btn">Nog een plaatsen</a></div></div></div>`;bindLogout();
   }
   view();
 }
