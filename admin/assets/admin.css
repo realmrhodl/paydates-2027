@@ -32,3 +32,10 @@ button,input,select,textarea{font-family:inherit}
 .adm-lock{font-size:11px;color:#c92a2a;font-weight:600}
 td .pdx-btn.sm{margin:1px 0}
 .adm-pager{display:flex;gap:6px;align-items:center;justify-content:flex-end;padding:10px;font-size:12px}
+
+
+/* ===== Mobile readiness ===== */
+@media (max-width:1023px){
+  .adm-top .pdx-btn,.adm-top #burger,.adm-top #logout{min-height:40px;min-width:40px}
+  .adm-main,.pdx-main,main{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+}

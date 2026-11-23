@@ -40,7 +40,7 @@ body=body.replace('<a href="#" class="adc adc-light h-[250px]','<a href="registe
 body=body.replace('<a href="#" class="text-[12px] text-pd hover:text-pd-darker whitespace-nowrap">Ook in TOP?','<a href="adverteren.html#top" class="text-[12px] text-pd hover:text-pd-darker whitespace-nowrap">Ook in TOP?')
 # paginering -> naar zoekpagina met alle resultaten
 body=re.sub(r'<div class="mt-6 flex flex-wrap justify-center gap-1 text-\[13px\]">.*?</div>','<div class="mt-6 flex justify-center"><a href="search.html" class="btn btn-ghost">Bekijk alle advertenties <i class="fa fa-angle-right"></i></a></div>',body,flags=re.S)
-body=re.sub(r'<select class="rounded border border-line bg-white px-2 py-1.5 text-\[12px\]">.*?</select>','<select id="hSort" class="rounded border border-line bg-white px-2 py-1.5 text-[12px]"><option value="rec">Sorteer: Aanbevolen</option><option value="new">Nieuwste</option><option value="plo">Prijs laag–hoog</option><option value="phi">Prijs hoog–laag</option></select>',body,flags=re.S)
+body=re.sub(r'<select class="rounded border border-line bg-white px-2 py-1.5 text-\[12px\]">.*?</select>','<select id="hSort" aria-label="Sorteer advertenties" class="rounded border border-line bg-white px-2 py-1.5 text-[12px]"><option value="rec">Sorteer: Aanbevolen</option><option value="new">Nieuwste</option><option value="plo">Prijs laag–hoog</option><option value="phi">Prijs hoog–laag</option></select>',body,flags=re.S)
 # overige # links in chat/upsell blokken
 body=body.replace('<a href="#" class="mt-5 md:mt-auto inline-flex','<a href="chatten.html" class="mt-5 md:mt-auto inline-flex')
 body=body.replace('<a href="#" class="inline-block mt-3 rounded-pill bg-gold','<a href="adverteren.html#vip" class="inline-block mt-3 rounded-pill bg-gold')

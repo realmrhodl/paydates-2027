@@ -93,3 +93,13 @@ textarea.pdx-in{min-height:110px;resize:vertical}
 .pdx-pa-pager{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;margin-top:16px}.pdx-pa-pager:empty{display:none}
 .pdx-pa-gap{color:#5d738d;padding:0 2px}
 @media(max-width:1023px){.pdx-acc-nav .pdx-side>.pdx-nav{display:none}}
+
+
+/* ===== Mobile readiness ===== */
+@media (max-width:1023px){
+  .pdx-scroll,.pdx-card-b,.pdx-card{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table.pdx-table{width:max-content;max-width:none}
+  .pdx-btn,.pdx-btn.sm{min-height:40px;min-width:40px;padding-left:12px;padding-right:12px}
+  form#fR,form.pdx-f{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  #burger,#logout,button#burger,button#logout{min-height:40px;min-width:40px}
+}

@@ -455,3 +455,46 @@ tr.sc-today td{color:#7351c0!important;font-weight:700}
 .pd-pt-lg .pd-pt-b em{margin-top:.4rem;line-height:1.45}
 .pd-pt-lg .btn{grid-row:2;grid-column:2;justify-self:start;margin-left:0!important;white-space:nowrap}
 @media(max-width:639px){.pd-pt-lg{flex-wrap:nowrap}.pd-pt-lg .btn{margin-left:0}}
+
+
+/* ===== Mobile readiness ===== */
+@media (max-width:1023px){
+  /* Flex/grid children must be able to shrink so .truncate works and pages don't grow sideways */
+  .grid>*,article,aside,a.flex,.flex{min-width:0}
+  .truncate{min-width:0;max-width:100%}
+  article.block,aside,.block{max-width:100%}
+
+  /* Wide tables scroll inside their card instead of stretching the page */
+  .block:has(table),.prose-pd:has(table),article:has(table){overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+
+  /* Bottom-nav labels readable */
+  .pd-bnav-i{font-size:12px}
+  @media (max-width:359px){.pd-bnav-i{font-size:12px}}
+
+  /* Header account links */
+  header nav[aria-label="Account"]{font-size:12px}
+  header nav[aria-label="Account"] a{min-width:40px;min-height:40px;justify-content:center;padding-left:8px;padding-right:8px}
+
+  /* Favorite heart on cards */
+  button.fav{width:40px;height:40px}
+
+  /* Filter/search pills */
+  a.inline-block.rounded-pill,a.rounded-pill.border{min-height:40px;display:inline-flex;align-items:center}
+
+  /* Checkboxes / radios: slightly larger + roomy labels */
+  input[type=checkbox],input[type=radio]{width:18px;height:18px;accent-color:#7351c0;flex-shrink:0}
+  label:has(>input[type=checkbox]),label:has(>input[type=radio]){min-height:40px;display:inline-flex;align-items:center;gap:8px}
+
+  /* Footer links: 32px is a compromise so the stedenlijst stays usable */
+  footer a{display:inline-flex;align-items:center;min-height:32px;padding-top:6px;padding-bottom:6px}
+
+  /* Search/filter pills */
+  .pill,.tchip,button.tchip{min-height:40px;display:inline-flex;align-items:center;box-sizing:border-box}
+
+  /* Badges a bit more readable */
+  .mini{font-size:11px;line-height:1.2}
+
+  button#filterBtn,select#hSort,select#chatRegion,select#fSort,#openFilters{
+    min-height:40px;
+  }
+}
