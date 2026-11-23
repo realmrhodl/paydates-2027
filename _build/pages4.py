@@ -73,7 +73,7 @@ body=f'''<div class="max-w-[1100px] mx-auto px-3 lg:px-6 py-5">{crumbs([('Melden
  <div><label class="lbl">Toelichting</label><textarea required rows="5" class="inp" placeholder="Beschrijf wat je hebt gezien…"></textarea></div>
  <label class="flex items-start gap-2 text-[13px]"><input type="checkbox" class="mt-1"> Anoniem melden – stuur mij geen bevestiging</label>
  <button class="btn btn-pd"><i class="fa fa-flag"></i> Melding versturen</button>
- <p class="text-[11px] text-ink-muted"><i class="fa fa-flask mr-1"></i>Concept-versie: nog niet gekoppeld aan de backend. Live: <a href="mailto:support@paydates.nl" class="text-pd">support@paydates.nl</a></p></div>
+</div>
  <div data-ok class="hidden py-6 text-center"><i class="fa fa-circle-check text-[#2f9e44] text-3xl"></i><h2 class="font-bold text-[18px] text-[#212529] mt-2">Bedankt voor je melding</h2><p class="text-ink-muted">We bekijken hem zo snel mogelijk.</p></div></form>
 <div class="prose-pd mt-8"><h2 id="ntd">Notice &amp; takedown</h2>{ntd}<h2 id="claim">Claim je profiel</h2>{claim}<h2 id="dwang">Slachtoffer van dwang</h2>{dwang}</div></section>
 <aside class="space-y-3">{LEGALNAV}</aside></div></div>'''
@@ -89,7 +89,7 @@ body=f'''<div class="max-w-[1100px] mx-auto px-3 lg:px-6 py-5">{crumbs([('Contac
  <div><label class="lbl">Onderwerp</label><select id="onderwerp" name="onderwerp" class="inp"><option value="account">Mijn account</option><option value="credits">Credits &amp; betalingen</option><option value="adverteren">Adverteren</option><option value="banners">Banners &amp; partnerships</option><option value="account-verwijderen">Account verwijderen</option><option value="pers">Pers</option><option value="anders">Anders</option></select></div>
  <div><label class="lbl">Bericht</label><textarea required rows="6" name="bericht" class="inp"></textarea></div>
  <button class="btn btn-pd"><i class="fa fa-paper-plane"></i> Versturen</button>
- <p class="text-[11px] text-ink-muted"><i class="fa fa-flask mr-1"></i>Concept-versie: nog niet gekoppeld aan de backend.</p></div>
+</div>
  <div data-ok class="hidden py-6 text-center"><i class="fa fa-circle-check text-[#2f9e44] text-3xl"></i><h2 class="font-bold text-[18px] text-[#212529] mt-2">Bericht ontvangen</h2><p class="text-ink-muted">We reageren meestal binnen één werkdag.</p></div></form></section>
 <aside class="space-y-3"><div class="block p-4 text-[13px] space-y-2"><div class="font-semibold text-[#212529]">Direct mailen</div><div><i class="fa fa-envelope text-pd w-5"></i><a href="mailto:support@paydates.nl" class="hover:text-pd">support@paydates.nl</a></div><div><i class="fa fa-envelope text-pd w-5"></i><a href="mailto:support@paydates.nl" class="hover:text-pd">support@paydates.nl</a></div><div class="pt-2 border-t border-line text-ink-muted text-[12px]">Forest Road B.V.<br>Herengracht 449A, 1017 BR Amsterdam<br>KvK 97957232</div></div>
 <div class="block p-4 text-[13px]"><div class="font-semibold text-[#212529]">Iets melden?</div><p class="text-ink-muted text-[12px] mt-1">Gebruik het <a href="melden.html" class="text-pd">meldformulier</a> voor misstanden, misbruik van foto's of notice &amp; takedown.</p></div>{LEGALNAV}</aside></div></div>'''

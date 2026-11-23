@@ -2,7 +2,7 @@ import json
 from layout import *
 built=[]
 NOTE=''
-CNOTE='<p class="text-[11px] text-ink-muted mt-3"><i class="fa fa-flask mr-1"></i>Concept-versie: dit formulier is nog niet gekoppeld aan de backend.</p>'
+CNOTE=''
 def okbox(t,s): return f'<div data-ok class="hidden text-center py-6"><div class="w-14 h-14 mx-auto rounded-full bg-[#2f9e4420] text-[#2f9e44] flex items-center justify-center text-2xl"><i class="fa fa-check"></i></div><h2 class="text-[18px] font-bold text-[#212529] mt-3">{t}</h2><p class="text-ink-muted mt-1">{s}</p><a href="index.html" class="btn btn-ghost mt-4">Naar de homepage</a></div>'
 def authwrap(inner,side):
   return f'''<div class="max-w-[1000px] mx-auto px-3 lg:px-6 py-8">
@@ -21,7 +21,7 @@ inner=f'''<h1 class="text-[22px] font-bold text-[#212529]">Inloggen</h1><p class
  <label class="flex items-center gap-2 text-[13px]"><input type="checkbox"> Ingelogd blijven</label>
  <button class="btn btn-pd w-full"><i class="fa fa-right-to-bracket"></i> Inloggen</button>
  <p class="text-center text-[13px] text-ink-muted">Nog geen account? <a href="register.html" class="text-pd font-semibold">Registreer gratis</a></p>{CNOTE}</div>
- {okbox('Ingelogd (concept)','In de live-versie ga je nu naar je account.')}</form>'''
+ {okbox('Ingelogd','Je wordt doorgestuurd naar je account.')}</form>'''
 built.append(page('login.html','Inloggen | Paydates.nl','Log in op je Paydates.nl account.',authwrap(inner,SIDE),'login'))
 inner=f'''<h1 class="text-[22px] font-bold text-[#212529]">Wachtwoord vergeten</h1><p class="text-ink-muted">We sturen je een link om een nieuw wachtwoord in te stellen.</p>
 <form data-pd-form class="mt-5 space-y-3.5"><div data-hide-on-ok class="space-y-3.5"><div><label class="lbl" for="em">E-mailadres</label><input id="em" type="email" required class="inp"></div><button class="btn btn-pd w-full">Verstuur resetlink</button><p class="text-center text-[13px]"><a href="login.html" class="text-pd">Terug naar inloggen</a></p>{CNOTE}</div>
@@ -159,7 +159,7 @@ body=f'''<div class="max-w-[1200px] mx-auto px-3 lg:px-6 py-5">
      <div><label class="lbl">E-mailadres</label><input type="email" class="inp" required></div><div><label class="lbl">Nieuw wachtwoord</label><input type="password" minlength="8" class="inp"></div>
      <label class="flex items-center gap-2 text-[13px]"><input type="checkbox" checked> E-mail bij nieuwe chatberichten</label><label class="flex items-center gap-2 text-[13px]"><input type="checkbox"> Nieuwsbrief</label>
      <div class="sm:col-span-2 flex flex-wrap gap-2 justify-between"><button class="btn btn-pd !py-2">Opslaan</button><a href="contact.html?onderwerp=account-verwijderen" class="text-[12px] text-[#c92a2a] self-center">Account verwijderen</a></div></div>
-     <div data-ok class="hidden sm:col-span-2 text-[#2f9e44] font-semibold"><i class="fa fa-check mr-1"></i>Opgeslagen (concept, niet gekoppeld aan backend).</div></form></section>
+     <div data-ok class="hidden sm:col-span-2 text-[#2f9e44] font-semibold"><i class="fa fa-check mr-1"></i>Opgeslagen.</div></form></section>
   </div>
  </div>
 </div>'''

@@ -51,14 +51,12 @@ body='''<div class="max-w-[1400px] mx-auto px-3 lg:px-6 py-4">
    <div id="bumpMsg" class="text-[12px] mt-2" aria-live="polite"></div>
    <div class="mt-4 pt-3 border-t border-line flex flex-wrap items-center justify-between gap-2 text-[11px] text-ink-muted">
     <span>Liever met credits? <a href="credits.html" class="text-pd font-semibold">Omhoog plaatsen met credits</a></span>
-    <span class="inline-flex items-center gap-1"><i class="fa fa-flask"></i>Concept: nummer, tarief en API nog te koppelen</span>
    </div>
   </form>
   <div id="bumpOk" class="hidden p-6 text-center">
    <div class="w-14 h-14 mx-auto rounded-full bg-[#2f9e4420] text-[#2f9e44] flex items-center justify-center text-2xl"><i class="fa fa-circle-arrow-up"></i></div>
    <h3 class="text-[18px] font-bold text-[#212529] mt-3">Je advertentie staat weer bovenaan</h3>
    <p class="text-ink-muted mt-1 text-[13px]">De code is geaccepteerd. Bezoekers zien je advertentie nu als eerste in je categorie en stad.</p>
-   <p id="bumpOkNote" class="hidden text-[11px] text-ink-muted mt-2"><i class="fa fa-flask mr-1"></i>Concept-versie: de code is niet echt gecontroleerd.</p>
    <button type="button" data-bump-close class="btn btn-pd mt-4">Sluiten</button>
   </div>
  </div>

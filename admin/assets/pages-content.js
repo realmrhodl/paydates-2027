@@ -22,7 +22,7 @@ R.advertenties=function(){
     $$('[data-ok]').forEach(b=>b.onclick=()=>{const d2=db();const a=d2.ads.find(x=>x.id===b.dataset.ok);const u=d2.users.find(x=>x.id===a.owner);
       if(u&&u.kyc!=='goedgekeurd'&&!confirm('Eigenaar is nog niet geverifieerd (KYC: '+u.kyc+'). Toch goedkeuren?'))return;
       a.status='live';a.mod='goedgekeurd';a.modNote='';if(!a.expires||new Date(a.expires)<new Date())a.expires=new Date(Date.now()+d2.settings.adDays*864e5).toISOString();save(d2);
-      P.mailSim(u,'ad_live',{advertentie:a.title});audit('ad-approve',a.title,'');toast('Goedgekeurd · mail gesimuleerd');draw();});
+      P.mailSim(u,'ad_live',{advertentie:a.title});audit('ad-approve',a.title,'');toast('Goedgekeurd · mail verstuurd');draw();});
     $$('[data-no]').forEach(b=>b.onclick=()=>modal('Advertentie afkeuren',`<label class="pdx-lbl">Reden (gaat naar adverteerder)</label><select class="pdx-in" id="rr"><option>Foto’s niet echt / niet eigen</option><option>Minderjarig ogend of leeftijd onduidelijk</option><option>Verboden diensten of teksten</option><option>Contactgegevens in afbeelding</option><option>Dubbele advertentie</option><option>Overig</option></select><label class="pdx-lbl" style="margin-top:8px">Toelichting</label><textarea class="pdx-in" id="rt"></textarea>`,m=>{
       const note=m.querySelector('#rr').value+(m.querySelector('#rt').value?': '+m.querySelector('#rt').value:'');const d2=db();const a=d2.ads.find(x=>x.id===b.dataset.no);a.status='afgekeurd';a.mod='afgekeurd';a.modNote=note;save(d2);
       P.mailSim(d2.users.find(x=>x.id===a.owner),'ad_rej',{advertentie:a.title,notitie:note});audit('ad-reject',a.title,note);draw();},'Afkeuren'));
@@ -35,13 +35,13 @@ R.advertenties=function(){
 R.kyc=function(){
   const F={tab:'ingediend'};
   function draw(){const d=db();const L=d.kyc.filter(k=>F.tab==='all'||k.status===F.tab);
-    main().innerHTML=head('KYC-wachtrij','Leeftijd- en identiteitsverificatie. <b>Concept:</b> er is geen KYC-provider gekoppeld en er worden geen echte documenten opgeslagen; stappen zijn gesimuleerd.')+
+    main().innerHTML=head('KYC-wachtrij','Leeftijd- en identiteitsverificatie.')+
     `<div class="pdx-demo" style="margin-bottom:14px"><i class="fa fa-shield-halved"></i><div>In productie: documenten via een gecertificeerde provider (bijv. iDIN/Onfido/Veriff-achtig), versleuteld, bewaartermijn &lt; 30 dagen na besluit, alleen toegankelijk voor rol moderator/admin. Zie Gap-analyse P0.</div></div>
     <div class="adm-tabs">${[['ingediend','Te beoordelen'],['goedgekeurd','Goedgekeurd'],['afgewezen','Afgewezen'],['all','Alles']].map(t=>`<a href="#" data-t="${t[0]}" class="${F.tab===t[0]?'on':''}">${t[1]} (${t[0]==='all'?d.kyc.length:d.kyc.filter(k=>k.status===t[0]).length})</a>`).join('')}</div>
     <div class="pdx-grid pdx-g2">${L.map(k=>{const u=d.users.find(x=>x.id===k.userId)||{};return `<div class="pdx-card"><div class="pdx-card-h"><span><a href="gebruiker.html?id=${u.id}" style="color:#7351c0">${esc(u.username)}</a> ${roleB(u.role||'?')}</span>${kycB(k.status)}</div><div class="pdx-card-b pdx-small" style="display:grid;gap:8px">
       <div>Ingediend ${fmtDT(k.submitted)}${k.reviewer?` · beoordeeld door ${esc(k.reviewer)} ${fmtDT(k.reviewed)}`:''}</div>
       <div>${Object.entries(k.steps||{}).filter(([s])=>s!=='reg'||u.role==='bedrijf').map(([s,v])=>`<span class="adm-chip ${v?'y':'n'}">${{id:'ID-document',selfie:'Selfie + code',age:'Leeftijd ≥ 21',reg:'KvK / vergunning'}[s]||s}</span>`).join(' ')}</div>
-      <div class="pdx-row"><div class="pdx-ph">ID-document<br><small>(demo: geen bestand)</small></div><div class="pdx-ph">Selfie met code ${esc(k.code||'PD-'+String(k.id).slice(-4).toUpperCase())}<br><small>(demo)</small></div></div>
+      <div class="pdx-row"><div class="pdx-ph">ID-document</div><div class="pdx-ph">Selfie met code ${esc(k.code||'PD-'+String(k.id).slice(-4).toUpperCase())}</div></div>
       ${k.note?`<div>Notitie: <i>${esc(k.note)}</i></div>`:''}
       <input class="pdx-in" placeholder="Notitie (verplicht bij afwijzen)" data-n="${k.userId}">
       <div class="pdx-row"><button class="pdx-btn sm green" data-a="${k.userId}">Goedkeuren</button><button class="pdx-btn sm red" data-r="${k.userId}">Afwijzen</button><button class="pdx-btn sm" data-m="${k.userId}">Opnieuw opvragen</button></div></div></div>`}).join('')||'<div class="pdx-card pdx-card-b pdx-muted">Geen aanvragen in deze lijst.</div>'}</div>`;

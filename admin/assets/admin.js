@@ -29,7 +29,7 @@ function shell(){
   document.body.innerHTML=`<div class="adm"><aside class="adm-side" id="admSide"><a href="index.html" class="adm-brand" style="padding:4px 8px 14px"><img src="../img/header-logo.png" alt=""><span>Paydates<small>ADMIN · CONCEPT</small></span></a>
    ${nav.map(n=>n.length===1?`<div class="adm-sec">${n[0]}</div>`:`<a href="${n[0]}.html" class="${PAGE===n[0]||(PAGE==='gebruiker'&&n[0]==='gebruikers')?'on':''}"><i class="fa ${n[1]}"></i>${n[2]}${n[3]?`<span class="cnt">${n[3]}</span>`:''}</a>`).join('')}
    <div class="adm-sec">Site</div><a href="../index.html" target="_blank"><i class="fa fa-arrow-up-right-from-square"></i>Naar Paydates.nl</a><a href="../dashboard.html"><i class="fa fa-gauge-simple"></i>Adverteerdersdashboard</a></aside>
-   <div style="min-width:0"><header class="adm-top"><button class="pdx-btn sm burger" id="burger" aria-label="Menu"><i class="fa fa-bars"></i></button><b style="font-size:14px;color:#212529">Adminpanel</b><span class="demo"><i class="fa fa-flask"></i> DEMO-DATA · niets is live</span>
+   <div style="min-width:0"><header class="adm-top"><button class="pdx-btn sm burger" id="burger" aria-label="Menu"><i class="fa fa-bars"></i></button><b style="font-size:14px;color:#212529">Adminpanel</b>
     <span style="margin-left:auto" class="pdx-small pdx-muted">${esc(me.username)} ${roleB(me.role)}</span><button class="pdx-btn sm" id="logout"><i class="fa fa-right-from-bracket"></i></button></header>
    <main class="adm-main" id="adm"></main></div></div>`;
   $('#logout').onclick=()=>{P.logout();location.href='../login.html';};

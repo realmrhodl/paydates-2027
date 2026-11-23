@@ -29,7 +29,7 @@ for k,t in ADMIN.items():
     extra+='<script src="assets/gap.js"></script>\n' if k=='gap' else ''
     wr(f'admin/{k}.html',f'''<!DOCTYPE html>
 <html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{t} · Admin · Paydates.nl (concept)</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#2a1b4f">
+<title>{t} · Admin · Paydates.nl</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#2a1b4f">
 <link rel="icon" href="../img/header-logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -63,7 +63,7 @@ shell('polls.html','Community polls – archief | Paydates.nl','Bekijk de uitsla
  ('''<div class="pdx-wrap" style="max-width:1000px"><h1 class="pdx-h1">Community polls</h1><p class="pdx-sub">Stem mee op de homepage en bekijk hier de uitslagen van eerdere polls. Anoniem: we slaan geen persoonsgegevens op bij je stem.</p>
 <div style="margin:16px 0"><div data-pdx-poll></div></div>
 <h2 class="pdx-h1" style="font-size:18px;margin-top:22px">Archief</h2><div data-pdx-poll-archive style="margin-top:10px"></div>
-<p class="pdx-xs pdx-muted" style="margin-top:14px">Uitslagen zijn indicatief en niet representatief. Concept: tellingen inclusief startaantallen.</p></div>''',
+<p class="pdx-xs pdx-muted" style="margin-top:14px">Uitslagen zijn indicatief en niet representatief.</p></div>''',
   '<script src="assets/pdx.js"></script><script src="assets/poll.js"></script>'),'polls',index=True)
 
 # ---------- patches bestaande pagina's ----------
@@ -91,7 +91,7 @@ for fn,page in [('login.html','login'),('register.html','register'),('wachtwoord
 s=rd('verificatie.html')
 if '<!-- pdx-kyc -->' not in s:
     s=add_css(s)
-    s=s.replace('<!-- FOOTER -->','''<!-- pdx-kyc --><div class="pdx-wrap" style="max-width:1000px;padding-top:0"><div class="pdx-card pdx-card-b pdx-between" id="pdxKycBox"><div><b>Direct verifiëren?</b><div class="pdx-small pdx-muted">Start de verificatie in je account (concept: stappen worden gesimuleerd).</div></div><a class="pdx-btn pd" href="kyc.html"><i class="fa fa-id-card"></i> Start verificatie</a></div></div>
+    s=s.replace('<!-- FOOTER -->','''<!-- pdx-kyc --><div class="pdx-wrap" style="max-width:1000px;padding-top:0"><div class="pdx-card pdx-card-b pdx-between" id="pdxKycBox"><div><b>Direct verifiëren?</b><div class="pdx-small pdx-muted">Start de verificatie in je account.</div></div><a class="pdx-btn pd" href="kyc.html"><i class="fa fa-id-card"></i> Start verificatie</a></div></div>
 <script>(function(){try{var s=JSON.parse(localStorage.getItem('pdx_session')||'null'),d=JSON.parse(localStorage.getItem('pdx_v1')||'null');if(!s||!d)return;var u=d.users.find(function(x){return x.id===s.id});if(!u)return;var b=document.getElementById('pdxKycBox');b.querySelector('b').textContent='Jouw status: '+u.kyc;}catch(e){}})();</script><!-- /pdx-kyc -->
 <!-- FOOTER -->''',1)
     wr('verificatie.html',s)

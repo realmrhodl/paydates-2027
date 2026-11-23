@@ -76,7 +76,7 @@ function init(){
   addEventListener('keydown',e=>{if(e.key==='Escape'&&!m.classList.contains('hidden'))close()});
   document.addEventListener('click',e=>{const b=e.target.closest('[data-bump]');if(!b)return;e.preventDefault();open(+b.dataset.bump,b.dataset.bumpName)});
   function done(r){$('#bumpForm').classList.add('hidden');$('#bumpOk').classList.remove('hidden');
-    $('#bumpOkNote').classList.toggle('hidden',!r.concept);
+    var n=$('#bumpOkNote');if(n)n.classList.add('hidden');
     document.querySelectorAll('[data-bumped-label]').forEach(el=>el.textContent='zojuist');
     document.dispatchEvent(new CustomEvent('pd:bumped',{detail:{adId,method,at:r.bumped_at}}));}
   const cb=$('#bumpCreditsBtn');

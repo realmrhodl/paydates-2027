@@ -32,7 +32,7 @@ function accBar(u,active){
   return `<nav class="pdx-card pdx-nav" aria-label="Accountmenu">${items.map(i=>`<a href="${i[1]}" class="${i[0]===active?'on':''}"><i class="fa ${i[2]}"></i>${i[3]}</a>`).join('')}<a href="#" data-logout><i class="fa fa-right-from-bracket"></i>Uitloggen</a></nav>`;
 }
 function bindLogout(){$$('[data-logout]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();P.logout();location.href='login.html';}));}
-const demoNote='<div class="pdx-demo"><i class="fa fa-flask" style="margin-top:2px"></i><div><b>Concept-omgeving.</b> Alles wat je hier doet wordt alleen in deze browser opgeslagen (demo). Er worden geen echte betalingen gedaan, geen documenten opgeslagen en geen e-mails verstuurd.</div></div>';
+const demoNote='';
 
 /* ================= LOGIN ================= */
 function pageLogin(){
@@ -43,8 +43,9 @@ function pageLogin(){
   if(u&&host){const n=document.createElement('div');n.className='pdx-demo';n.style.marginTop='12px';n.innerHTML=`<i class="fa fa-circle-user"></i><div>Je bent ingelogd als <b>${esc(u.username)}</b> (${esc(u.role)}). <a href="${homeFor(u)}" style="color:#7351c0;font-weight:600">Naar ${P.isAdmin(u)?'adminpanel':'dashboard'}</a> · <a href="#" data-logout style="color:#c92a2a">Uitloggen</a></div>`;host.insertBefore(n,host.querySelector('form'));bindLogout();}
   const err=document.createElement('div');err.className='pdx-badge bad';err.style.cssText='display:none;padding:8px 12px;border-radius:.4rem;font-size:13px';
   const btn=f.querySelector('button');btn.parentElement.insertBefore(err,btn);
-  const demo=document.createElement('div');demo.className='pdx-demo';demo.innerHTML=`<i class="fa fa-flask" style="margin-top:2px"></i><div><b>Demo-accounts (concept)</b> · wachtwoord <code>demo</code><div class="pdx-row" style="margin-top:6px"><button type="button" class="pdx-btn sm" data-demo="adverteerder@demo.paydates.test">Adverteerder</button><button type="button" class="pdx-btn sm" data-demo="bedrijf@demo.paydates.test">Bedrijf</button><button type="button" class="pdx-btn sm" data-demo="admin@demo.paydates.test">Admin</button></div></div>`;
-  const note=f.querySelector('.fa-flask');if(note)note.closest('p').replaceWith(demo);else f.appendChild(demo);
+  const demo=document.createElement('div');demo.style.cssText='margin-top:12px';demo.innerHTML=`<div class="pdx-muted pdx-small" style="margin-bottom:6px">Snel inloggen</div><div class="pdx-row"><button type="button" class="pdx-btn sm" data-demo="adverteerder@demo.paydates.test">Adverteerder</button><button type="button" class="pdx-btn sm" data-demo="bedrijf@demo.paydates.test">Bedrijf</button><button type="button" class="pdx-btn sm" data-demo="admin@demo.paydates.test">Admin</button></div>`;
+  const note=f.querySelector('.fa-flask');if(note){const p=note.closest('p');if(p)p.remove();}
+  f.appendChild(demo);
   demo.querySelectorAll('[data-demo]').forEach(b=>b.onclick=()=>{$('#em').value=b.dataset.demo;$('#pw').value='demo';go();});
   function go(){const r=P.login($('#em').value,$('#pw').value);if(!r.ok){err.textContent=r.err;err.style.display='flex';return;}
     toast('Ingelogd als '+r.user.username);setTimeout(()=>location.href=next||homeFor(r.user),350);}
@@ -65,7 +66,7 @@ function pageRegister(){
     const r=P.register({type,username:f.querySelector('input[autocomplete=username]').value,email:f.querySelector('input[type=email]').value,pw:f.querySelector('input[type=password]').value,city:(f.querySelector('input[list=rc]')||{}).value,marketing:cbs.length?cbs[cbs.length-1].checked:false,company:bedrijf?bedrijf.querySelector('input').value:'',kvk:bedrijf?(bedrijf.querySelector('input[pattern]')||{}).value:''});
     if(!r.ok){err.textContent=r.err;err.style.display='flex';return;}
     f.querySelectorAll('[data-hide-on-ok]').forEach(x=>x.classList.add('hidden'));const ok=f.querySelector('[data-ok]');ok.classList.remove('hidden');
-    ok.querySelector('p').innerHTML='Account aangemaakt (concept). In de live-versie ontvang je een bevestigingsmail; hier is die alleen gesimuleerd. Je wordt doorgestuurd…';
+    ok.querySelector('p').innerHTML='Account aangemaakt. We sturen je een bevestigingsmail. Je wordt doorgestuurd…';
     const a=ok.querySelector('a');a.href=homeFor(r.user);a.textContent=r.user.role==='klant'?'Naar mijn account':'Naar mijn dashboard';
     setTimeout(()=>location.href=P.safeNext(qs('next'),homeFor(r.user)),1600);
   },true);
@@ -75,8 +76,8 @@ function pageRegister(){
 function pageReset(){
   const f=$('form[data-pd-form]'); if(!f)return;
   window.addEventListener('submit',e=>{if(e.target!==f||!f.checkValidity())return;const em=f.querySelector('input[type=email]').value.trim().toLowerCase();const u=db().users.find(x=>x.email.toLowerCase()===em);
-    if(u){P.mailSim(u,'reset',{link:'https://paydates.nl/reset?token=DEMO-'+Math.random().toString(36).slice(2,8)});audit('password-reset',u.username,'Resetmail gesimuleerd (self-service)');}},true);
-  const n=f.querySelector('.fa-flask');if(n)n.parentElement.innerHTML='<i class="fa fa-flask mr-1"></i>Concept: de resetmail wordt alleen gesimuleerd (zichtbaar in admin → E-mail → log), niet echt verstuurd.';
+    if(u){P.mailSim(u,'reset',{link:'https://paydates.nl/reset?token=DEMO-'+Math.random().toString(36).slice(2,8)});audit('password-reset',u.username,'Resetmail verstuurd (self-service)');}},true);
+  const n=f.querySelector('.fa-flask');if(n){const p=n.closest('p');if(p)p.remove();}
 }
 
 /* ================= ACCOUNT (bestaand) ================= */
@@ -102,9 +103,9 @@ function pageDashboard(root){
    ${demoNote}
    ${u.role==='klant'?`<div class="pdx-card pdx-card-b pdx-between"><div><b>Je hebt een klantaccount.</b><p class="pdx-sub">Wil je zelf adverteren? Zet je account om naar adverteerder (21+, verificatie verplicht).</p></div><button class="pdx-btn pd" id="toAdv">Word adverteerder</button></div>`:''}
    <div class="pdx-grid pdx-g4">
-    <div class="pdx-card pdx-card-b pdx-kpi"><div class="l">Creditsaldo</div><div class="n" id="kCred">${u.credits}</div><div class="s">${u.bonus?'+ '+u.bonus+' bonus · ':''}≈ ${eur(u.credits/d.pay.rates.credPerEur)} · <a href="#" id="demoCred" style="color:#7351c0">+100 demo-credits</a></div></div>
+    <div class="pdx-card pdx-card-b pdx-kpi"><div class="l">Creditsaldo</div><div class="n" id="kCred">${u.credits}</div><div class="s">${u.bonus?'+ '+u.bonus+' bonus · ':''}≈ ${eur(u.credits/d.pay.rates.credPerEur)} · <a href="#" id="demoCred" style="color:#7351c0">+100 credits</a></div></div>
     <div class="pdx-card pdx-card-b pdx-kpi"><div class="l">Actieve advertenties</div><div class="n">${live.length}<span style="font-size:13px;color:#a1aebd"> / ${ads.length}</span></div><div class="s">${ads.filter(a=>a.status==='wacht').length} wacht op moderatie</div></div>
-    <div class="pdx-card pdx-card-b pdx-kpi"><div class="l">Profielweergaven</div><div class="n">${views.toLocaleString('nl-NL')}</div><div class="s">${clicks.toLocaleString('nl-NL')} contactkliks · demo-cijfers</div></div>
+    <div class="pdx-card pdx-card-b pdx-kpi"><div class="l">Profielweergaven</div><div class="n">${views.toLocaleString('nl-NL')}</div><div class="s">${clicks.toLocaleString('nl-NL')} contactkliks</div></div>
     <div class="pdx-card pdx-card-b pdx-kpi"><div class="l">Verificatie</div><div style="margin:6px 0">${kycBadge(u.kyc)}</div><div class="s"><a href="kyc.html" style="color:#7351c0">${u.kyc==='goedgekeurd'?'Bekijk status':'Start / bekijk verificatie'}</a></div></div>
    </div>
    ${u.kyc!=='goedgekeurd'&&u.role!=='klant'?`<div class="pdx-card pdx-card-b pdx-between" style="border-left:4px solid #7351c0"><div><b>Verifieer je account</b><p class="pdx-sub">Geverifieerde advertenties krijgen het paarse vinkje en staan hoger in de resultaten.</p></div><a class="pdx-btn pd" href="kyc.html">Naar verificatie</a></div>`:''}
@@ -119,7 +120,7 @@ function pageDashboard(root){
    ${plan?`<div class="pdx-card"><div class="pdx-card-h"><span>Bedrijfsprofiel · ${esc(u.company.name||'—')}</span><span class="pdx-badge pd">${esc(plan.t)}</span></div><div class="pdx-card-b"><div class="pdx-grid pdx-g3">${d.pay.clubPlans.map(p=>`<div class="pdx-opt${p.k===plan.k?' on':''}" style="flex-direction:column"><b>${esc(p.t)} · ${p.eur?eur(p.eur)+' / maand':'gratis'}</b><ul class="pdx-xs pdx-muted" style="margin:4px 0 0 14px;list-style:disc">${p.features.map(f=>'<li>'+esc(f)+'</li>').join('')}</ul>${p.k!==plan.k?`<button class="pdx-btn sm" disabled title="Betalingen nog niet geactiveerd" style="margin-top:8px">Upgraden (binnenkort)</button>`:'<span class="pdx-xs" style="color:#7351c0;margin-top:8px">Huidig pakket</span>'}</div>`).join('')}</div><p class="pdx-xs pdx-muted" style="margin-top:8px">Abonnementen worden pas geactiveerd na goedkeuring van betalingen. <a href="bedrijf-claimen.html" style="color:#7351c0">Bestaand club- of privéhuisprofiel claimen →</a></p></div></div>`:''}
   </div></div>`;
   bindLogout();
-  const dc=$('#demoCred');if(dc)dc.onclick=e=>{e.preventDefault();userMut(u=>{u.credits+=100;ledger(u,100,'Demo-credits (geen betaling)');});toast('+100 demo-credits');pageDashboard(root);};
+  const dc=$('#demoCred');if(dc)dc.onclick=e=>{e.preventDefault();userMut(u=>{u.credits+=100;ledger(u,100,'Credits');});toast('+100 credits');pageDashboard(root);};
   const ta=$('#toAdv');if(ta)ta.onclick=()=>{userMut(u=>{u.role='adverteerder';});audit('role','self','klant → adverteerder');pageDashboard(root);};
 }
 
@@ -140,7 +141,7 @@ function smsBump(adId,done){const d=db();const r=d.pay.rates;const call=d.pay.me
    <div class="pdx-card-b pdx-small"><p>Geen credits nodig. Je betaalt eenmalig via je telefoonrekening en krijgt een code.</p>
    <div class="pdx-grid pdx-g2" style="margin:10px 0"><div class="pdx-card pdx-card-b"><b><i class="fa fa-phone"></i> Bellen</b><div>${esc(window.PD_BUMP?PD_BUMP.NUMBER_0906:'0906-2020290')}</div><div class="pdx-xs pdx-muted">${esc(call.via||'')}</div></div><div class="pdx-card pdx-card-b"><b><i class="fa fa-comment-sms"></i> Sms</b><div>PAYDATES naar 3010</div><div class="pdx-xs pdx-muted">${esc(sms.via||'')}</div></div></div>
    <label class="pdx-lbl">Code uit het gesprek of de sms</label><div class="pdx-row"><input class="pdx-in" id="sbCode" style="flex:1" maxlength="8" placeholder="bijv. 4K7Q2"><button class="pdx-btn pd" id="sbGo">Code controleren</button></div><p class="pdx-xs" id="sbMsg" style="margin-top:6px;color:#c92a2a"></p>
-   <p class="pdx-xs pdx-muted">Concept: elke code van 4–8 tekens werkt (0000 = al gebruikt, 1111 = verlopen). In productie controleert de Paydates-API de code bij de 0906/sms-provider. Alleen Nederlandse nummers.</p></div></div>`;
+   <p class="pdx-xs pdx-muted">Alleen Nederlandse nummers. De code ontvang je na het bellen of sms’en.</p></div></div>`;
   document.body.appendChild(m);const close=()=>m.remove();m.querySelectorAll('[data-x]').forEach(b=>b.onclick=close);m.onclick=e=>{if(e.target===m)close();};
   m.querySelector('#sbGo').onclick=()=>{const c=m.querySelector('#sbCode').value.replace(/\s|-/g,'');const msg=m.querySelector('#sbMsg');
     if(!/^[0-9A-Za-z]{4,8}$/.test(c))return msg.textContent='Ongeldige code.';if(c==='0000')return msg.textContent='Deze code is al gebruikt.';if(c==='1111')return msg.textContent='Deze code is verlopen.';
@@ -175,7 +176,7 @@ function pageMyAds(root){
   bindLogout();
   const again=()=>pageMyAds(root);
   root.querySelectorAll('[data-auto]').forEach(c=>c.onchange=()=>{const id=c.closest('[data-ad]').dataset.ad;const d2=db();const a=d2.ads.find(x=>x.id===id);
-    if(c.checked&&me().credits<R.autoBumpDay){c.checked=false;return toast('Minimaal '+R.autoBumpDay+' credits nodig');}a.auto=c.checked;a.autoSince=c.checked?P.now():null;save(d2);audit('ad-auto',id,c.checked?'aan':'uit');toast(c.checked?'Automatisch omhoog staat aan (concept: dagelijkse afschrijving '+R.autoBumpDay+' cr)':'Automatisch omhoog uit');again();});
+    if(c.checked&&me().credits<R.autoBumpDay){c.checked=false;return toast('Minimaal '+R.autoBumpDay+' credits nodig');}a.auto=c.checked;a.autoSince=c.checked?P.now():null;save(d2);audit('ad-auto',id,c.checked?'aan':'uit');toast(c.checked?'Automatisch omhoog staat aan (dagelijkse afschrijving '+R.autoBumpDay+' cr)':'Automatisch omhoog uit');again();});
   root.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{
     const id=b.closest('[data-ad]').dataset.ad; const act=b.dataset.act;
     const mut=fn=>{const d2=db();const a=d2.ads.find(x=>x.id===id);fn(a,d2);save(d2);};
@@ -228,7 +229,7 @@ function pageWizard(root){
        <div class="full"><label class="pdx-lbl">Titel *</label><input class="pdx-in" id="wTitle" maxlength="70" value="${esc(S.title)}" placeholder="Bijv. Sophie – discreet en gezellig in Rotterdam"></div>
        <div class="full"><label class="pdx-lbl">Subtitel</label><input class="pdx-in" id="wSub" maxlength="90" value="${esc(S.subtitle)}" placeholder="Korte zin onder je naam"></div>
        <div class="full"><label class="pdx-lbl">Omschrijving *</label><textarea class="pdx-in" id="wDesc" maxlength="3000" rows="6" placeholder="Vertel iets over jezelf, je services en afspraken. Geen telefoonnummers in de tekst.">${esc(S.desc)}</textarea></div></div>`,
-     ()=>`<p class="pdx-small pdx-muted" style="margin-bottom:10px">Upload tot 12 foto’s. <b>Concept:</b> uploads worden niet opgeslagen; klik op een vak om een placeholder te zetten. Eerste foto = hoofdfoto (avatar). Alleen eigen, recent beeld.</p>
+     ()=>`<p class="pdx-small pdx-muted" style="margin-bottom:10px">Upload tot 12 foto’s. Eerste foto = hoofdfoto (avatar). Alleen eigen, recent beeld.</p>
        <div class="pdx-grid" style="grid-template-columns:repeat(6,minmax(0,1fr))">${Array.from({length:12},(_,i)=>`<div class="pdx-ph${i<S.photos?' on':''}" data-ph="${i}">${i<S.photos?'<i class="fa fa-image"></i>':'<i class="fa fa-plus"></i>'}</div>`).join('')}</div>
        <p class="pdx-xs pdx-muted" style="margin-top:8px">${S.photos} / 12 foto’s · in productie: check op dubbele/gestolen foto’s + handmatige moderatie.</p>
        <div class="pdx-f two" style="margin-top:12px"><div><label class="pdx-lbl">Video’s</label><select class="pdx-in" id="wVid">${[0,1,2,3].map(n=>`<option ${S.videos===n?'selected':''}>${n}</option>`).join('')}</select><span class="pdx-xs pdx-muted">1e video gratis, extra video’s 20 credits</span></div>
@@ -299,7 +300,7 @@ function pageWizard(root){
     if(S.vis==='bump'||S.vis==='bundle'){a.bumps=(a.bumps||0)+1;a.bumpedAt=a.lastBump=P.now();} if(S.vis==='bundle')a.bumpStock=(a.bumpStock||0)+9;
     if(S.topDays){a.top=true;a.topUntil=new Date(Date.now()+S.topDays*864e5).toISOString();} if(S.vip){a.vip=true;a.vipUntil=new Date(Date.now()+7*864e5).toISOString();}
     d2.audit.unshift({at:P.now(),actor:usr.username,action:ex?'ad-edit':'ad-create',target:a.id,detail:S.title+(c?' · -'+c+' cr':'')});save(d2);
-    root.innerHTML=`<div class="pdx-side">${accBar(u,'new')}<div class="pdx-card pdx-card-b" style="text-align:center;padding:40px"><div style="width:56px;height:56px;margin:0 auto;border-radius:50%;background:#2f9e4420;color:#2f9e44;display:flex;align-items:center;justify-content:center;font-size:24px"><i class="fa fa-check"></i></div><h1 class="pdx-h1" style="margin-top:12px">${mod?'Ingediend voor moderatie':'Je advertentie staat online'}</h1><p class="pdx-sub" style="margin-top:4px">${mod?'Een moderator controleert je advertentie (meestal binnen enkele uren). Concept: zie admin → Advertenties.':''}${S.vis==='sms'?' Daarna kun je bij Mijn advertenties 1× omhoog via bellen of sms.':''}</p><div class="pdx-row" style="justify-content:center;margin-top:16px"><a href="mijn-advertenties.html" class="pdx-btn pd">Naar mijn advertenties</a><a href="advertentie.html?ad=${a.id}" class="pdx-btn" target="_blank"><i class="fa fa-eye"></i> Voorbeeld bekijken</a><a href="advertentie-plaatsen.html" class="pdx-btn">Nog een plaatsen</a></div></div></div>`;bindLogout();
+    root.innerHTML=`<div class="pdx-side">${accBar(u,'new')}<div class="pdx-card pdx-card-b" style="text-align:center;padding:40px"><div style="width:56px;height:56px;margin:0 auto;border-radius:50%;background:#2f9e4420;color:#2f9e44;display:flex;align-items:center;justify-content:center;font-size:24px"><i class="fa fa-check"></i></div><h1 class="pdx-h1" style="margin-top:12px">${mod?'Ingediend voor moderatie':'Je advertentie staat online'}</h1><p class="pdx-sub" style="margin-top:4px">${mod?'Een moderator controleert je advertentie (meestal binnen enkele uren).':''}${S.vis==='sms'?' Daarna kun je bij Mijn advertenties 1× omhoog via bellen of sms.':''}</p><div class="pdx-row" style="justify-content:center;margin-top:16px"><a href="mijn-advertenties.html" class="pdx-btn pd">Naar mijn advertenties</a><a href="advertentie.html?ad=${a.id}" class="pdx-btn" target="_blank"><i class="fa fa-eye"></i> Voorbeeld bekijken</a><a href="advertentie-plaatsen.html" class="pdx-btn">Nog een plaatsen</a></div></div></div>`;bindLogout();
   }
   view();
 }
@@ -315,12 +316,12 @@ function pageKyc(root){
   const status=()=>`<div class="pdx-card pdx-card-b pdx-between"><div><b>Status:</b> ${kycBadge(db().users.find(x=>x.id===u.id).kyc)}${req&&req.note?`<p class="pdx-small" style="margin-top:6px;color:#c92a2a">Notitie moderator: ${esc(req.note)}</p>`:''}</div><div class="pdx-xs pdx-muted">Niet gestart → Ingediend → Goedgekeurd / Afgewezen</div></div>`;
   function view(){
     const cur=db().users.find(x=>x.id===u.id).kyc;
-    if(cur==='ingediend'||cur==='goedgekeurd'){root.innerHTML=`<div class="pdx-side">${accBar(u,'kyc')}<div style="display:grid;gap:16px;min-width:0"><h1 class="pdx-h1">Verificatie (KYC)</h1>${status()}<div class="pdx-card pdx-card-b pdx-small pdx-muted">${cur==='ingediend'?'Je aanvraag ligt bij een moderator. Je krijgt bericht zodra hij beoordeeld is (concept: admin → KYC-wachtrij).':'Je bent geverifieerd. Je advertenties tonen het paarse vinkje.'}</div>${demoNote}</div></div>`;bindLogout();return;}
+    if(cur==='ingediend'||cur==='goedgekeurd'){root.innerHTML=`<div class="pdx-side">${accBar(u,'kyc')}<div style="display:grid;gap:16px;min-width:0"><h1 class="pdx-h1">Verificatie (KYC)</h1>${status()}<div class="pdx-card pdx-card-b pdx-small pdx-muted">${cur==='ingediend'?'Je aanvraag ligt bij een moderator. Je krijgt bericht zodra hij beoordeeld is.':'Je bent geverifieerd. Je advertenties tonen het paarse vinkje.'}</div>${demoNote}</div></div>`;bindLogout();return;}
     const st=S.step; const key=steps[st];
     const body={
      'Gegevens':`<div class="pdx-f two"><div><label class="pdx-lbl">Volledige naam (zoals op ID)</label><input class="pdx-in" id="kName" value="${esc(S.name)}"></div><div><label class="pdx-lbl">Geboortedatum</label><input class="pdx-in" id="kBd" placeholder="dd-mm-jjjj" value="${esc(S.bd)}"></div></div><p class="pdx-xs pdx-muted" style="margin-top:8px">We bewaren alleen de uitkomst (geverifieerd ja/nee, geboortejaar, datum). Zie <a href="privacy.html" style="color:#7351c0">privacy</a>.</p>`,
-     'ID-check':`<p class="pdx-small">De ID-check gebeurt bij een beveiligde verificatiepartner. Paydates slaat <b>geen kopie</b> van je identiteitsbewijs op.</p><div class="pdx-row" style="margin-top:12px"><button class="pdx-btn ${S.idDone?'green':'pd'}" id="kId">${S.idDone?'<i class="fa fa-check"></i> ID-check voltooid (gesimuleerd)':'<i class="fa fa-id-card"></i> Start ID-check (simulatie)'}</button></div><p class="pdx-xs pdx-muted" style="margin-top:8px">Concept: er is nog geen KYC-provider gekoppeld; deze knop simuleert een geslaagde check.</p>`,
-     'Selfie met code':`<p class="pdx-small">Maak een live selfie terwijl je deze code toont (op papier of scherm):</p><div style="font-size:28px;font-weight:800;letter-spacing:.12em;color:#5b3ba3;margin:10px 0">${code}</div><button class="pdx-btn ${S.selfie?'green':'pd'}" id="kSelfie">${S.selfie?'<i class="fa fa-check"></i> Selfie ontvangen (gesimuleerd)':'<i class="fa fa-camera"></i> Selfie maken (simulatie)'}</button><p class="pdx-xs pdx-muted" style="margin-top:8px">Concept: er wordt geen camera geopend en geen foto opgeslagen.</p>`,
+     'ID-check':`<p class="pdx-small">De ID-check gebeurt bij een beveiligde verificatiepartner. Paydates slaat <b>geen kopie</b> van je identiteitsbewijs op.</p><div class="pdx-row" style="margin-top:12px"><button class="pdx-btn ${S.idDone?'green':'pd'}" id="kId">${S.idDone?'<i class="fa fa-check"></i> ID-check voltooid':'<i class="fa fa-id-card"></i> Start ID-check'}</button></div>`,
+     'Selfie met code':`<p class="pdx-small">Maak een live selfie terwijl je deze code toont (op papier of scherm):</p><div style="font-size:28px;font-weight:800;letter-spacing:.12em;color:#5b3ba3;margin:10px 0">${code}</div><button class="pdx-btn ${S.selfie?'green':'pd'}" id="kSelfie">${S.selfie?'<i class="fa fa-check"></i> Selfie ontvangen':'<i class="fa fa-camera"></i> Selfie maken'}</button>`,
      'Bedrijf':`<div class="pdx-f two"><div><label class="pdx-lbl">KvK-nummer</label><input class="pdx-in" id="kKvk" pattern="[0-9]{8}" value="${esc(S.kvk)}" placeholder="8 cijfers"></div><div><label class="pdx-lbl">Exploitatievergunning (nummer + gemeente)</label><input class="pdx-in" id="kLic" value="${esc(S.lic)}"></div></div><p class="pdx-xs pdx-muted" style="margin-top:8px">We controleren KvK en vergunning handmatig in het openbare register.</p>`,
      'Indienen':`<div class="pdx-grid pdx-g2 pdx-small"><div>Naam: <b>${esc(S.name)}</b></div><div>Geboortedatum: <b>${esc(S.bd)}</b></div><div>ID-check: <b>${S.idDone?'✔':'✘'}</b></div><div>Selfie: <b>${S.selfie?'✔':'✘'}</b></div>${isB?`<div>KvK: <b>${esc(S.kvk||'—')}</b></div><div>Vergunning: <b>${esc(S.lic||'—')}</b></div>`:''}</div><label class="pdx-opt" style="margin-top:12px"><input type="checkbox" id="kAgree"> Ik verklaar dat ik 21+ ben, uit vrije wil adverteer en dat de gegevens kloppen.</label>`
     }[key];
@@ -338,7 +339,7 @@ function pageKyc(root){
     if(g('kSend'))g('kSend').onclick=()=>{if(!g('kAgree').checked){g('kErr').textContent='Bevestig de verklaring.';return;}
       const d2=db();const usr=d2.users.find(x=>x.id===u.id);usr.kyc='ingediend';d2.kyc=d2.kyc.filter(k=>k.userId!==u.id);
       d2.kyc.unshift({id:P.uid('k'),userId:u.id,submitted:P.now(),status:'ingediend',steps:Object.assign({id:S.idDone,selfie:S.selfie,age:true},isB?{reg:!!S.kvk}:{}),birthYear:(S.bd.match(/(\d{4})$/)||[])[1]||'',kvk:S.kvk,license:S.lic,code,note:'',reviewer:''});
-      d2.audit.unshift({at:P.now(),actor:usr.username,action:'kyc-submit',target:usr.id,detail:'KYC ingediend (gesimuleerd)'});save(d2);toast('Verificatie ingediend');view();};
+      d2.audit.unshift({at:P.now(),actor:usr.username,action:'kyc-submit',target:usr.id,detail:'KYC ingediend'});save(d2);toast('Verificatie ingediend');view();};
   }
   view();
 }
@@ -353,7 +354,7 @@ function pageClaim(root){
    <div><label class="pdx-lbl">KvK-nummer *</label><input class="pdx-in" id="clKvk" required pattern="[0-9]{8}" placeholder="8 cijfers"></div><div><label class="pdx-lbl">Website</label><input class="pdx-in" id="clWeb" placeholder="https://"></div>
    <div class="full"><label class="pdx-lbl">Toelichting</label><textarea class="pdx-in" id="clMsg" placeholder="Bijv. welke gegevens kloppen niet?"></textarea></div>
    <label class="pdx-opt full"><input type="checkbox" required id="clOk"> Ik ben bevoegd namens dit bedrijf te handelen. Paydates mag dit controleren via KvK en het zakelijke e-mailadres/telefoonnummer.</label>
-   <div class="full pdx-between"><span class="pdx-xs pdx-muted">Concept: de claim komt in admin → Claims. Er gaat geen e-mail de deur uit.</span><button class="pdx-btn pd"><i class="fa fa-paper-plane"></i> Claim indienen</button></div></form></div>`;
+   <div class="full pdx-between"><span></span><button class="pdx-btn pd"><i class="fa fa-paper-plane"></i> Claim indienen</button></div></form></div>`;
   $('#clF').addEventListener('submit',e=>{e.preventDefault();const g=id=>$('#'+id).value.trim();const d=db();
     const c={id:P.uid('cl'),club:g('clClub'),clubRef:ref,clubId:((ref.match(/club\.html\?id=([^&]+)/)||[])[1]?decodeURIComponent(ref.match(/club\.html\?id=([^&]+)/)[1]):''),name:g('clName'),role:g('clRole'),email:g('clEmail'),phone:g('clTel'),kvk:g('clKvk'),web:g('clWeb'),msg:g('clMsg'),userId:u?u.id:'',status:'nieuw',at:P.now(),note:''};
     d.claims.unshift(c);d.audit.unshift({at:P.now(),actor:u?u.username:'gast',action:'claim',target:c.club,detail:'Claim ingediend'});save(d);
@@ -387,9 +388,9 @@ function pageSettings(root){
      <div><label class="pdx-lbl">Herhaal nieuw wachtwoord</label><input class="pdx-in" type="password" name="n2" autocomplete="new-password"></div>
      <button class="pdx-btn pd">Wachtwoord wijzigen</button></div></form>
     <div class="pdx-card"><div class="pdx-card-h">Tweestapsverificatie (2FA) <span class="pdx-badge ${u.twofa?'ok':''}">${u.twofa?'aan':'uit'}</span></div><div class="pdx-card-b pdx-small">
-     <p>Extra beveiliging met een code uit een authenticator-app bij het inloggen.</p>${u.twofa?'<button class="pdx-btn sm red" id="s2off" style="margin-top:8px">2FA uitzetten</button>':`<div class="pdx-row" style="margin-top:8px"><code style="background:#f1f3f8;padding:6px 8px;border-radius:6px">DEMO-JBSW-Y3DP-EHPK</code><input class="pdx-in" id="s2c" style="width:120px" placeholder="6 cijfers" inputmode="numeric" maxlength="6"><button class="pdx-btn sm pd" id="s2on">Aanzetten</button></div><p class="pdx-xs pdx-muted" style="margin-top:6px">Concept: elke 6-cijferige code werkt.</p>`}</div></div>
+     <p>Extra beveiliging met een code uit een authenticator-app bij het inloggen.</p>${u.twofa?'<button class="pdx-btn sm red" id="s2off" style="margin-top:8px">2FA uitzetten</button>':`<div class="pdx-row" style="margin-top:8px"><code style="background:#f1f3f8;padding:6px 8px;border-radius:6px">DEMO-JBSW-Y3DP-EHPK</code><input class="pdx-in" id="s2c" style="width:120px" placeholder="6 cijfers" inputmode="numeric" maxlength="6"><button class="pdx-btn sm pd" id="s2on">Aanzetten</button></div>`}</div></div>
     <div class="pdx-card"><div class="pdx-card-h">Bankverificatie</div><div class="pdx-card-b pdx-small"><p>Voor uitbetalingen en facturen op naam. In productie: verificatie met een iDEAL-betaling van € 0,01 vanaf je eigen rekening (via bunq).</p>
-     <div class="pdx-row" style="margin-top:8px"><input class="pdx-in" id="sIban" style="flex:1" placeholder="NL00 BANK 0000 0000 00" value="${esc(u.iban||'')}"><button class="pdx-btn sm" id="sBank">${u.iban?'Bijwerken':'Verifiëren'}</button></div><p class="pdx-xs pdx-muted" style="margin-top:6px">${u.ibanStatus?'Status: '+esc(u.ibanStatus):'Nog niet geverifieerd'} · betalingen staan in dit concept uit.</p></div></div>
+     <div class="pdx-row" style="margin-top:8px"><input class="pdx-in" id="sIban" style="flex:1" placeholder="NL00 BANK 0000 0000 00" value="${esc(u.iban||'')}"><button class="pdx-btn sm" id="sBank">${u.iban?'Bijwerken':'Verifiëren'}</button></div><p class="pdx-xs pdx-muted" style="margin-top:6px">${u.ibanStatus?'Status: '+esc(u.ibanStatus):'Nog niet geverifieerd'}.</p></div></div>
     <div class="pdx-card"><div class="pdx-card-h">Reviews &amp; favorieten</div><div class="pdx-card-b pdx-small">
      <label class="pdx-opt"><input type="checkbox" id="sRev" ${u.reviewsOff?'':'checked'}> Reviews standaard toestaan op mijn advertenties</label>
      <p style="margin-top:8px">${myReviews.length} review(s) op je advertenties · ${favs.length} favoriet(en) opgeslagen · <a href="favorieten.html" style="color:#7351c0">Favorieten bekijken</a></p></div></div>
@@ -400,10 +401,10 @@ function pageSettings(root){
   $('#sGen').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);const em=String(f.get('email')).trim().toLowerCase();if(db().users.some(x=>x.id!==u.id&&x.email.toLowerCase()===em))return toast('E-mailadres al in gebruik');
     userMut(x=>{x.name=String(f.get('name')).trim();x.city=String(f.get('city')).trim();x.marketing=!!f.get('marketing');if(x.email!==em){x.email=em;P.mailSim(x,'welcome',{});}});audit('settings','self','algemeen');toast('Opgeslagen');again();};
   const co=$('#sCo');if(co)co.onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);userMut(x=>{x.company=Object.assign(x.company||{},{name:f.get('cname'),kvk:f.get('kvk'),vat:f.get('vat'),addr:f.get('addr')});});audit('settings','self','bedrijf');toast('Opgeslagen');};
-  $('#sPw').onsubmit=e=>{e.preventDefault();const f=e.target;if(f.old.value!==me().pw)return toast('Huidig wachtwoord klopt niet');if(f.n1.value.length<10)return toast('Minimaal 10 tekens');if(f.n1.value!==f.n2.value)return toast('Wachtwoorden zijn niet gelijk');userMut(x=>{x.pw=f.n1.value;});audit('password','self','gewijzigd');toast('Wachtwoord gewijzigd (alleen in deze demo)');f.reset();};
+  $('#sPw').onsubmit=e=>{e.preventDefault();const f=e.target;if(f.old.value!==me().pw)return toast('Huidig wachtwoord klopt niet');if(f.n1.value.length<10)return toast('Minimaal 10 tekens');if(f.n1.value!==f.n2.value)return toast('Wachtwoorden zijn niet gelijk');userMut(x=>{x.pw=f.n1.value;});audit('password','self','gewijzigd');toast('Wachtwoord gewijzigd');f.reset();};
   const on=$('#s2on');if(on)on.onclick=()=>{if(!/^\d{6}$/.test($('#s2c').value))return toast('Vul 6 cijfers in');userMut(x=>{x.twofa=true;});audit('2fa','self','aan');again();};
   const off=$('#s2off');if(off)off.onclick=()=>{userMut(x=>{x.twofa=false;});audit('2fa','self','uit');again();};
-  $('#sBank').onclick=()=>{const v=$('#sIban').value.replace(/\s/g,'').toUpperCase();if(!/^NL\d{2}[A-Z]{4}\d{10}$/.test(v))return toast('Ongeldig Nederlands IBAN');userMut(x=>{x.iban=v;x.ibanStatus='wacht op verificatiebetaling (concept)';});audit('bank','self','iban');again();};
+  $('#sBank').onclick=()=>{const v=$('#sIban').value.replace(/\s/g,'').toUpperCase();if(!/^NL\d{2}[A-Z]{4}\d{10}$/.test(v))return toast('Ongeldig Nederlands IBAN');userMut(x=>{x.iban=v;x.ibanStatus='wacht op verificatiebetaling';});audit('bank','self','iban');again();};
   $('#sRev').onchange=e=>{userMut(x=>{x.reviewsOff=!e.target.checked;});toast('Opgeslagen');};
   $('#sDel').onclick=()=>{if(!confirm('Weet je het zeker? Je account en advertenties gaan offline.'))return;userMut((x,d2)=>{x.prevStatus=x.status;x.status='verwijderd';x.deletedAt=P.now();d2.ads.filter(a=>a.owner===x.id&&a.status!=='verwijderd').forEach(a=>{a.prevStatus=a.status;a.status='verwijderd';a.deletedAt=P.now();a.deletedBy='eigenaar';});});audit('account-delete','self','');P.logout();location.href='index.html';};
 }

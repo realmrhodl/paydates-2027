@@ -20,5 +20,5 @@
   q.set('id',id);history.replaceState(null,'','?'+q.toString());
   var m=document.createElement('meta');m.name='robots';m.content='noindex,nofollow';document.head.appendChild(m);
   document.addEventListener('DOMContentLoaded',function(){var b=document.createElement('div');b.style.cssText='background:#7351c0;color:#fff;text-align:center;font:600 13px Poppins,sans-serif;padding:8px';
-    b.innerHTML='Voorbeeld van je advertentie ('+(a.status==='live'?'online':'status: '+a.status)+') · alleen zichtbaar in deze browser (concept) · <a href="mijn-advertenties.html" style="color:#ffd43b">terug naar mijn advertenties</a>';document.body.insertBefore(b,document.body.firstChild);});
+    b.innerHTML='Voorbeeld van je advertentie ('+(a.status==='live'?'online':'status: '+a.status)+') · <a href="mijn-advertenties.html" style="color:#ffd43b">terug naar mijn advertenties</a>';document.body.insertBefore(b,document.body.firstChild);});
 })();

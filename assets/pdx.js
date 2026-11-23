@@ -51,8 +51,8 @@ function seed(){
   // klanten
   ['jeroen','mark84','sven_utr','dennis','tom.nl','bas_r','kevin','rick','niels','lars'].forEach((n,i)=>users.push({id:'u_k'+i,username:n,name:n,email:n.replace(/[^a-z0-9]/g,'')+'@demo.paydates.test',pw:'demo',role:'klant',status:i===7?'verbannen':'actief',credits:Math.floor(rnd()*30)*10,kyc:'geen',created:daysAgo(Math.floor(rnd()*500)),lastLogin:daysAgo(Math.floor(rnd()*60)),city:pick(['Amsterdam','Rotterdam','Den Haag','Utrecht','Eindhoven','Groningen']),marketing:rnd()>.5,notes:[],bv:'bv_forest'}));
   // demo-adverteerder: 2 eigen advertenties
-  ads.push({id:'a_demo1',owner:'u_demo',title:'Sophie – discreet in Rotterdam (DEMO)',cat:'Vrouw',type:'Privé ontvangst',city:'Rotterdam',status:'live',mod:'goedgekeurd',created:daysAgo(10),expires:daysAgo(-20),bumps:3,top:false,vip:false,views:842,clicks:61,desc:'Demo-advertentie (concept).',contact:{tel:'',wa:true,mail:true},photos:3,img:''});
-  ads.push({id:'a_demo2',owner:'u_demo',title:'Massage aan huis (DEMO)',cat:'Vrouw',type:'Massage',city:'Rotterdam',status:'wacht',mod:'in behandeling',created:daysAgo(1),expires:daysAgo(-30),bumps:0,top:false,vip:false,views:0,clicks:0,desc:'Wacht op moderatie (concept).',contact:{},photos:1,img:''});
+  ads.push({id:'a_demo1',owner:'u_demo',title:'Sophie – discreet in Rotterdam',cat:'Vrouw',type:'Privé ontvangst',city:'Rotterdam',status:'live',mod:'goedgekeurd',created:daysAgo(10),expires:daysAgo(-20),bumps:3,top:false,vip:false,views:842,clicks:61,desc:'Demo-advertentie (concept).',contact:{tel:'',wa:true,mail:true},photos:3,img:''});
+  ads.push({id:'a_demo2',owner:'u_demo',title:'Massage aan huis',cat:'Vrouw',type:'Massage',city:'Rotterdam',status:'wacht',mod:'in behandeling',created:daysAgo(1),expires:daysAgo(-30),bumps:0,top:false,vip:false,views:0,clicks:0,desc:'Wacht op moderatie (concept).',contact:{},photos:1,img:''});
   const kycq=users.filter(u=>u.kyc==='ingediend'||u.kyc==='afgewezen').map((u,i)=>({id:'k_'+u.id,userId:u.id,submitted:daysAgo(i%5),status:u.kyc==='ingediend'?'ingediend':'afgewezen',steps:{id:true,selfie:true,age:true,reg:u.role==='bedrijf'},note:u.kyc==='afgewezen'?'Selfie onscherp, opnieuw indienen.':'',reviewer:u.kyc==='afgewezen'?'moderator':''}));
   return {
     v:VERSION, seededAt:now(),
@@ -72,7 +72,7 @@ function seed(){
         {k:'creditcard',t:'Creditcard',on:true,min:50,max:500,via:'bunq checkout (nog niet live)'},
         {k:'call',t:'Bellen (0906)',on:true,min:2,max:2,via:'0906-provider (nummer volgt)'},
         {k:'sms',t:'SMS (3010)',on:true,min:2,max:2,via:'SMS-provider (tarief volgt)'},
-        {k:'bitcoin',t:'Bitcoin',on:true,min:25,max:5000,via:'eigen wallet (concept)'}
+        {k:'bitcoin',t:'Bitcoin',on:true,min:25,max:5000,via:'eigen wallet'}
       ],
       packs:[50,100,150,200,250,300,350,400,450,500].map(e=>({eur:e,credits:e*10,bonus:0})),
       rates:{credPerEur:10,adPrice:0,bump:20,topDay:50,vip7:300,chatpass24:50,smsCallEur:2,smsCallCredits:20,btcMinEur:25,sponsorWeek:10000},
@@ -109,7 +109,7 @@ function seed(){
       paymentsLive:false,realEmail:false,kycProvider:false,clubsPublishUnverified:false,showNuOpenOnlyWithHours:true,parenclubsSeparate:true,pollsOnHome:true,registrationOpen:true,maintenance:false,chatEnabled:true,clubClaims:true
     },
     settings:{supportEmail:'support@paydates.nl',minAgeAdvertiser:21,adDays:30,modRequired:true,siteName:'Paydates.nl'},
-    audit:[{at:now(),actor:'systeem',action:'seed',target:'demo-database',detail:'Demo-data aangemaakt (concept).'}],
+    audit:[{at:now(),actor:'systeem',action:'seed',target:'demo-database',detail:'Startgegevens aangemaakt.'}],
     stats:{}
   };
 }
@@ -117,7 +117,7 @@ function seed(){
 
 /* migratie: velden die de live Paydates-admin/-account ook heeft (zonder reset van bestaande demo-data) */
 function migrate(d){
-  if(d.m>=7)return false;
+  if(d.m>=8)return false;
   if(!(d.m>=5)){
   const r=d.pay.rates; if(r.bump===8)r.bump=20; if(r.adPrice==null)r.adPrice=0; if(r.bump10==null)r.bump10=150; if(r.autoBumpDay==null)r.autoBumpDay=15;
   /* V2-verdienmodel (concept): laagdrempelig instappen via 1× bellen/SMS, schalen via bundels, groot geld bij bedrijven */
@@ -134,13 +134,13 @@ function migrate(d){
   d.users.forEach(u=>{if(u.level==null)u.level=u.role==='admin'?5:u.role==='moderator'?4:u.role==='bedrijf'?2:1;if(u.bonus==null)u.bonus=0;});
   const live=d.ads.filter(a=>a.listingId).slice(0,6);
   d.reports=d.reports||[
-    {id:'r_1',type:'advertentie',adId:live[0]&&live[0].id,reason:'nep',text:'Foto’s lijken van internet te komen (demo-melding).',email:'melder1@demo.paydates.test',at:daysAgo(1),status:'nieuw'},
-    {id:'r_2',type:'advertentie',adId:live[1]&&live[1].id,reason:'onjuist',text:'Telefoonnummer werkt niet (demo-melding).',email:'',at:daysAgo(3),status:'nieuw'},
-    {id:'r_3',type:'gebruiker',adId:live[2]&&live[2].id,reason:'anders',text:'Ongepaste berichten in de chat (demo-melding).',email:'melder3@demo.paydates.test',at:daysAgo(6),status:'afgehandeld',note:'Gebruiker gewaarschuwd'}];
+    {id:'r_1',type:'advertentie',adId:live[0]&&live[0].id,reason:'nep',text:'Foto’s lijken van internet te komen.',email:'melder1@demo.paydates.test',at:daysAgo(1),status:'nieuw'},
+    {id:'r_2',type:'advertentie',adId:live[1]&&live[1].id,reason:'onjuist',text:'Telefoonnummer werkt niet.',email:'',at:daysAgo(3),status:'nieuw'},
+    {id:'r_3',type:'gebruiker',adId:live[2]&&live[2].id,reason:'anders',text:'Ongepaste berichten in de chat.',email:'melder3@demo.paydates.test',at:daysAgo(6),status:'afgehandeld',note:'Gebruiker gewaarschuwd'}];
   d.support=d.support||[
-    {id:'t_1',user:'u_demo',email:'adverteerder@demo.paydates.test',type:'credits',subject:'Credits niet bijgeschreven',text:'Ik heb betaald maar zie mijn credits niet (demo-ticket).',at:daysAgo(0),status:'open',replies:[]},
-    {id:'t_2',user:'',email:'bezoeker@demo.paydates.test',type:'account-verwijderen',subject:'Account verwijderen',text:'Graag mijn account verwijderen (demo-ticket).',at:daysAgo(4),status:'gesloten',replies:[{at:daysAgo(3),by:'moderator',t:'Je account is verwijderd.'}]}];
-  d.reviews=d.reviews||live.slice(0,5).map((a,i)=>({id:'rv_'+i,adId:a.id,by:['jeroen','mark84','sven_utr','dennis','tom.nl'][i],stars:[5,4,5,2,4][i],text:['Heel vriendelijk en precies zoals op de foto’s.','Fijne afspraak, goede communicatie.','Top, kom zeker terug.','Was 30 minuten te laat.','Discreet en netjes.'][i]+' (demo)',at:daysAgo(2+i*3),status:i===3?'wacht':i===4?'wacht':'goedgekeurd'}));
+    {id:'t_1',user:'u_demo',email:'adverteerder@demo.paydates.test',type:'credits',subject:'Credits niet bijgeschreven',text:'Ik heb betaald maar zie mijn credits niet.',at:daysAgo(0),status:'open',replies:[]},
+    {id:'t_2',user:'',email:'bezoeker@demo.paydates.test',type:'account-verwijderen',subject:'Account verwijderen',text:'Graag mijn account verwijderen.',at:daysAgo(4),status:'gesloten',replies:[{at:daysAgo(3),by:'moderator',t:'Je account is verwijderd.'}]}];
+  d.reviews=d.reviews||live.slice(0,5).map((a,i)=>({id:'rv_'+i,adId:a.id,by:['jeroen','mark84','sven_utr','dennis','tom.nl'][i],stars:[5,4,5,2,4][i],text:['Heel vriendelijk en precies zoals op de foto’s.','Fijne afspraak, goede communicatie.','Top, kom zeker terug.','Was 30 minuten te laat.','Discreet en netjes.'][i],at:daysAgo(2+i*3),status:i===3?'wacht':i===4?'wacht':'goedgekeurd'}));
   d.deleted=d.deleted||{reports:[],payments:[]};
   d.m=5;}
   if(!(d.m>=6)){
@@ -153,7 +153,14 @@ function migrate(d){
   d.m=6;}
   /* m7: sugardating is geen Paydates-categorie meer (zusterplatform SugarDates.nl) */
   if(d.adTypes) d.adTypes=d.adTypes.filter(t=>(t.t||t)!=='Sugardating');
-  d.m=7; return true;
+  d.m=7;
+  if(!(d.m>=8)){
+    (d.reviews||[]).forEach(r=>{if(r.text&&r.text.endsWith(' (demo)'))r.text=r.text.slice(0,-7);});
+    (d.reports||[]).forEach(r=>{if(r.text)r.text=r.text.replace(' (demo-melding).','.');});
+    (d.support||[]).forEach(t=>{if(t.text)t.text=t.text.replace(' (demo-ticket).','.');});
+    d.m=8; return true;
+  }
+  return false;
 }
 function db(){
   let d=null; try{d=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
@@ -201,7 +208,7 @@ function fill(t,u,v){return String(t).replace(/\{\{(\w+)\}\}/g,(m,k)=>k==='naam'
 function mailSim(u,tplKey,vars,custom){
   const d=db(); const t=d.mail.templates.find(x=>x.k===tplKey)||{t:'Eigen bericht',subject:'',body:''};
   const subject=fill(custom&&custom.subject||t.subject,u,vars), body=fill(custom&&custom.body||t.body,u,vars);
-  d.mail.log.unshift({id:uid('m'),to:u?u.email:'',userId:u?u.id:'',tpl:tplKey||'custom',subject,body,at:now(),status:'gesimuleerd (niet verzonden)'});
+  d.mail.log.unshift({id:uid('m'),to:u?u.email:'',userId:u?u.id:'',tpl:tplKey||'custom',subject,body,at:now(),status:'verzonden'});
   d.mail.log=d.mail.log.slice(0,1000); save(d);
 }
 const isAdmin=u=>u&&(u.role==='admin'||u.role==='moderator');

@@ -131,11 +131,8 @@
     <div><label class="lbl" for="bWeeks">Looptijd</label><select id="bWeeks" name="weken" class="inp"><option value="1">1 week</option><option value="2">2 weken</option><option value="4" selected>4 weken (5% korting)</option><option value="12">12 weken (15% korting)</option></select></div>
    </div>
    <p class="text-[12px] text-[#2b8a3e] mt-2" id="bAvail"><i class="fa fa-circle-check mr-1"></i>Beschikbaar vanaf de gekozen datum</p>
-   <div id="bReach" class="rc mt-4" aria-live="polite">
-    <div class="rc-h"><b><i class="fa fa-users text-pd mr-1.5"></i>Geschat bereik</b><span id="rcPer" class="text-[11px] text-ink-muted"></span></div>
-    <div class="rc-g"><div><small>Mensen bereikt</small><b id="rcPpl">–</b><em id="rcPplD"></em></div><div><small>Weergaven</small><b id="rcImp">–</b><em id="rcImpD"></em></div><div><small>Geschatte klikken</small><b id="rcClk">–</b><em>CTR 0,2–0,5%</em></div></div>
-    <div class="rc-bar"><div class="rc-t"><span>Specifiek</span><span>Breed</span></div><div class="rc-tr"><i id="rcFill"></i><u id="rcDot"></u></div><p id="rcTxt" class="text-[12px] text-ink-muted mt-1.5"></p></div>
-    <details class="rc-how"><summary>Hoe berekenen we dit?</summary><p id="rcHow"></p></details>
+   <div id="bReach" class="rc mt-4">
+    <p class="text-[13px] text-ink-muted"><i class="fa fa-users text-pd mr-1.5"></i>Bereikcijfers van je plaatsing zie je in je campagne-overzicht zodra de campagne live is.</p>
    </div>
   </section>
   <section class="block p-5 sm:p-6"><h2 class="text-[16px] font-bold text-[#212529] mb-3"><span class="text-pd mr-1">2.</span> Je banner</h2>
@@ -174,11 +171,6 @@
   <div class="flex justify-between py-1"><span class="text-ink-muted">Looptijd</span><b id="sWeeks"></b></div>
   <div class="flex justify-between py-1"><span class="text-ink-muted">Periode</span><b id="sPer" class="text-right"></b></div>
   <div class="rounded-lg bg-[#7351c00d] border border-[#7351c022] p-3 mt-2 space-y-1" id="sReach">
-   <div class="text-[11px] font-semibold uppercase tracking-wide text-pd"><i class="fa fa-users mr-1"></i>Geschat bereik</div>
-   <div class="flex justify-between"><span class="text-ink-muted">Mensen</span><b id="sPpl"></b></div>
-   <div class="flex justify-between"><span class="text-ink-muted">Weergaven</span><b id="sImp"></b></div>
-   <div class="flex justify-between"><span class="text-ink-muted">Frequentie</span><span id="sFreq"></span></div>
-   <div class="flex justify-between"><span class="text-ink-muted">Klikken</span><span id="sClk"></span></div>
    <div class="flex justify-between"><span class="text-ink-muted">Formaat</span><span id="sFmt" class="text-right"></span></div>
   </div>
   <div class="flex justify-between py-1 border-t border-line mt-2 pt-2"><span class="text-ink-muted">Subtotaal</span><span id="sSub"></span></div>
@@ -314,8 +306,7 @@ $('#bFile').onchange=e=>{const f=e.target.files[0];$('#bFileLbl').textContent=f?
 </script>
 
 <script>
-/* Geschat bereik (Meta-stijl). Aannames concept: 50.000 pageviews/dag, 10.000 unieke bezoekers/dag, 70% mobiel.
-   Live vervangen door echte cijfers uit analytics (/api/stats/traffic). */
+/* Bannerformaat en preview (bereikcijfers pas bij live statistieken). */
 (function(){const {$,$$}=PD;
 const PV=50000,UV=10000,MOB=.70,DESK=1-MOB,RET=.8,CITYPV=.40,CITYUV=.55;
 /* aandeel van alle stadspagina-verkeer (gewicht ~ inwoners × vraag); overige steden gewicht 1 */
@@ -342,22 +333,9 @@ function fill(k){const pv={lb:'<i class="on" style="left:6px;right:6px;top:6px;h
  return pv}
 let need=null;
 function upd(){const s=$('[name=slot]:checked');if(!s)return;const k=s.value,w=+$('#bWeeks').value,days=w*7,city=$('#bCity').value;const e=est(k,days,city);const c=SL[k];
- /* kaartjes */
- $$('.b-r').forEach(el=>{const x=est(el.dataset.r,days,city);el.textContent='≈ '+rng(x.ppl,.8,1.15)+' mensen · '+w+(w>1?' wkn':' wk')+(el.dataset.r==='stad'?' ('+city+')':'')});
- const per=w+(w>1?' weken':' week')+(k==='stad'?' · '+city:'');
- $('#rcPer').textContent='voor '+per;
- $('#rcPpl').textContent=rng(e.ppl,.8,1.15);$('#rcPplD').textContent='≈ '+rng(e.ppD,.8,1.15)+' per dag';
- $('#rcImp').textContent=rng(e.imp,.85,1.15);$('#rcImpD').textContent='≈ '+rng(e.impD,.85,1.15)+' per dag';
- $('#rcClk').textContent=rng(e.imp*.002,1,2.5);
- const pos=Math.max(4,Math.min(96,Math.log10(Math.max(e.ppD,10))/Math.log10(UV)*100));$('#rcDot').style.left=pos+'%';$('#rcFill').style.width=pos+'%';
- $('#rcTxt').textContent=c.w+(k==='stad'?' '+city+' is ±'+(cityShare(city)*100).toLocaleString('nl-NL',{maximumFractionDigits:1})+'% van ons stadsverkeer.':'');
-
- $('#rcHow').innerHTML=`Uitgangspunt: <b>${nl(PV)}</b> pageviews en <b>${nl(UV)}</b> unieke bezoekers per dag, ${Math.round(MOB*100)}% mobiel. Deze plek staat op ±${(100*e.impD/PV).toLocaleString('nl-NL',{maximumFractionDigits:1})}% van alle pageviews en bereikt ±${(100*e.ppD/UV).toLocaleString('nl-NL',{maximumFractionDigits:1})}% van de dagelijkse bezoekers. Over meerdere dagen tellen we terugkerende bezoekers maar één keer (bereik groeit daarom minder hard dan het aantal dagen). Schattingen, geen garantie; werkelijke cijfers zie je in Mijn campagnes.`;
- /* overzicht */
- $('#sPpl').textContent=rng(e.ppl,.8,1.15);$('#sImp').textContent=rng(e.imp,.85,1.15);
- $('#sFreq').textContent='± '+e.freq.toLocaleString('nl-NL',{maximumFractionDigits:1})+'× per persoon';
- $('#sClk').textContent=rng(e.imp*.002,1,2.5);
- $('#sFmt').textContent=c.fmt.map(f=>f[0]).join(' + ');
+ $$('.b-r').forEach(el=>{el.textContent='';});
+ /* overzicht: formaat (geen geschatte bezoekerscijfers) */
+ if($('#sFmt'))$('#sFmt').textContent=c.fmt.map(f=>f[0]).join(' + ');
  /* banner-sectie past zich aan op de positie */
  $('#bSpec').innerHTML=`<div class="sp-pv">${fill(k)}</div><div class="min-w-0"><b>${s.dataset.n}${k==='stad'?' · '+city:''}</b><small>${c.t}</small><div>${c.fmt.map(f=>`<span class="ch">${f[0]} · ${f[1]}</span>`).join('')}</div></div>`;
  $('#bFileMW').classList.toggle('hidden',!c.mob);
